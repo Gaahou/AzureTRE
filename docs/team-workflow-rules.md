@@ -218,6 +218,176 @@ Alternatively, if features are tightly coupled and tested together:
 
 ---
 
+## Rule 5: Feature Testing Workflow
+
+### For every feature test: create a User Story to capture the testing plan, link to the feature, test against the last commit, and properly close work items upon success
+
+**Rationale:** Formalizing the testing process ensures thorough validation before closing features. Creating a dedicated testing user story provides a clear audit trail, captures test results, and ensures all team members know when features are ready for production.
+
+**Workflow:**
+
+1. **Create Testing User Story**
+   - Create a new User Story in Azure DevOps for testing the completed feature
+   - Title format: `Test {Feature Name} (Phase {N})`
+   - Description: Include testing plan, test cases, and acceptance criteria
+   - Link to the feature being tested (Add Link → Parent → Feature ID)
+   
+2. **Test Against Last Commit**
+   - Ensure testing is performed against the last commit from the last User Story of the feature branch
+   - Document the commit hash in the testing story
+   - Verify all feature acceptance criteria are met
+   
+3. **On Test Success**
+   - Commit test results and any test scripts to the same feature branch
+   - Add comments to all related work items (feature + all stories) with test results
+   - Update work item states:
+     - Stories: Move from **Resolved** → **Closed**
+     - Feature: Move from **Resolved** → **Closed**
+     - Testing Story: Move from **Active** → **Closed**
+
+4. **On Test Failure**
+   - Document failures in the testing story
+   - Reopen affected user stories (move back to **Active**)
+   - Link bug work items to the testing story
+   - Feature remains in **Resolved** until issues are fixed
+
+**Example:**
+
+```bash
+# 1. Create testing story via ADO MCP
+curl -s http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "create_work_item",
+      "arguments": {
+        "project": "TRE playground",
+        "work_item_type": "User Story",
+        "title": "Test Phase 0: Provider Abstraction & Mode Switching",
+        "description": "Comprehensive testing of Phase 0...",
+        "assigned_to": "andrew@example.com"
+      }
+    }
+  }'
+
+# 2. Link testing story to feature
+curl -s http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "add_work_item_link",
+      "arguments": {
+        "id": <testing-story-id>,
+        "link_type": "System.LinkTypes.Hierarchy-Reverse",
+        "target_id": 105,
+        "comment": "Testing story for Phase 0 feature"
+      }
+    }
+  }'
+
+# 3. Test against last commit
+git checkout feature/phase0-provider-abstraction
+LAST_COMMIT=$(git log -1 --format='%H')
+echo "Testing against commit: $LAST_COMMIT"
+
+# Run test suite
+./scripts/test_phase0.sh
+
+# 4a. If tests pass - commit test artifacts
+git add docs/phase0-test-plan.md scripts/test_phase0.sh
+git commit -m "Test Phase 0: All acceptance criteria met
+
+- Created comprehensive test plan
+- All unit tests passing
+- All integration tests passing
+- No regressions detected
+
+Tested against commit: $LAST_COMMIT
+
+Related Work Items: #<testing-story-id>, #105, #106-112"
+
+git push
+
+# 4b. Comment all related work items
+# Feature 105
+./scripts/ado_comment.sh 105 "Testing Complete" "All Phase 0 tests passed. Ready to close."
+
+# Stories 106-112
+for story_id in 106 107 108 109 110 111 112; do
+  ./scripts/ado_comment.sh $story_id "Testing Complete" "Phase 0 testing passed. Moving to Closed."
+done
+
+# Testing story
+./scripts/ado_comment.sh <testing-story-id> "Testing Complete" "All tests passed, see commit $LAST_COMMIT"
+
+# 4c. Close all work items
+# Stories: Resolved → Closed
+for story_id in 106 107 108 109 110 111 112; do
+  ./scripts/ado_helper.sh update $story_id "Closed"
+done
+
+# Feature: Resolved → Closed
+./scripts/ado_helper.sh update 105 "Closed"
+
+# Testing story: Active → Closed
+./scripts/ado_helper.sh update <testing-story-id> "Closed"
+```
+
+**Testing Story Template:**
+
+```markdown
+Title: Test Phase {N}: {Feature Name}
+
+Description:
+## Testing Scope
+- Feature ID: {feature-id}
+- Stories: {story-ids}
+- Branch: feature/phase{N}-{name}
+- Last Commit: {commit-hash}
+
+## Test Plan
+See: docs/phase{N}-test-plan.md
+
+## Acceptance Criteria
+- [ ] All feature acceptance criteria met
+- [ ] All story acceptance criteria met
+- [ ] Unit tests pass (100%)
+- [ ] Integration tests pass
+- [ ] No regressions detected
+- [ ] Linting passes
+- [ ] Documentation updated
+
+## Test Execution
+{Results will be documented here}
+
+## Sign-off
+- [ ] All tests passed
+- [ ] All work items commented
+- [ ] All work items closed
+- [ ] Ready for next feature
+```
+
+**Testing Story Acceptance Criteria:**
+- [ ] Testing story created and linked to feature
+- [ ] Test plan documented with clear steps
+- [ ] Tests executed against specific commit hash
+- [ ] Test results documented in testing story
+- [ ] All related work items commented with results
+- [ ] Work items moved to appropriate states (Closed or Active)
+
+**Benefits:**
+- **Audit Trail**: Clear record of when and how features were tested
+- **Traceability**: Easy to see which commit was tested
+- **Quality Gate**: Formal testing step before closing features
+- **Team Visibility**: Everyone can see testing status and results
+- **Historical Context**: Future reference for what was tested and how
+
+---
+
 ## Workflow Checklist
 
 ### Starting a Feature
@@ -249,6 +419,12 @@ Alternatively, if features are tightly coupled and tested together:
 
 ### After Last Story in Feature Resolved
 - [ ] ✅ **RULE 3:** Move parent Feature to Resolved
+- [ ] ✅ **RULE 5:** Create Testing User Story for the feature
+- [ ] ✅ **RULE 5:** Link Testing Story to Feature
+- [ ] ✅ **RULE 5:** Execute tests against last commit
+- [ ] ✅ **RULE 5:** If tests pass: commit results, comment all work items
+- [ ] ✅ **RULE 5:** Close all Stories (Resolved → Closed)
+- [ ] ✅ **RULE 5:** Close Feature (Resolved → Closed)
 - [ ] ✅ **RULE 3:** Prompt user for next feature activation
 - [ ] Wait for user confirmation
 - [ ] ✅ **RULE 4:** Create new feature branch from current feature branch
@@ -374,4 +550,4 @@ For questions about these workflow rules, contact:
 This document should be reviewed and updated during sprint retrospectives or when workflow improvements are identified.
 
 **Last Updated:** 2026-05-02
-**Version:** 1.2 - Added Rule #3 for feature completion workflow and Rule #4 for feature branch strategy
+**Version:** 1.3 - Added Rule #5 for feature testing workflow with formal testing stories
