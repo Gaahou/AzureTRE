@@ -161,11 +161,73 @@ curl -s http://localhost:3000/mcp \
 
 ---
 
+## Rule 4: Feature Branch Strategy
+
+### Branch out a new feature branch based on the previous feature for ease of testing later on
+
+**Rationale:** Creating feature branches that build on top of each other maintains a clear dependency chain and enables incremental testing. Each feature can be tested independently while still having access to all previous features' code. This makes it easier to merge features sequentially and isolate issues.
+
+**Workflow:**
+1. When starting a new feature, create a new branch from the **previous feature's branch** (not from main)
+2. Name the branch using a consistent pattern: `feature/phase{N}-{description}`
+3. This creates a branch chain: main → phase0 → phase1 → phase2 → etc.
+4. Each phase can be tested independently and merged to main in order
+
+**Example:**
+```bash
+# Feature 105 (Phase 0) - Start from main
+git checkout main
+git checkout -b feature/phase0-provider-abstraction
+# ... work on Phase 0 stories 106-112 ...
+git push origin feature/phase0-provider-abstraction
+
+# Feature 113 (Phase 1) - Start from Phase 0 branch
+git checkout feature/phase0-provider-abstraction
+git checkout -b feature/phase1-local-api
+# ... work on Phase 1 stories 113-117 ...
+git push origin feature/phase1-local-api
+
+# Feature 118 (Phase 2) - Start from Phase 1 branch
+git checkout feature/phase1-local-api
+git checkout -b feature/phase2-message-queue
+# ... work on Phase 2 stories ...
+git push origin feature/phase2-message-queue
+```
+
+**Benefits:**
+- **Incremental Testing**: Each feature branch contains all previous features, enabling full integration testing
+- **Clear Dependencies**: Branch hierarchy reflects feature dependencies
+- **Easier Debugging**: Issues can be traced back through the branch chain
+- **Flexible Merging**: Features can be merged to main in sequence after testing
+- **Isolation**: If a feature needs rework, it doesn't block subsequent features from being developed
+
+**Branch Naming Convention:**
+- `feature/phase{N}-{short-description}` for phase-based features
+- Example: `feature/phase0-provider-abstraction`, `feature/phase1-local-api`, `feature/phase2-message-queue`
+
+**Merging Strategy:**
+When all features are tested and ready:
+1. Merge Phase 0 → main
+2. Rebase Phase 1 onto main, test, merge → main
+3. Rebase Phase 2 onto main, test, merge → main
+4. Continue in sequence
+
+Alternatively, if features are tightly coupled and tested together:
+1. Merge final phase branch → main (contains all previous phases)
+2. Close intermediate feature branches
+
+---
+
 ## Workflow Checklist
+
+### Starting a Feature
+- [ ] ✅ **RULE 4:** Create new feature branch from previous feature branch
+- [ ] Move feature to **Active** in Azure DevOps
+- [ ] Move all stories in feature to **Active**
 
 ### Starting a Story
 - [ ] Move story to **Active** in Azure DevOps
-- [ ] Create feature branch from main
+- [ ] Ensure you're on the correct feature branch
 - [ ] Ensure you understand acceptance criteria
 
 ### During Implementation
@@ -189,6 +251,7 @@ curl -s http://localhost:3000/mcp \
 - [ ] ✅ **RULE 3:** Move parent Feature to Resolved
 - [ ] ✅ **RULE 3:** Prompt user for next feature activation
 - [ ] Wait for user confirmation
+- [ ] ✅ **RULE 4:** Create new feature branch from current feature branch
 - [ ] Activate next feature and all its stories when confirmed
 
 ### Code Review
@@ -311,4 +374,4 @@ For questions about these workflow rules, contact:
 This document should be reviewed and updated during sprint retrospectives or when workflow improvements are identified.
 
 **Last Updated:** 2026-05-02
-**Version:** 1.1 - Added Rule #3 for feature completion workflow
+**Version:** 1.2 - Added Rule #3 for feature completion workflow and Rule #4 for feature branch strategy
