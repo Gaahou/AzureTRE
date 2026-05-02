@@ -1,0 +1,230 @@
+{
+  "workspaceTemplates": [
+    {
+      "id": "tre-workspace-base",
+      "name": "tre-workspace-base",
+      "title": "Base Workspace",
+      "description": "Base workspace template for local TRE development",
+      "version": "0.1.0",
+      "resourceType": "workspace",
+      "current": true,
+      "required": [],
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "title": "Workspace Name",
+          "description": "Name of the workspace"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "description": "Workspace description"
+        },
+        "address_space": {
+          "type": "string",
+          "title": "Address Space",
+          "description": "VNet address space (CIDR notation)",
+          "default": "10.1.0.0/16"
+        }
+      },
+      "actions": [
+        {
+          "name": "install",
+          "description": "Install workspace"
+        },
+        {
+          "name": "uninstall",
+          "description": "Uninstall workspace"
+        },
+        {
+          "name": "upgrade",
+          "description": "Upgrade workspace"
+        }
+      ]
+    }
+  ],
+  "workspaceServiceTemplates": [
+    {
+      "id": "tre-service-guacamole",
+      "name": "tre-service-guacamole",
+      "title": "Apache Guacamole",
+      "description": "Remote desktop gateway service",
+      "version": "0.1.0",
+      "resourceType": "workspace-service",
+      "current": true,
+      "required": [],
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "title": "Service Name",
+          "description": "Name of the Guacamole service"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "description": "Service description"
+        }
+      },
+      "actions": [
+        {
+          "name": "install",
+          "description": "Install Guacamole service"
+        },
+        {
+          "name": "uninstall",
+          "description": "Uninstall Guacamole service"
+        }
+      ]
+    }
+  ],
+  "userResourceTemplates": [
+    {
+      "id": "tre-service-guacamole-linuxvm",
+      "name": "tre-service-guacamole-linuxvm",
+      "title": "Linux VM",
+      "description": "Ubuntu Linux virtual machine accessible via Guacamole",
+      "version": "0.1.0",
+      "resourceType": "user-resource",
+      "parentWorkspaceService": "tre-service-guacamole",
+      "current": true,
+      "required": [],
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "title": "VM Name",
+          "description": "Name of the Linux VM"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "description": "VM description"
+        },
+        "os_image": {
+          "type": "string",
+          "title": "OS Image",
+          "description": "Operating system image",
+          "enum": ["Ubuntu 20.04 LTS", "Ubuntu 22.04 LTS"],
+          "default": "Ubuntu 22.04 LTS"
+        },
+        "vm_size": {
+          "type": "string",
+          "title": "VM Size",
+          "description": "Azure VM size",
+          "enum": ["Standard_B2s", "Standard_B2ms", "Standard_D2s_v3"],
+          "default": "Standard_B2s"
+        }
+      },
+      "actions": [
+        {
+          "name": "install",
+          "description": "Create Linux VM"
+        },
+        {
+          "name": "uninstall",
+          "description": "Delete Linux VM"
+        },
+        {
+          "name": "start",
+          "description": "Start VM"
+        },
+        {
+          "name": "stop",
+          "description": "Stop VM"
+        }
+      ]
+    },
+    {
+      "id": "tre-service-guacamole-windowsvm",
+      "name": "tre-service-guacamole-windowsvm",
+      "title": "Windows VM",
+      "description": "Windows virtual machine accessible via Guacamole",
+      "version": "0.1.0",
+      "resourceType": "user-resource",
+      "parentWorkspaceService": "tre-service-guacamole",
+      "current": true,
+      "required": [],
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "title": "VM Name",
+          "description": "Name of the Windows VM"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "description": "VM description"
+        },
+        "os_image": {
+          "type": "string",
+          "title": "OS Image",
+          "description": "Operating system image",
+          "enum": ["Windows 10 Pro", "Windows 11 Pro", "Windows Server 2022"],
+          "default": "Windows 11 Pro"
+        },
+        "vm_size": {
+          "type": "string",
+          "title": "VM Size",
+          "description": "Azure VM size",
+          "enum": ["Standard_B2s", "Standard_B2ms", "Standard_D2s_v3"],
+          "default": "Standard_B2ms"
+        }
+      },
+      "actions": [
+        {
+          "name": "install",
+          "description": "Create Windows VM"
+        },
+        {
+          "name": "uninstall",
+          "description": "Delete Windows VM"
+        },
+        {
+          "name": "start",
+          "description": "Start VM"
+        },
+        {
+          "name": "stop",
+          "description": "Stop VM"
+        }
+      ]
+    }
+  ],
+  "sharedServiceTemplates": [
+    {
+      "id": "tre-shared-service-firewall",
+      "name": "tre-shared-service-firewall",
+      "title": "Firewall",
+      "description": "Azure Firewall for network security",
+      "version": "0.1.0",
+      "resourceType": "shared-service",
+      "current": true,
+      "required": [],
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "title": "Firewall Name",
+          "description": "Name of the firewall service"
+        },
+        "rule_collections": {
+          "type": "array",
+          "title": "Rule Collections",
+          "description": "Firewall rule collections"
+        }
+      },
+      "actions": [
+        {
+          "name": "install",
+          "description": "Deploy firewall"
+        },
+        {
+          "name": "uninstall",
+          "description": "Remove firewall"
+        },
+        {
+          "name": "upgrade",
+          "description": "Upgrade firewall"
+        }
+      ]
+    }
+  ]
+}

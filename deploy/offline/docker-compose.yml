@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # Azure Cosmos DB Linux Emulator
+  cosmosdb:
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
+    container_name: tre-cosmosdb-emulator
+    hostname: cosmosdb
+    platform: linux/amd64
+    ports:
+      - "8081:8081"
+      - "10250-10255:10250-10255"
+    environment:
+      - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=10
+      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
+      - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=127.0.0.1
+    volumes:
+      - cosmosdb-data:/data/db
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost:8081/_explorer/index.html"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    networks:
+      - tre-local
+
+  # Azurite (Azure Storage Emulator)
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: tre-azurite
+    hostname: azurite
+    ports:
+      - "10000:10000"  # Blob service
+      - "10001:10001"  # Queue service
+      - "10002:10002"  # Table service
+    command: "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --loose --skipApiVersionCheck"
+    volumes:
+      - azurite-data:/data
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "10000"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    networks:
+      - tre-local
+
+  # TRE API Application
+  tre-api:
+    build:
+      context: ../../api_app
+      dockerfile: Dockerfile
+    container_name: tre-api
+    hostname: tre-api
+    ports:
+      - "8000:8000"
+    environment:
+      # Deployment mode
+      - DEPLOYMENT_MODE=offline
+
+      # Cosmos DB Emulator connection
+      - COSMOSDB_ACCOUNT_NAME=localhost
+      - COSMOSDB_ACCOUNT_URI=https://cosmosdb:8081
+      - STATE_STORE_ENDPOINT=https://cosmosdb:8081
+      - STATE_STORE_KEY=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==
+
+      # Azurite connection
+      - AZURE_STORAGE_ACCOUNT_NAME=devstoreaccount1
+      - AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
+
+      # Service Bus - will be RabbitMQ in Phase 2
+      - SERVICE_BUS_FULLY_QUALIFIED_NAMESPACE=localhost
+
+      # Disable Azure-specific features for local mode
+      - ENABLE_AIRLOCK=false
+      - ENABLE_SWAGGER=true
+      - API_DEBUG=true
+    depends_on:
+      cosmosdb:
+        condition: service_healthy
+      azurite:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - tre-local
+    volumes:
+      - ../../api_app:/app
+      - /var/run/docker.sock:/var/run/docker.sock  # For future resource processor integration
+
+networks:
+  tre-local:
+    name: tre-local
+    driver: bridge
+
+volumes:
+  cosmosdb-data:
+    name: tre-cosmosdb-data
+  azurite-data:
+    name: tre-azurite-data
