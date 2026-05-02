@@ -388,6 +388,92 @@ See: docs/phase{N}-test-plan.md
 
 ---
 
+## Rule 6: Rules Management and Synchronization
+
+### All new rules must be committed to both the current feature branch and synchronized back to all active feature branches
+
+**Rationale:** Rules define the team's workflow and must be consistently applied across all feature branches. When a new rule is added on any branch, it should be immediately synchronized to ensure all team members follow the same process regardless of which feature they're working on.
+
+**Workflow:**
+
+1. **Add new rule** to `docs/team-workflow-rules.md` on current branch
+2. **Commit the rule** to current branch with clear commit message
+3. **Cherry-pick to all active feature branches** to synchronize the rule
+4. **Update version number** at bottom of document
+5. **Notify team** of new rule via ADO comment on Epic
+
+**Example:**
+
+```bash
+# 1. Add Rule #5 on feature/phase1-local-api
+git checkout feature/phase1-local-api
+# ... edit docs/team-workflow-rules.md ...
+git add docs/team-workflow-rules.md
+git commit -m "Add Rule #5: Feature testing workflow
+
+- Create User Story for each feature test
+- Link testing story to feature being tested
+- Test against last commit from last user story
+- Commit test results to same branch
+- Comment all related work items with results
+
+Related Work Item: Epic #104
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+
+# 2. Get the commit hash
+RULE_COMMIT=$(git log -1 --format='%H')
+
+# 3. Cherry-pick to phase0 branch
+git checkout feature/phase0-provider-abstraction
+git cherry-pick $RULE_COMMIT
+
+# 4. Cherry-pick to any other active branches
+git checkout feature/phase2-message-queue
+git cherry-pick $RULE_COMMIT
+
+# 5. Return to original branch
+git checkout feature/phase1-local-api
+```
+
+**Active Feature Branches:**
+Maintain a list of currently active feature branches that need rule synchronization:
+- `feature/phase0-provider-abstraction` (Phase 0)
+- `feature/phase1-local-api` (Phase 1)
+- `feature/phase2-message-queue` (Phase 2) [when created]
+- `feature/phase3-auth-secrets` (Phase 3) [when created]
+- `feature/phase4-workspace-lifecycle` (Phase 4) [when created]
+
+**Rule Addition Checklist:**
+- [ ] New rule added to team-workflow-rules.md
+- [ ] Rule includes rationale, workflow, example, and benefits
+- [ ] Rule committed to current branch
+- [ ] Rule cherry-picked to all active feature branches
+- [ ] Version number updated in document
+- [ ] Team notified via ADO comment
+
+**Version Control:**
+Update the version number at the bottom of the document:
+- **Major version** (X.0): Fundamental workflow changes
+- **Minor version** (1.X): New rules or significant modifications
+- **Patch version** (1.1.X): Clarifications or minor edits
+
+**Conflict Resolution:**
+If cherry-pick causes conflicts:
+1. Review the conflict in team-workflow-rules.md
+2. Keep both changes (merge sections)
+3. Ensure rule numbering is sequential
+4. Complete the cherry-pick: `git cherry-pick --continue`
+
+**Benefits:**
+- **Consistency**: All branches follow the same rules
+- **No Confusion**: Team members see same workflow regardless of branch
+- **Single Source of Truth**: Rules document stays synchronized
+- **Easy Rollback**: Can revert rules across all branches if needed
+- **Clear History**: Rule additions tracked in git history
+
+---
+
 ## Workflow Checklist
 
 ### Starting a Feature
@@ -550,4 +636,4 @@ For questions about these workflow rules, contact:
 This document should be reviewed and updated during sprint retrospectives or when workflow improvements are identified.
 
 **Last Updated:** 2026-05-02
-**Version:** 1.3 - Added Rule #5 for feature testing workflow with formal testing stories
+**Version:** 1.4 - Added Rule #6 for rules management and cross-branch synchronization
