@@ -1,4 +1,4 @@
-.PHONY: bootstrap-init mgmt-deploy mgmt-destroy build-api-image push-api-image tre-deploy tre-destroy letsencrypt
+.PHONY: bootstrap-init mgmt-deploy mgmt-destroy build-api-image push-api-image tre-deploy tre-destroy letsencrypt local-up local-down local-status
 .DEFAULT_GOAL := help
 
 SHELL:=/bin/bash
@@ -10,6 +10,10 @@ ACR_NAME?=`echo "$${ACR_NAME}" | tr A-Z a-z`
 ACR_FQDN?="${ACR_NAME}${ACR_DOMAIN_SUFFIX}"
 FULL_IMAGE_NAME_PREFIX:=${ACR_FQDN}/${IMAGE_NAME_PREFIX}
 E2E_TESTS_NUMBER_PROCESSES_DEFAULT=4  # can be overridden in e2e_tests/.env
+
+# Deployment mode configuration
+# Read deployment_mode from config.yaml, default to "online" if not set
+DEPLOYMENT_MODE?=$(shell python3 -c "import yaml; config = yaml.safe_load(open('config.yaml')); print(config.get('developer_settings', {}).get('deployment_mode', 'online'))" 2>/dev/null || echo "online")
 
 target_title = @echo -e "\n\e[34m»»» 🧩 \e[96m$(1)\e[0m..."
 
@@ -574,3 +578,34 @@ db-migrate: api-healthcheck ## 🗄️ Run database migrations
 	&& . ${MAKEFILE_DIR}/devops/scripts/load_env.sh ${MAKEFILE_DIR}/core/private.env \
 	&& . ${MAKEFILE_DIR}/devops/scripts/get_access_token.sh \
 	&& . ${MAKEFILE_DIR}/devops/scripts/migrate_state_store.sh --tre_url $${TRE_URL} --insecure
+
+# Description: Start local infrastructure services (deployment mode aware)
+# Example: make local-up
+local-up: ## 🚀 Start local infrastructure (online: Azure services / offline: Docker Compose)
+	$(call target_title,"Starting local infrastructure (mode: ${DEPLOYMENT_MODE})") \
+	&& if [ "${DEPLOYMENT_MODE}" = "offline" ]; then \
+		echo "Starting Docker Compose services for offline mode..."; \
+		cd ${MAKEFILE_DIR}/deploy/offline && docker-compose up -d; \
+	else \
+		echo "Online mode selected - using Azure cloud services."; \
+		echo "Use 'make tre-start' to start Azure TRE services."; \
+	fi
+
+# Description: Stop local infrastructure services (deployment mode aware)
+# Example: make local-down
+local-down: ## 🛑 Stop local infrastructure (online: no-op / offline: Docker Compose down)
+	$(call target_title,"Stopping local infrastructure (mode: ${DEPLOYMENT_MODE})") \
+	&& if [ "${DEPLOYMENT_MODE}" = "offline" ]; then \
+		echo "Stopping Docker Compose services for offline mode..."; \
+		cd ${MAKEFILE_DIR}/deploy/offline && docker-compose down; \
+	else \
+		echo "Online mode selected - Azure cloud services managed separately."; \
+		echo "Use 'make tre-stop' to stop Azure TRE services."; \
+	fi
+
+# Description: Check status of local infrastructure (deployment mode aware)
+# Example: make local-status
+local-status: ## 📊 Check status of local infrastructure
+	$(call target_title,"Checking local infrastructure status (mode: ${DEPLOYMENT_MODE})") \
+	&& . ${MAKEFILE_DIR}/deploy/shared/env.sh \
+	&& ${MAKEFILE_DIR}/deploy/shared/healthcheck.sh
