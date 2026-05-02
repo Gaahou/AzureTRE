@@ -19,5 +19,15 @@ Usage:
 """
 
 from providers.interfaces import MessageBus, EventPublisher, CredentialProvider
+from providers.factory import get_message_bus, get_event_publisher, get_credential_provider
 
-__all__ = ["MessageBus", "EventPublisher", "CredentialProvider"]
+__all__ = [
+    # Interfaces
+    "MessageBus",
+    "EventPublisher",
+    "CredentialProvider",
+    # Factory functions
+    "get_message_bus",
+    "get_event_publisher",
+    "get_credential_provider",
+]
