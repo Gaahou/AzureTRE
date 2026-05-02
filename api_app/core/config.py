@@ -11,7 +11,19 @@ config = Config('.env')
 API_PREFIX = "/api"
 PROJECT_NAME: str = config("PROJECT_NAME", default="Azure TRE API")
 LOGGING_LEVEL: str = config("LOGGING_LEVEL", default="INFO")
-DEPLOYMENT_MODE: str = config("DEPLOYMENT_MODE", default="online")
+
+# Deployment mode configuration
+_DEPLOYMENT_MODE: str = config("DEPLOYMENT_MODE", default="online")
+VALID_DEPLOYMENT_MODES = ["online", "offline"]
+
+# Validate deployment mode
+if _DEPLOYMENT_MODE not in VALID_DEPLOYMENT_MODES:
+    raise ValueError(
+        f"Invalid DEPLOYMENT_MODE '{_DEPLOYMENT_MODE}'. "
+        f"Must be one of: {', '.join(VALID_DEPLOYMENT_MODES)}"
+    )
+
+DEPLOYMENT_MODE: str = _DEPLOYMENT_MODE
 ENABLE_LOCAL_DEBUGGING: bool = config("ENABLE_LOCAL_DEBUGGING", cast=bool, default=False)
 ENABLE_SWAGGER: bool = config("ENABLE_SWAGGER", cast=bool, default=False)
 VERSION = __version__

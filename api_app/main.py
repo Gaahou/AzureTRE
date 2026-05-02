@@ -70,6 +70,7 @@ def get_application() -> FastAPI:
 
 
 initialize_logging()
+logger.info(f"Starting Azure TRE API in {config.DEPLOYMENT_MODE.upper()} mode")
 app = get_application()
 FastAPIInstrumentor.instrument_app(app)
 
