@@ -27,14 +27,24 @@ update_work_item_state() {
     local id="$1"
     local state="$2"
 
-    # Workflow Rule #1: Never move to Resolved/Closed without testing
-    if [[ "$state" == "Resolved" || "$state" == "Closed" ]]; then
-        echo "⚠️  WORKFLOW RULE #1: Never move tasks to Resolved/Closed if they are not tested"
+    # Workflow Rule #1: State management
+    if [[ "$state" == "Resolved" ]]; then
+        echo "⚠️  WORKFLOW RULE #1: Move to Resolved when implementation is complete"
+        echo "   (No test cases left behind, ready for testing/review)"
         echo ""
-        read -p "Have you completed all testing? (y/N): " -n 1 -r
+        read -p "Is implementation complete? (y/N): " -n 1 -r
         echo
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            echo "❌ Aborted. Please test before moving to $state."
+            echo "❌ Aborted. Complete implementation before moving to Resolved."
+            return 1
+        fi
+    elif [[ "$state" == "Closed" ]]; then
+        echo "⚠️  WORKFLOW RULE #1: Never move to Closed if not well tested"
+        echo ""
+        read -p "Have you completed thorough testing? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "❌ Aborted. Complete thorough testing before moving to Closed."
             return 1
         fi
     fi

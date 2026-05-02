@@ -8,34 +8,49 @@ This document outlines the agreed-upon workflow rules for the Azure TRE developm
 
 ## Rule 1: Work Item State Management
 
-### Never move tasks to "Resolved" or "Closed" if they are not tested
+### Never move tasks to "Closed" if they are not well tested. Move to "Resolved" when implementation is complete (no test cases left behind).
 
-**Rationale:** Moving work items to final states prematurely can lead to incomplete or untested features being considered done, which can cause issues in production.
+**Rationale:** Proper state management ensures work items move through appropriate stages - implementation complete, then thoroughly tested, then closed.
 
 **Workflow:**
 1. **Active** - Work item is being actively worked on
-2. **Resolved** - Implementation is complete AND tested (ready for review)
-3. **Closed** - Work item has been reviewed and accepted
+2. **Resolved** - Implementation is complete (no test cases left behind, ready for testing/review)
+3. **Closed** - Work item has been well tested and verified
 
 **Example:**
 ```bash
-# ❌ WRONG - Don't do this after just committing
-./scripts/ado_helper.sh update 106 "Resolved"  # No testing done yet!
-
-# ✅ CORRECT - Keep in Active until tested
+# ✅ CORRECT - Move to Resolved when implementation complete
 git commit -m "Story 106: Add deployment_mode config flag"
-# Run tests first
-make test
-# Then move to Resolved
+# Implementation done, move to Resolved
 ./scripts/ado_helper.sh update 106 "Resolved"
+
+# ❌ WRONG - Don't move to Closed without thorough testing
+./scripts/ado_helper.sh update 106 "Closed"  # Not well tested yet!
+
+# ✅ CORRECT - Move to Closed after thorough testing
+# Run comprehensive tests
+make test
+make lint
+# Manual testing
+# Integration testing
+# Then move to Closed
+./scripts/ado_helper.sh update 106 "Closed"
 ```
 
-**Testing Checklist Before Moving to Resolved:**
+**Implementation Complete Checklist (Before Moving to Resolved):**
+- [ ] Code implementation finished
+- [ ] Basic testing done (scripts run, syntax valid)
+- [ ] Code compiles/runs without errors
+- [ ] Committed and pushed
+- [ ] Documentation updated
+- [ ] Comment added to work item
+
+**Well Tested Checklist (Before Moving to Closed):**
 - [ ] Unit tests pass
 - [ ] Integration tests pass (if applicable)
 - [ ] Manual testing complete
-- [ ] Code compiles/runs without errors
-- [ ] Documentation updated
+- [ ] Edge cases tested
+- [ ] Code reviewed (if required)
 
 ---
 
