@@ -37,8 +37,72 @@ docker-compose exec tre-api bash -c "cd /deploy/offline/seed && ./cosmos-init.sh
 - `STATE_STORE_KEY` - Cosmos DB master key (default: emulator key)
 - `STATE_STORE_DATABASE` - Database name (default: AzureTRE)
 
-### seed-templates.sh (Story 117)
+### seed-templates.sh
 Seeds the database with base workspace and service templates.
+
+**Usage:**
+```bash
+# From the deploy/offline directory
+docker-compose exec tre-api bash -c "cd /deploy/offline/seed && ./seed-templates.sh"
+```
+
+**What it does:**
+1. Checks Cosmos DB connectivity
+2. Loads templates from `templates.json`
+3. Inserts the following templates into the ResourceTemplates container:
+   - Base workspace template
+   - Guacamole workspace service template
+   - Linux VM user resource template
+   - Windows VM user resource template
+   - Firewall shared service template
+
+**Prerequisites:**
+- Run `cosmos-init.sh` first to create the database and containers
+- Requires `jq` for JSON parsing (included in tre-api container)
+
+**Environment Variables:**
+- Same as `cosmos-init.sh`
+- `STATE_STORE_RESOURCE_TEMPLATES_CONTAINER` - Container name (default: ResourceTemplates)
+
+## Quick Start - Complete Setup
+
+To set up a fresh local TRE environment:
+
+```bash
+# 1. Start services
+cd deploy/offline
+docker-compose up -d
+
+# 2. Wait for services to be ready (check health)
+docker-compose ps
+
+# 3. Initialize Cosmos DB
+docker-compose exec tre-api bash -c "cd /deploy/offline/seed && ./cosmos-init.sh"
+
+# 4. Seed templates
+docker-compose exec tre-api bash -c "cd /deploy/offline/seed && ./seed-templates.sh"
+
+# 5. Verify
+# Access TRE API: http://localhost:8000/api/docs
+# Access Cosmos Explorer: https://localhost:8081/_explorer/index.html
+```
+
+## Templates
+
+The seed includes the following templates:
+
+**Workspace Templates:**
+- `tre-workspace-base` - Base workspace with VNet configuration
+
+**Workspace Service Templates:**
+- `tre-service-guacamole` - Apache Guacamole remote desktop gateway
+
+**User Resource Templates:**
+- `tre-service-guacamole-linuxvm` - Ubuntu Linux VM (20.04/22.04)
+- `tre-service-guacamole-windowsvm` - Windows VM (10/11/Server 2022)
+
+**Shared Service Templates:**
+- `tre-shared-service-firewall` - Azure Firewall for network security
 
 ## Containers
 
