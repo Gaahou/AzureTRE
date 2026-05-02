@@ -55,6 +55,15 @@ class AzureADAuthorization(AccessService):
         self.require_one_of_roles = require_one_of_roles
 
     async def __call__(self, request: Request) -> User:
+        # Bypass authentication in offline mode
+        if config.DEPLOYMENT_MODE == "offline":
+            logger.debug("Authentication bypassed (offline mode)")
+            return User(
+                id="offline-user",
+                name="Offline User",
+                email="offline@localhost",
+                roles=["TREAdmin", "TREUser", "WorkspaceOwner", "WorkspaceResearcher", "AirlockManager"]
+            )
 
         token: str = await super(AzureADAuthorization, self).__call__(request)
 
