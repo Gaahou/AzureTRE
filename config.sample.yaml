@@ -101,16 +101,20 @@ ui_config:
   ui_site_name: "Azure TRE"
   # Footer text shown in the bottom left hand corner of the TRE portal
   ui_footer_text: "Azure Trusted Research Environment"
-#developer_settings:
-# Locks will not be added to stateful resources so they can be easily removed
-# stateful_resources_locked: false
-# TRE Core Key Vault purge protection will be disabled so it can be reused upon deletion
-# kv_purge_protection_enabled: false
+developer_settings:
+  # Deployment mode: "online" (Azure cloud) or "offline" (100% local via Docker)
+  # Controls whether TRE uses Azure services or local emulators/alternatives
+  deployment_mode: online
 
-# This setting will enable your local machine to be able to
-# communicate with Service Bus and Cosmos. It will also allow deploying
-# the base workspace.
-#  enable_local_debugging: true
+  # Locks will not be added to stateful resources so they can be easily removed
+  # stateful_resources_locked: false
+  # TRE Core Key Vault purge protection will be disabled so it can be reused upon deletion
+  # kv_purge_protection_enabled: false
+
+  # This setting will enable your local machine to be able to
+  # communicate with Service Bus and Cosmos. It will also allow deploying
+  # the base workspace.
+  # enable_local_debugging: true
 
 # This setting enables customer-managed key encryption for all supported resources
 #  enable_cmk_encryption: true

@@ -254,6 +254,14 @@
       "description": "Developer and local debugging settings (typically for non-production use).",
       "type": "object",
       "properties": {
+        "deployment_mode": {
+          "description": "Deployment mode: 'online' for Azure cloud services, 'offline' for local emulators/Docker.",
+          "type": "string",
+          "enum": [
+            "online",
+            "offline"
+          ]
+        },
         "stateful_resources_locked": {
           "description": "When false, locks are not added to stateful resources to ease teardown.",
           "type": "boolean"
