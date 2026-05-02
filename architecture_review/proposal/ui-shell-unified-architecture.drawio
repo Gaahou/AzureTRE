@@ -1,0 +1,202 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="UI Shell - Unified Single App Architecture (Chosen Approach)" id="ui-shell-unified-architecture">
+    <mxGraphModel dx="1027" dy="385" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="UI Shell - Unified Single App Architecture (Chosen Approach)" vertex="1">
+          <mxGeometry height="40" width="900" x="350" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#666666;" value="Post-Consolidation: Single codebase, single build, runtime theming for 14+ organizations" vertex="1">
+          <mxGeometry height="20" width="700" x="450" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="browser-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#cfe2f3;strokeColor=#0b5394;fontSize=14;fontStyle=1;verticalAlign=top;" value="Browser / User Context" vertex="1">
+          <mxGeometry height="80" width="1520" x="40" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="user-session" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="User Session&#xa;• JWT Token&#xa;• Organization Context&#xa;• Permissions" vertex="1">
+          <mxGeometry height="50" width="180" x="180" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="browser-storage" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Local Storage&#xa;• Theme cache&#xa;• User preferences&#xa;• Config cache" vertex="1">
+          <mxGeometry height="50" width="180" x="400" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="org-detector" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Org Detection&#xa;• URL param&#xa;• Token claim&#xa;• Path analysis" vertex="1">
+          <mxGeometry height="50" width="160" x="620" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="service-worker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" value="Service Worker&#xa;• Offline support&#xa;• Asset caching" vertex="1">
+          <mxGeometry height="50" width="160" x="820" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="unified-app-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;verticalAlign=top;" value="Single Unified Application (Shell + All Features)" vertex="1">
+          <mxGeometry height="220" width="1520" x="40" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="app-root" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;fontStyle=1" value="App.tsx (Root)&#xa;&#xa;• Single entry point&#xa;• Keycloak bootstrap&#xa;• Theme initialization&#xa;• Router mounting" vertex="1">
+          <mxGeometry height="160" width="200" x="80" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="unified-router" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#38761d;align=left;spacingLeft=10;fontStyle=1" value="React Router v6&#xa;(Single Instance)&#xa;&#xa;• /datasets/*&#xa;• /workspaces/*&#xa;• /workflows/*&#xa;• Unified navigation" vertex="1">
+          <mxGeometry height="160" width="200" x="320" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-context" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=10;fontStyle=1" value="Auth Context&#xa;(Single Keycloak)&#xa;&#xa;• One bootstrap&#xa;• Shared token&#xa;• All features use&#xa;• No iframe/postMessage" vertex="1">
+          <mxGeometry height="160" width="200" x="560" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="theme-runtime" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=10;fontStyle=1" value="Runtime Theme Engine&#xa;&#xa;• Load org config&#xa;• Apply CSS variables&#xa;• Inject branding&#xa;• Instant switching" vertex="1">
+          <mxGeometry height="160" width="200" x="800" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="telemetry-unified" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#cc7a00;align=left;spacingLeft=10;" value="Unified Telemetry&#xa;&#xa;• Single App Insights&#xa;• End-to-end tracing&#xa;• Org context tags" vertex="1">
+          <mxGeometry height="160" width="200" x="1040" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-state" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=10;" value="Shared State&#xa;&#xa;• Single Redux store&#xa;• Shared context&#xa;• Cross-feature state" vertex="1">
+          <mxGeometry height="160" width="200" x="1280" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="feature-modules-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0e0e3;strokeColor=#5b9aa0;fontSize=14;fontStyle=1;verticalAlign=top;" value="Feature Modules (All in Same Build)" vertex="1">
+          <mxGeometry height="180" width="1520" x="40" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog-feature" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a4c2f4;strokeColor=#1155cc;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" value="Catalog Feature Module" vertex="1">
+          <mxGeometry height="130" width="280" x="80" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog-pages" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c9daf8;strokeColor=#1155cc;" value="Pages: List, Detail, Search" vertex="1">
+          <mxGeometry height="30" width="240" x="100" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog-components" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c9daf8;strokeColor=#1155cc;" value="Components: DataTable, Filters" vertex="1">
+          <mxGeometry height="30" width="240" x="100" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="workspaces-feature" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#93c47d;strokeColor=#38761d;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" value="Workspaces Feature Module" vertex="1">
+          <mxGeometry height="130" width="280" x="400" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="workspaces-pages" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#38761d;" value="Pages: List, Detail, Create" vertex="1">
+          <mxGeometry height="30" width="240" x="420" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="workspaces-components" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#38761d;" value="Components: WorkspaceCard" vertex="1">
+          <mxGeometry height="30" width="240" x="420" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="workflows-feature" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd966;strokeColor=#bf9000;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" value="Workflows Feature Module" vertex="1">
+          <mxGeometry height="130" width="280" x="720" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="workflows-pages" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe599;strokeColor=#bf9000;" value="Pages: List, Detail, Execute" vertex="1">
+          <mxGeometry height="30" width="240" x="740" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="workflows-components" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe599;strokeColor=#bf9000;" value="Components: WorkflowBuilder" vertex="1">
+          <mxGeometry height="30" width="240" x="740" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="workflows-note" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#cc6600;" value="✓ Extracted from iframe" vertex="1">
+          <mxGeometry height="20" width="240" x="740" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-components" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" value="Shared Components Library" vertex="1">
+          <mxGeometry height="130" width="280" x="1040" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-ui" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#666666;" value="Button, Card, Modal, Input" vertex="1">
+          <mxGeometry height="30" width="240" x="1060" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-layout" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#666666;" value="Header, Footer, Nav, Sidebar" vertex="1">
+          <mxGeometry height="30" width="240" x="1060" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="build-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;verticalAlign=top;" value="Single Build System (Nx + Webpack 5)" vertex="1">
+          <mxGeometry height="120" width="1520" x="40" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="nx-workspace" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9fc5e8;strokeColor=#0b5394;align=left;spacingLeft=10;" value="Nx Workspace&#xa;&#xa;• Single monorepo&#xa;• Dependency graph&#xa;• Caching" vertex="1">
+          <mxGeometry height="70" width="220" x="100" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="webpack-simple" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a2c4c9;strokeColor=#0d5661;align=left;spacingLeft=10;" value="Webpack 5&#xa;&#xa;• Standard React build&#xa;• NO Module Federation&#xa;• Tree shaking" vertex="1">
+          <mxGeometry height="70" width="220" x="360" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="single-bundle" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5a6bd;strokeColor=#8e24aa;align=left;spacingLeft=10;" value="Single Bundle Output&#xa;&#xa;• One build artifact&#xa;• ~900KB (optimized)&#xa;• Lazy-loaded routes" vertex="1">
+          <mxGeometry height="70" width="220" x="620" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="build-time" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f9cb9c;strokeColor=#b45f06;align=left;spacingLeft=10;" value="Build Performance&#xa;&#xa;• 10-15 min (vs 2-3 hrs)&#xa;• Single pipeline&#xa;• One deployment" vertex="1">
+          <mxGeometry height="70" width="220" x="880" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="ci-cd-unified" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cccccc;strokeColor=#666666;align=left;spacingLeft=10;" value="CI/CD Pipeline&#xa;&#xa;• Single workflow&#xa;• Build once&#xa;• Deploy to all orgs" vertex="1">
+          <mxGeometry height="70" width="220" x="1140" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="backend-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c9daf8;strokeColor=#1155cc;fontSize=14;fontStyle=1;verticalAlign=top;" value="Backend Integration" vertex="1">
+          <mxGeometry height="120" width="1520" x="40" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="tre-api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6fa8dc;strokeColor=#1155cc;" value="TRE API&#xa;(Backend)" vertex="1">
+          <mxGeometry height="60" width="160" x="140" y="895" as="geometry" />
+        </mxCell>
+        <mxCell id="theme-api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#f9a825;" value="Theme Config API&#xa;(Organization themes)" vertex="1">
+          <mxGeometry height="60" width="180" x="340" y="895" as="geometry" />
+        </mxCell>
+        <mxCell id="sso-backend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b7e1cd;strokeColor=#38761d;" value="SSO Service&#xa;(KeyCloak/Azure B2C)" vertex="1">
+          <mxGeometry height="60" width="180" x="560" y="895" as="geometry" />
+        </mxCell>
+        <mxCell id="cdn-assets" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9d2e9;strokeColor=#674ea7;" value="CDN / Blob Storage&#xa;(Logos, assets)" vertex="1">
+          <mxGeometry height="60" width="180" x="780" y="895" as="geometry" />
+        </mxCell>
+        <mxCell id="app-insights" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#cc0000;" value="Application Insights&#xa;(Unified telemetry)" vertex="1">
+          <mxGeometry height="60" width="180" x="1000" y="895" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-theming-box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=10;fontStyle=1;fontSize=14;arcSize=8;" value="Runtime Theming (How It Works):&#xa;&#xa;1. User authenticates → Org ID detected&#xa;   (from URL param, token claim, or path)&#xa;&#xa;2. Fetch org theme configuration&#xa;   GET /api/v1/orgs/{orgId}/theme&#xa;   Returns: colors, logo URLs, branding&#xa;&#xa;3. Apply theme to DOM&#xa;   • Set CSS variables (--primary-color, etc.)&#xa;   • Load logo from CDN&#xa;   • Update favicon, page title&#xa;   • Cache in localStorage&#xa;&#xa;4. Theme persists across navigation&#xa;   • All features see same theme&#xa;   • No rebuild needed for changes&#xa;   • Instant switching between orgs&#xa;&#xa;Benefits:&#xa;✓ 14+ orgs share same build&#xa;✓ Instant branding updates&#xa;✓ New org onboarding: &lt;1 hour&#xa;✓ Single deployment for all" vertex="1">
+          <mxGeometry height="460" width="400" x="1680" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="differences-box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#ff9800;align=left;verticalAlign=top;spacingLeft=10;fontStyle=1;fontSize=14;arcSize=8;" value="Key Differences vs. Module Federation:&#xa;&#xa;❌ NO Module Federation&#xa;   • No remotes&#xa;   • No component registry&#xa;   • No remote health checks&#xa;   • No federation config&#xa;&#xa;✅ Single Unified App&#xa;   • All code in one repo&#xa;   • Standard React + Webpack&#xa;   • Direct imports (not dynamic)&#xa;   • Simpler build&#xa;&#xa;✅ Runtime Theming Instead of Entity MFEs&#xa;   • Themes = JSON config (not apps)&#xa;   • CSS variables (not separate bundles)&#xa;   • CDN assets (not deployed MFEs)&#xa;&#xa;✅ Simplified Everything&#xa;   • 1 build (not 3+)&#xa;   • 1 pipeline (not multiple)&#xa;   • 1 deployment (not per-entity)&#xa;   • 15 min builds (not 2-3 hours)&#xa;&#xa;Complexity Reduction: 70%&#xa;Timeline Reduction: 50% (6 wks vs 12 wks)" vertex="1">
+          <mxGeometry height="480" width="400" x="1680" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-browser-app" edge="1" parent="1" source="browser-layer" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="unified-app-layer" value="Load App">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="400" as="sourcePoint" />
+            <mxPoint x="650" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-app-features" edge="1" parent="1" source="unified-app-layer" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="feature-modules-layer" value="Route to Feature">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="500" as="sourcePoint" />
+            <mxPoint x="650" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-features-build" edge="1" parent="1" source="feature-modules-layer" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="build-layer" value="Bundled Together">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="700" as="sourcePoint" />
+            <mxPoint x="650" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-build-backend" edge="1" parent="1" source="build-layer" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="backend-layer" value="API Calls">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="900" as="sourcePoint" />
+            <mxPoint x="650" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-theme-api-bidirectional" edge="1" parent="1" source="theme-runtime" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" target="theme-api" value="Load Theme Config">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="700" as="sourcePoint" />
+            <mxPoint x="650" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=10;fontStyle=1;fontSize=12;" value="Color Legend" vertex="1">
+          <mxGeometry height="140" width="1520" x="40" y="1020" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-browser" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cfe2f3;strokeColor=#0b5394;fontSize=10;" value="Browser / User Context" vertex="1">
+          <mxGeometry height="30" width="150" x="80" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-app" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="Unified Application Layer" vertex="1">
+          <mxGeometry height="30" width="160" x="250" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-features" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d0e0e3;strokeColor=#5b9aa0;fontSize=10;" value="Feature Modules (Same Build)" vertex="1">
+          <mxGeometry height="30" width="180" x="430" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-build" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" value="Build System / CI/CD" vertex="1">
+          <mxGeometry height="30" width="160" x="630" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-backend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c9daf8;strokeColor=#1155cc;fontSize=10;" value="Backend Services" vertex="1">
+          <mxGeometry height="30" width="130" x="810" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-shared" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#666666;fontSize=10;" value="Shared / Configuration" vertex="1">
+          <mxGeometry height="30" width="150" x="960" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-catalog" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a4c2f4;strokeColor=#1155cc;fontSize=10;" value="Catalog Feature" vertex="1">
+          <mxGeometry height="30" width="110" x="80" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-workspaces" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#93c47d;strokeColor=#38761d;fontSize=10;" value="Workspaces Feature" vertex="1">
+          <mxGeometry height="30" width="130" x="210" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-workflows" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd966;strokeColor=#bf9000;fontSize=10;" value="Workflows Feature" vertex="1">
+          <mxGeometry height="30" width="130" x="360" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-lines" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;" value="Lines: —— Solid = Direct integration  |  - - - Dashed = API/async calls" vertex="1">
+          <mxGeometry height="30" width="250" x="510" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="status-box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#4caf50;align=left;verticalAlign=top;spacingLeft=10;fontStyle=1;fontSize=14;arcSize=8;" value="Implementation Status:&#xa;&#xa;Phase 1: CRA → Nx Migration (Week 3-6)&#xa;✓ Move Workspaces_UI into Catalog repo&#xa;✓ Convert from CRA to Nx&#xa;✓ Consolidate dependencies&#xa;&#xa;Phase 2: Feature Integration (Week 7-14)&#xa;□ Extract Workflows from iframe&#xa;□ Merge all features into unified router&#xa;□ Consolidate auth context&#xa;□ Consolidate shared components&#xa;&#xa;Phase 3: Build System (Week 15-16)&#xa;□ Remove Module Federation config&#xa;□ Single CI/CD pipeline&#xa;□ Single deployment model&#xa;&#xa;Phase 4: Testing (Week 17-19)&#xa;□ Unit, integration, E2E tests&#xa;□ Performance validation&#xa;&#xa;Phase 5: Deployment (Week 20)&#xa;□ Blue-green deployment&#xa;□ Documentation&#xa;&#xa;Total: 20 weeks → Then 6 weeks for runtime branding" vertex="1">
+          <mxGeometry height="480" width="400" x="2160" y="100" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

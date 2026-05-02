@@ -1,0 +1,241 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="UI Shell Application - Micro-Frontend Architecture" id="ui-shell-architecture">
+    <mxGraphModel dx="3160" dy="1183" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="Shell Application - Micro-Frontend Architecture Deep Dive" vertex="1">
+          <mxGeometry height="40" width="800" x="400" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="browser-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;verticalAlign=top;" value="Browser / User Context" vertex="1">
+          <mxGeometry height="80" width="1520" x="40" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="user-session" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="User Session&#xa;• JWT Token&#xa;• Entity Context&#xa;• Permissions" vertex="1">
+          <mxGeometry height="50" width="160" x="200" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="browser-storage" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Local Storage&#xa;• User preferences&#xa;• Theme cache&#xa;• Config cache" vertex="1">
+          <mxGeometry height="50" width="160" x="420" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="service-worker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Service Worker&#xa;• Offline support&#xa;• Asset caching" vertex="1">
+          <mxGeometry height="50" width="160" x="640" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="shell-container" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;verticalAlign=top;" value="Shell Container Application (Host)" vertex="1">
+          <mxGeometry height="200" width="1520" x="40" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="shell-core" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;fontStyle=1" value="Shell Core&#xa;&#xa;• App initialization&#xa;• Routing engine&#xa;• MFE orchestration&#xa;• SSO integration" vertex="1">
+          <mxGeometry height="140" width="180" x="80" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="shell-layout" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=10;" value="Shell Layout&#xa;&#xa;• Header/Navigation&#xa;• Footer&#xa;• Sidebar&#xa;• MFE mount points" vertex="1">
+          <mxGeometry height="140" width="180" x="300" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="entity-detector" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=10;" value="Entity Detector&#xa;&#xa;• URL analysis&#xa;• User context&#xa;• Entity routing&#xa;• Config loading" vertex="1">
+          <mxGeometry height="140" width="180" x="520" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="theme-engine" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=10;" value="Theme Engine&#xa;&#xa;• Entity branding&#xa;• CSS variables&#xa;• Logo/assets&#xa;• Color schemes" vertex="1">
+          <mxGeometry height="140" width="180" x="740" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="navigation-service" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#cc7a00;align=left;spacingLeft=10;" value="Navigation Service&#xa;&#xa;• Menu generation&#xa;• Entity links&#xa;• Breadcrumbs&#xa;• Deep linking" vertex="1">
+          <mxGeometry height="140" width="180" x="960" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-provider" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=10;fontStyle=1" value="Auth Provider&#xa;&#xa;• SSO integration&#xa;• Token refresh&#xa;• Auth context&#xa;• Permission check" vertex="1">
+          <mxGeometry height="140" width="180" x="1180" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-services" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;verticalAlign=top;" value="Shared Services &amp; State Management" vertex="1">
+          <mxGeometry height="120" width="1520" x="40" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="event-bus" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Event Bus&#xa;(Pub/Sub)&#xa;&#xa;Cross-MFE&#xa;communication" vertex="1">
+          <mxGeometry height="70" width="140" x="80" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-state" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Shared State&#xa;(Redux/Zustand)&#xa;&#xa;Global state&#xa;management" vertex="1">
+          <mxGeometry height="70" width="140" x="260" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="api-client" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="API Client&#xa;&#xa;Unified TRE API&#xa;access layer" vertex="1">
+          <mxGeometry height="70" width="140" x="440" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="config-service" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#cc7a00;" value="Config Service&#xa;&#xa;Entity configs&#xa;Feature flags" vertex="1">
+          <mxGeometry height="70" width="140" x="620" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="analytics-service" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" value="Analytics&#xa;&#xa;Usage tracking&#xa;Error monitoring" vertex="1">
+          <mxGeometry height="70" width="140" x="800" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="i18n-service" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="i18n Service&#xa;&#xa;Translations&#xa;Localization" vertex="1">
+          <mxGeometry height="70" width="140" x="980" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="notification-service" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="Notifications&#xa;&#xa;Toast/Alerts&#xa;Global messages" vertex="1">
+          <mxGeometry height="70" width="140" x="1160" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="mfe-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0e0e3;strokeColor=#5b9aa0;fontSize=14;fontStyle=1;verticalAlign=top;" value="Micro-Frontend Applications (Entity-Specific)" vertex="1">
+          <mxGeometry height="180" width="1520" x="40" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="grip-mfe-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b8ddb5;strokeColor=#5a9367;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" value="GRIP MFE" vertex="1">
+          <mxGeometry height="130" width="280" x="80" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="grip-dashboard" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4ecd2;strokeColor=#5a9367;" value="Dashboard Module" vertex="1">
+          <mxGeometry height="30" width="110" x="100" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="grip-catalog" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4ecd2;strokeColor=#5a9367;" value="Data Catalog Link" vertex="1">
+          <mxGeometry height="30" width="110" x="230" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="grip-workspaces" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4ecd2;strokeColor=#5a9367;" value="Workspaces View" vertex="1">
+          <mxGeometry height="30" width="110" x="100" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="grip-branding" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4ecd2;strokeColor=#5a9367;" value="GRIP Theme/Logo" vertex="1">
+          <mxGeometry height="30" width="110" x="230" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="addi-mfe-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd699;strokeColor=#cc8800;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" value="ADDI MFE" vertex="1">
+          <mxGeometry height="130" width="280" x="400" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="addi-dashboard" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4b3;strokeColor=#cc8800;" value="Dashboard Module" vertex="1">
+          <mxGeometry height="30" width="110" x="420" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="addi-catalog" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4b3;strokeColor=#cc8800;" value="Data Catalog Link" vertex="1">
+          <mxGeometry height="30" width="110" x="550" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="addi-workspaces" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4b3;strokeColor=#cc8800;" value="Workspaces View" vertex="1">
+          <mxGeometry height="30" width="110" x="420" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="addi-branding" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4b3;strokeColor=#cc8800;" value="ADDI Theme/Logo" vertex="1">
+          <mxGeometry height="30" width="110" x="550" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="future-mfe-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" value="Future Entity MFE" vertex="1">
+          <mxGeometry height="130" width="280" x="720" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="future-dashboard" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3edf7;strokeColor=#9673a6;" value="Dashboard Module" vertex="1">
+          <mxGeometry height="30" width="110" x="740" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="future-catalog" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3edf7;strokeColor=#9673a6;" value="Data Catalog Link" vertex="1">
+          <mxGeometry height="30" width="110" x="870" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="future-custom" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3edf7;strokeColor=#9673a6;" value="Custom Features" vertex="1">
+          <mxGeometry height="30" width="110" x="740" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="future-branding" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3edf7;strokeColor=#9673a6;" value="Entity Theme/Logo" vertex="1">
+          <mxGeometry height="30" width="110" x="870" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-mfe-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" value="Shared Components MFE" vertex="1">
+          <mxGeometry height="130" width="280" x="1040" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-ui-lib" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" value="UI Component Library" vertex="1">
+          <mxGeometry height="30" width="120" x="1060" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-forms" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" value="Form Components" vertex="1">
+          <mxGeometry height="30" width="100" x="1200" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-data-grid" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" value="Data Grid/Tables" vertex="1">
+          <mxGeometry height="30" width="120" x="1060" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-charts" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" value="Charts/Visualization" vertex="1">
+          <mxGeometry height="30" width="100" x="1200" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="integration-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;verticalAlign=top;" value="Module Federation / Integration" vertex="1">
+          <mxGeometry height="100" width="1520" x="40" y="820" as="geometry" />
+        </mxCell>
+        <mxCell id="webpack-mf" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=10;" value="Webpack Module Federation&#xa;&#xa;• Dynamic imports&#xa;• Shared dependencies&#xa;• Version management" vertex="1">
+          <mxGeometry height="60" width="220" x="120" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="mfe-registry" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=10;" value="MFE Registry&#xa;&#xa;• MFE discovery&#xa;• Version control&#xa;• Health checks" vertex="1">
+          <mxGeometry height="60" width="200" x="380" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="cdn-delivery" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=10;" value="CDN / Asset Delivery&#xa;&#xa;• Static hosting&#xa;• Edge caching&#xa;• Version routing" vertex="1">
+          <mxGeometry height="60" width="200" x="620" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="error-boundary" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=10;" value="Error Boundaries&#xa;&#xa;• MFE isolation&#xa;• Fallback UI&#xa;• Error reporting" vertex="1">
+          <mxGeometry height="60" width="200" x="860" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="performance-monitor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#cc7a00;align=left;spacingLeft=10;" value="Performance Monitor&#xa;&#xa;• Load time tracking&#xa;• Bundle analysis&#xa;• Core Web Vitals" vertex="1">
+          <mxGeometry height="60" width="200" x="1100" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="backend-integration" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;verticalAlign=top;" value="Backend Integration" vertex="1">
+          <mxGeometry height="100" width="1520" x="40" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="tre-api-backend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="TRE API&#xa;(Backend)" vertex="1">
+          <mxGeometry height="50" width="140" x="200" y="995" as="geometry" />
+        </mxCell>
+        <mxCell id="config-api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Config API&#xa;(Entity configs)" vertex="1">
+          <mxGeometry height="50" width="140" x="400" y="995" as="geometry" />
+        </mxCell>
+        <mxCell id="sso-backend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="SSO Service&#xa;(KeyCloak/B2C)" vertex="1">
+          <mxGeometry height="50" width="140" x="600" y="995" as="geometry" />
+        </mxCell>
+        <mxCell id="entity-apis" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Entity External APIs&#xa;(Data Catalogs)" vertex="1">
+          <mxGeometry height="50" width="160" x="800" y="995" as="geometry" />
+        </mxCell>
+        <mxCell id="analytics-backend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#cc7a00;" value="Analytics Backend" vertex="1">
+          <mxGeometry height="50" width="140" x="1020" y="995" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-browser-shell" edge="1" parent="1" source="browser-layer" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="shell-container" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="400" as="sourcePoint" />
+            <mxPoint x="650" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-shell-services" edge="1" parent="1" source="shell-container" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="shared-services" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="500" as="sourcePoint" />
+            <mxPoint x="650" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-services-mfe" edge="1" parent="1" source="shared-services" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="mfe-layer" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="600" as="sourcePoint" />
+            <mxPoint x="650" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-mfe-integration" edge="1" parent="1" source="mfe-layer" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="integration-layer" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="800" as="sourcePoint" />
+            <mxPoint x="650" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-integration-backend" edge="1" parent="1" source="integration-layer" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="backend-integration" value="API Calls">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="900" as="sourcePoint" />
+            <mxPoint x="650" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="decisions-box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=10;fontStyle=1;fontSize=14;arcSize=8;" value="Key Architecture Decisions:&#xa;&#xa;1. Micro-Frontend Pattern: Webpack Module Federation&#xa;   • Independent deployment per entity&#xa;   • Shared runtime dependencies&#xa;   • Dynamic loading&#xa;&#xa;2. Communication: Event Bus + Shared State&#xa;   • Loose coupling between MFEs&#xa;   • Centralized state for auth/config&#xa;&#xa;3. Routing: Shell-level with MFE sub-routing&#xa;   • /grip/*, /addi/*, /[entity]/*&#xa;   • Entity detection from URL or user context&#xa;&#xa;4. Styling: CSS-in-JS + Theme Provider&#xa;   • Entity-specific theme injection&#xa;   • CSS variable overrides&#xa;&#xa;5. Build &amp;amp; Deploy: Independent CI/CD pipelines&#xa;   • Shell and each MFE deployed separately&#xa;   • Version management via MFE registry&#xa;&#xa;6. Entity Onboarding: Configuration-driven&#xa;   • Add entity config JSON&#xa;   • Deploy new MFE to CDN&#xa;   • Register in MFE registry" vertex="1">
+          <mxGeometry height="480" width="400" x="1680" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tech-stack-box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=10;fontStyle=1;fontSize=14;arcSize=8;" value="Recommended Tech Stack:&#xa;&#xa;Shell Container:&#xa;• React 18+ or Vue 3&#xa;• Webpack 5 Module Federation&#xa;• React Router / Vue Router&#xa;• Styled Components / Emotion&#xa;&#xa;State Management:&#xa;• Redux Toolkit or Zustand&#xa;• React Query for data fetching&#xa;&#xa;Micro-Frontends:&#xa;• React/Vue (per entity choice)&#xa;• Independent package.json&#xa;• Shared component library&#xa;&#xa;Build &amp;amp; Deploy:&#xa;• Webpack 5&#xa;• Azure Static Web Apps / CDN&#xa;• GitHub Actions CI/CD&#xa;&#xa;Monitoring:&#xa;• Application Insights&#xa;• Sentry for error tracking&#xa;• Web Vitals metrics" vertex="1">
+          <mxGeometry height="480" width="400" x="1680" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-shell-mfe-bidirectional" edge="1" parent="1" source="shell-core" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" target="grip-mfe-container" value="Dynamic Load/Mount">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="500" as="sourcePoint" />
+            <mxPoint x="650" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=10;fontStyle=1;fontSize=12;" value="Color Legend" vertex="1">
+          <mxGeometry height="80" width="1480" x="60" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-browser" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Browser / User Context" vertex="1">
+          <mxGeometry height="30" width="150" x="100" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-shell-container" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="Shell Container (Host)" vertex="1">
+          <mxGeometry height="30" width="150" x="270" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-shared-services" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" value="Shared Services / Config" vertex="1">
+          <mxGeometry height="30" width="160" x="440" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-mfe-layer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d0e0e3;strokeColor=#5b9aa0;fontSize=10;" value="Micro-Frontend Layer" vertex="1">
+          <mxGeometry height="30" width="150" x="620" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-grip-entity" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b8ddb5;strokeColor=#5a9367;fontSize=10;" value="GRIP Entity" vertex="1">
+          <mxGeometry height="30" width="110" x="790" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-addi-entity" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd699;strokeColor=#cc8800;fontSize=10;" value="ADDI Entity" vertex="1">
+          <mxGeometry height="30" width="110" x="920" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-future-entity" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" value="Future Entities" vertex="1">
+          <mxGeometry height="30" width="110" x="1050" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-shared-components" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" value="Shared Components" vertex="1">
+          <mxGeometry height="30" width="130" x="1180" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-lines" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;" value="Lines: —— Solid = Direct flow  |  - - - Dashed = Dynamic/Loose coupling" vertex="1">
+          <mxGeometry height="30" width="190" x="1330" y="1130" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

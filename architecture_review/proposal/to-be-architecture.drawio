@@ -1,0 +1,175 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="TRE To-Be Architecture" id="to-be-architecture">
+    <mxGraphModel dx="2162" dy="809" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1" value="TRE To-Be Architecture: Multi-Entity SSO with Shell Application" vertex="1">
+          <mxGeometry height="40" width="680" x="240" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="users-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;verticalAlign=top;" value="End Users" vertex="1">
+          <mxGeometry height="80" width="1000" x="80" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="user-grip" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#b8ddb5;strokeColor=#5a9367;" value="GRIP Users" vertex="1">
+          <mxGeometry height="50" width="30" x="200" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="user-addi" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#ffd699;strokeColor=#cc8800;" value="ADDI Users" vertex="1">
+          <mxGeometry height="50" width="30" x="400" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="user-future" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Future Entity Users" vertex="1">
+          <mxGeometry height="50" width="30" x="640" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="sso-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;verticalAlign=top;" value="SSO / Authentication Layer" vertex="1">
+          <mxGeometry height="120" width="1000" x="80" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="azure-b2c" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=10;" value="Azure AD B2C&#xa;(Identity Provider)&#xa;&#xa;• Multi-tenant configuration&#xa;• Custom policies&#xa;• User management" vertex="1">
+          <mxGeometry height="70" width="200" x="160" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="keycloak" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=10;" value="KeyCloak (OIDC)&#xa;&#xa;• Federation with B2C&#xa;• Token management&#xa;• SSO sessions" vertex="1">
+          <mxGeometry height="70" width="200" x="420" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="oidc-flow" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="OIDC/OAuth2 Flow" vertex="1">
+          <mxGeometry height="70" width="140" x="680" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-users-sso-1" edge="1" parent="1" source="user-grip" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="sso-layer" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-users-sso-2" edge="1" parent="1" source="user-addi" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="sso-layer" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-users-sso-3" edge="1" parent="1" source="user-future" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" target="sso-layer" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="shell-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;verticalAlign=top;" value="Shell Application Layer (Frontend)" vertex="1">
+          <mxGeometry height="160" width="1000" x="80" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="shell-app" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;fontStyle=1" value="Multi-Entity Shell Application&#xa;&#xa;• Shared SSO integration&#xa;• Entity detection &amp; routing&#xa;• Branding framework&#xa;• Navigation orchestration" vertex="1">
+          <mxGeometry height="100" width="240" x="360" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="shell-config" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=10;" value="Configuration Store&#xa;&#xa;• Entity branding&#xa;• Website URLs&#xa;• Data catalog links&#xa;• Menu structure" vertex="1">
+          <mxGeometry height="100" width="160" x="160" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="shell-plugins" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=10;" value="Entity Plugins&#xa;&#xa;• GRIP branding&#xa;• ADDI branding&#xa;• Future entities&#xa;• Extensible" vertex="1">
+          <mxGeometry height="100" width="160" x="640" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-sso-shell" edge="1" parent="1" source="sso-layer" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="shell-layer" value="JWT/OIDC Token">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tre-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;verticalAlign=top;" value="TRE Core (Backend)" vertex="1">
+          <mxGeometry height="120" width="1000" x="80" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="tre-api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=10;" value="TRE API Gateway&#xa;&#xa;• SSO validation&#xa;• Entity isolation&#xa;• Access control" vertex="1">
+          <mxGeometry height="70" width="180" x="180" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="tre-workspaces" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cfe2f3;strokeColor=#6d9eeb;align=left;spacingLeft=10;" value="Workspaces&#xa;&#xa;• Multi-tenant&#xa;• Entity-scoped" vertex="1">
+          <mxGeometry height="70" width="140" x="400" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="tre-services" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cfe2f3;strokeColor=#6d9eeb;align=left;spacingLeft=10;" value="Workspace Services&#xa;&#xa;• Compute&#xa;• Data stores" vertex="1">
+          <mxGeometry height="70" width="140" x="580" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="tre-shared" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=10;" value="Shared Services&#xa;&#xa;• Monitoring&#xa;• Logging" vertex="1">
+          <mxGeometry height="70" width="140" x="760" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-shell-tre" edge="1" parent="1" source="shell-layer" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="tre-layer" value="Authenticated API Calls">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="500" as="sourcePoint" />
+            <mxPoint x="450" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="entity-layer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;verticalAlign=top;" value="Entity-Specific Resources" vertex="1">
+          <mxGeometry height="80" width="1000" x="80" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="grip-resources" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b8ddb5;strokeColor=#5a9367;" value="GRIP Resources&#xa;Data Catalog | Website" vertex="1">
+          <mxGeometry height="40" width="200" x="160" y="745" as="geometry" />
+        </mxCell>
+        <mxCell id="addi-resources" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd699;strokeColor=#cc8800;" value="ADDI Resources&#xa;Data Catalog | Website" vertex="1">
+          <mxGeometry height="40" width="200" x="420" y="745" as="geometry" />
+        </mxCell>
+        <mxCell id="future-resources" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Future Entity Resources&#xa;Configurable Links" vertex="1">
+          <mxGeometry height="40" width="200" x="680" y="745" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-shell-grip" edge="1" parent="1" source="shell-layer" style="endArrow=classic;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" target="grip-resources" value="Link/Navigate">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="600" as="sourcePoint" />
+            <mxPoint x="450" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-shell-addi" edge="1" parent="1" source="shell-layer" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" target="addi-resources" value="Link/Navigate">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="600" as="sourcePoint" />
+            <mxPoint x="450" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-shell-future" edge="1" parent="1" source="shell-layer" style="endArrow=classic;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" target="future-resources" value="Link/Navigate">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="600" as="sourcePoint" />
+            <mxPoint x="450" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="features-box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=10;fontStyle=1;fontSize=11;" value="Key Architecture Features:&#xa;&#xa;1. Single SSO for all entities via Azure AD B2C + KeyCloak&#xa;2. Shell app shares SSO session with TRE Core&#xa;3. Extensible entity plugin system for branding&#xa;4. Configuration-driven entity onboarding&#xa;5. Links to external entity resources (data catalogs)&#xa;6. Multi-tenant workspace isolation in TRE Core" vertex="1">
+          <mxGeometry height="160" width="320" x="849" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-b2c-keycloak" edge="1" parent="1" source="azure-b2c" style="endArrow=classic;startArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="keycloak" value="Federation">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-config-shell" edge="1" parent="1" source="shell-config" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" target="shell-app" value="Load config">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="500" as="sourcePoint" />
+            <mxPoint x="450" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-plugins-shell" edge="1" parent="1" source="shell-plugins" style="endArrow=classic;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" target="shell-app" value="Apply branding">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="500" as="sourcePoint" />
+            <mxPoint x="450" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=10;fontStyle=1;fontSize=11;" value="Color Legend" vertex="1">
+          <mxGeometry height="440" width="280" x="1200" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-users" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Users &amp; Core APIs" vertex="1">
+          <mxGeometry height="30" width="240" x="1220" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-sso" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" value="SSO / Authentication" vertex="1">
+          <mxGeometry height="30" width="240" x="1220" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-shell" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="Shell Application Layer" vertex="1">
+          <mxGeometry height="30" width="240" x="1220" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-tre" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" value="TRE Core Backend" vertex="1">
+          <mxGeometry height="30" width="240" x="1220" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-grip" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b8ddb5;strokeColor=#5a9367;fontSize=10;" value="GRIP Entity" vertex="1">
+          <mxGeometry height="30" width="240" x="1220" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-addi" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd699;strokeColor=#cc8800;fontSize=10;" value="ADDI Entity" vertex="1">
+          <mxGeometry height="30" width="240" x="1220" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-future" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" value="Future Entities / Extensible" vertex="1">
+          <mxGeometry height="30" width="240" x="1220" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-shared" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" value="Shared / Configuration" vertex="1">
+          <mxGeometry height="30" width="240" x="1220" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-note" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;spacingLeft=10;" value="Line Styles:&#xa;—— Solid: Direct integration&#xa;- - - Dashed: External links/navigation" vertex="1">
+          <mxGeometry height="60" width="240" x="1220" y="450" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

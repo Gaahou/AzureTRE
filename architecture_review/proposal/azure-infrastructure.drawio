@@ -1,0 +1,434 @@
+<mxfile host="app.diagrams.net" modified="2026-04-29T00:00:00.000Z" agent="Claude Code" version="24.0.0">
+  <diagram name="Azure TRE v0.28 + Multi-Entity Additions" id="azure-infrastructure">
+    <mxGraphModel dx="2200" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="Azure TRE v0.28 Infrastructure + Multi-Entity Additions" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="1600" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Section Labels -->
+        <mxCell id="section-existing" value="EXISTING: Azure TRE v0.28 Infrastructure (Grayscale)" style="text;html=1;strokeColor=#666666;fillColor=#e0e0e0;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="section-new" value="NEW: Multi-Entity Components (Color)" style="text;html=1;strokeColor=#b85450;fillColor=#f8cecc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="900" y="80" width="1460" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- EXISTING SECTION: Azure AD (GRAYSCALE) -->
+        <mxCell id="aad-box" value="Microsoft Entra ID (Existing)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e0e0;strokeColor=#666666;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="140" width="320" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aad-apps" value="Application Registrations&#xa;&#xa;• TRE API&#xa;• Swagger UI&#xa;• User authentication" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="180" width="280" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- EXISTING SECTION: Azure Subscription (GRAYSCALE) -->
+        <mxCell id="azure-subscription" value="Azure Subscription - TRE Instance (EXISTING)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f9f9f9;strokeColor=#666666;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;dashed=1;dashPattern=8 8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="800" height="1460" as="geometry" />
+        </mxCell>
+
+        <!-- EXISTING: Management RG (GRAYSCALE) -->
+        <mxCell id="rg-mgmt" value="Resource Group: rg-{TRE_ID}-mgmt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8e8e8;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="340" width="340" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mgmt-storage" value="Storage Account&#xa;(Terraform State)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="380" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="acr-mgmt" value="Container Registry (ACR)&#xa;&#xa;• Porter bundles" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="380" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- EXISTING: Core RG (GRAYSCALE) -->
+        <mxCell id="rg-core" value="Resource Group: rg-{TRE_ID}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8e8e8;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="540" width="740" height="820" as="geometry" />
+        </mxCell>
+
+        <!-- App Services (GRAYSCALE) -->
+        <mxCell id="app-service-plan" value="App Service Plan (plan-{TRE_ID})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e0e0;strokeColor=#666666;fontSize=11;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="120" y="580" width="320" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="api-app-service" value="TRE API&#xa;(api-{TRE_ID})&#xa;&#xa;Python FastAPI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="140" y="620" width="130" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="gitea-app-service" value="Gitea&#xa;(gitea-{TRE_ID})&#xa;&#xa;Source mirror" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="140" y="700" width="130" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="nexus-app-service" value="Nexus&#xa;(nexus-{TRE_ID})&#xa;&#xa;Package mirror" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="290" y="620" width="130" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Cosmos DB (GRAYSCALE) -->
+        <mxCell id="cosmos-db" value="Cosmos DB&#xa;(cosmos-{TRE_ID})&#xa;&#xa;SQL API&#xa;TRE state store" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="480" y="580" width="160" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- MySQL (GRAYSCALE) -->
+        <mxCell id="mysql-db" value="Azure Database for MySQL&#xa;(mysql-{TRE_ID})&#xa;&#xa;Gitea backend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="480" y="690" width="160" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Service Bus (GRAYSCALE) -->
+        <mxCell id="service-bus" value="Service Bus&#xa;(sb-{TRE_ID})&#xa;&#xa;Message queues" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="670" y="580" width="130" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- VMSS (GRAYSCALE) -->
+        <mxCell id="vmss-rp" value="VMSS&#xa;(vmss-{TRE_ID})&#xa;&#xa;Resource Processor&#xa;Porter runner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="670" y="670" width="130" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Storage Accounts (GRAYSCALE) -->
+        <mxCell id="storage-stg" value="Storage (stg{TRE_ID})&#xa;File shares" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="120" y="800" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="storage-web" value="Storage (stweb{TRE_ID})&#xa;Certs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="270" y="800" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="storage-appinsights" value="Storage&#xa;(stappinsights{TRE_ID})&#xa;Logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="800" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Key Vault (GRAYSCALE) -->
+        <mxCell id="keyvault" value="Key Vault (kv-{TRE_ID})&#xa;&#xa;Secrets&#xa;Certificates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="570" y="800" width="130" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Application Gateway (GRAYSCALE) -->
+        <mxCell id="app-gateway" value="App Gateway&#xa;(agw-{TRE_ID})&#xa;&#xa;WAF v2&#xa;SSL termination" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="120" y="880" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Azure Firewall (GRAYSCALE) -->
+        <mxCell id="firewall" value="Azure Firewall&#xa;(fw-{TRE_ID})&#xa;&#xa;Egress filtering" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="300" y="880" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Monitoring (GRAYSCALE) -->
+        <mxCell id="log-analytics" value="Log Analytics&#xa;(log-{TRE_ID})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="480" y="880" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app-insights" value="App Insights&#xa;(appi-{TRE_ID})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="640" y="880" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- VM and Bastion (GRAYSCALE) -->
+        <mxCell id="vm-jumpbox" value="VM Jumpbox&#xa;(vm-{TRE_ID})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="720" y="800" width="80" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bastion" value="Bastion&#xa;(bas-{TRE_ID})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="720" y="860" width="80" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Hub VNet (GRAYSCALE) -->
+        <mxCell id="hub-vnet-box" value="Hub VNet (vnet-{TRE_ID})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8e8e8;strokeColor=#666666;fontSize=11;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1000" width="680" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subnet-firewall" value="FirewallSubnet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1040" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subnet-appgw" value="AppGwSubnet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1080" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subnet-shared" value="SharedSubnet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1120" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subnet-webapp" value="WebAppSubnet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="270" y="1040" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subnet-rp" value="ResourceProcessorSubnet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="270" y="1080" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subnet-bastion" value="BastionSubnet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="270" y="1120" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="nsg-private" value="NSGs, Private Endpoints,&#xa;Private DNS Zones,&#xa;Route Tables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1040" width="150" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ampls" value="Azure Monitor&#xa;Private Link Scope&#xa;(ampls-{TRE_ID})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="570" y="1040" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="managed-identities" value="Managed Identities:&#xa;• id-api-{TRE_ID}&#xa;• id-vmss-{TRE_ID}&#xa;• id-agw-{TRE_ID}&#xa;• id-gitea-{TRE_ID}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="570" y="1110" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Workspace RG (GRAYSCALE) -->
+        <mxCell id="rg-workspace" value="Workspace RG (ws-{WORKSPACE_ID})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8e8e8;strokeColor=#666666;fontSize=11;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1220" width="740" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="workspace-vnet" value="Workspace VNet (Spoke)&#xa;Peered to Hub" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1260" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="workspace-storage" value="Workspace Storage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1330" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="workspace-kv" value="Workspace Key Vault" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1260" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="workspace-services" value="Workspace Services:&#xa;Guacamole, VMs, DBs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1310" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- NEW SECTION: Azure AD B2C (COLOR) -->
+        <mxCell id="aad-b2c-box" value="Azure AD B2C Tenant (NEW)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="900" y="140" width="500" height="240" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aad-b2c-grip" value="GRIP User Flows&#xa;&#xa;• Sign up/Sign in&#xa;• Password reset&#xa;• Profile edit&#xa;• MFA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b8ddb5;strokeColor=#5a9367;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="180" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aad-b2c-addi" value="ADDI User Flows&#xa;&#xa;• Sign up/Sign in&#xa;• Password reset&#xa;• Profile edit&#xa;• MFA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd699;strokeColor=#cc8800;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="180" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aad-b2c-policies" value="Custom Policies (NEW)&#xa;&#xa;• Multi-entity routing&#xa;• Claims mapping&#xa;• API connectors&#xa;• Entity detection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="280" width="360" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- NEW: KeyCloak on AKS (COLOR) -->
+        <mxCell id="aks-keycloak-box" value="Azure Kubernetes Service (NEW)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="900" y="420" width="500" height="340" as="geometry" />
+        </mxCell>
+
+        <mxCell id="keycloak-pod" value="KeyCloak Pod (NEW)&#xa;&#xa;• OIDC/OAuth2&#xa;• Federation with B2C&#xa;• Multi-tenant config&#xa;• SSO sessions&#xa;• Entity management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="460" width="180" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="keycloak-db" value="PostgreSQL DB (NEW)&#xa;(KeyCloak state)&#xa;&#xa;• User sessions&#xa;• Client configs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cfe2f3;strokeColor=#6d9eeb;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="460" width="160" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="config-api-pod" value="Config API Pod (NEW)&#xa;&#xa;• Entity configs JSON&#xa;• Feature flags&#xa;• MFE registry&#xa;• Branding metadata" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#cc7a00;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="590" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ingress-controller" value="NGINX Ingress (NEW)&#xa;&#xa;• SSL termination&#xa;• Service routing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="560" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aks-subnet-note" value="Deployed in NEW AKS Subnet&#xa;within existing Hub VNet" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2" vertex="1" parent="1">
+          <mxGeometry x="920" y="710" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- NEW: Config Storage (COLOR) -->
+        <mxCell id="config-storage-box" value="Config Storage (NEW)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#cc7a00;fontSize=13;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="420" width="240" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="config-storage" value="Storage Account&#xa;(Config Storage)&#xa;&#xa;• Entity configs JSON&#xa;• Branding assets&#xa;• Theme files&#xa;• Logo/images" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#cc7a00;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="460" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- NEW: Frontend Layer (COLOR) -->
+        <mxCell id="frontend-layer" value="Frontend Layer (NEW)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="900" y="800" width="1460" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- Static Web App (COLOR) -->
+        <mxCell id="static-web-app" value="Azure Static Web App (NEW)&#xa;(Shell Container)&#xa;&#xa;• React/Vue shell app&#xa;• Global routing&#xa;• SSO integration&#xa;• Entity detection&#xa;• Navigation orchestration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="940" y="840" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- CDN / Front Door (COLOR) -->
+        <mxCell id="cdn" value="Azure CDN / Front Door (NEW)&#xa;&#xa;• Global distribution&#xa;• Edge caching&#xa;• DDoS protection&#xa;• Custom domains&#xa;• SSL certificates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="940" y="990" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- MFE Storage Accounts (COLOR) -->
+        <mxCell id="mfe-storage-grip" value="Storage Account (NEW)&#xa;(GRIP MFE)&#xa;&#xa;• Static website hosting&#xa;• GRIP assets&#xa;• Versioned bundles&#xa;• JS/CSS/HTML" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b8ddb5;strokeColor=#5a9367;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="840" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mfe-storage-addi" value="Storage Account (NEW)&#xa;(ADDI MFE)&#xa;&#xa;• Static website hosting&#xa;• ADDI assets&#xa;• Versioned bundles&#xa;• JS/CSS/HTML" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd699;strokeColor=#cc8800;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="840" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mfe-storage-future" value="Storage Account (NEW)&#xa;(Future Entity MFE)&#xa;&#xa;• Static website hosting&#xa;• Entity assets&#xa;• Versioned bundles&#xa;• Extensible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="840" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="shared-components-storage" value="Storage Account (NEW)&#xa;(Shared Components MFE)&#xa;&#xa;• UI library&#xa;• Common modules&#xa;• Shared utilities&#xa;• Design system" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1880" y="840" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Application Insights for Shell (COLOR) -->
+        <mxCell id="app-insights-shell" value="Application Insights (NEW)&#xa;(Shell App)&#xa;&#xa;• Performance monitoring&#xa;• User analytics&#xa;• Error tracking&#xa;• Custom events" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="960" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app-insights-api-new" value="Application Insights (NEW)&#xa;(TRE API - AKS)&#xa;&#xa;• API performance&#xa;• Dependency tracking&#xa;• Telemetry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cfe2f3;strokeColor=#6d9eeb;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="960" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Monitoring Additions (COLOR) -->
+        <mxCell id="monitoring-additions" value="Additional Monitoring (NEW)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="960" width="420" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sentinel" value="Microsoft Sentinel (NEW)&#xa;&#xa;• SIEM&#xa;• Threat detection&#xa;• Security analytics&#xa;• Incident response" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1680" y="1000" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cost-mgmt" value="Cost Management (NEW)&#xa;&#xa;• Budgets per entity&#xa;• Cost allocation&#xa;• Usage reports&#xa;• Forecasting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1880" y="1000" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Integration Arrows -->
+        <mxCell id="arrow-b2c-keycloak" value="OIDC Federation" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="aad-b2c-box" target="aks-keycloak-box">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1000" y="600" as="sourcePoint" />
+            <mxPoint x="1050" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow-keycloak-tre" value="OIDC Tokens" style="endArrow=classic;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;strokeWidth=2;dashed=1;strokeColor=#999999;" edge="1" parent="1" source="keycloak-pod" target="api-app-service">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="700" as="sourcePoint" />
+            <mxPoint x="650" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow-cdn-swa" value="" style="endArrow=classic;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cdn" target="static-web-app">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1000" y="900" as="sourcePoint" />
+            <mxPoint x="1050" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow-cdn-mfe-grip" value="Origin" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="cdn" target="mfe-storage-grip">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1000" y="900" as="sourcePoint" />
+            <mxPoint x="1050" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow-appgw-keycloak" value="Backend Pool" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;strokeWidth=2;dashed=1;strokeColor=#999999;" edge="1" parent="1" source="app-gateway" target="aks-keycloak-box">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="700" as="sourcePoint" />
+            <mxPoint x="650" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow-config-keycloak" value="" style="endArrow=classic;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;dashed=1;" edge="1" parent="1" source="config-storage" target="config-api-pod">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1200" y="600" as="sourcePoint" />
+            <mxPoint x="1250" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Internet Users -->
+        <mxCell id="internet-users" value="Internet Users&#xa;(GRIP, ADDI, Future Entities)" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1440" y="140" width="300" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow-users-cdn" value="HTTPS" style="endArrow=classic;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;" edge="1" parent="1" source="internet-users" target="cdn">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1000" y="600" as="sourcePoint" />
+            <mxPoint x="1050" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow-users-appgw" value="HTTPS" style="endArrow=classic;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;dashed=1;strokeColor=#999999;" edge="1" parent="1" source="internet-users" target="app-gateway">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1000" y="600" as="sourcePoint" />
+            <mxPoint x="1050" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Color Legend -->
+        <mxCell id="legend-box" value="Color Legend (NEW Components Only)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=10;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="900" y="1180" width="1460" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-auth" value="Authentication / Identity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="940" y="1220" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-sso" value="SSO / Config Services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="940" y="1260" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-backend" value="Backend / Kubernetes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="1220" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-database" value="Databases / Data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cfe2f3;strokeColor=#6d9eeb;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="1260" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-frontend" value="Frontend / Shell App" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="1220" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-grip-color" value="GRIP Entity Resources" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b8ddb5;strokeColor=#5a9367;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="1260" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-addi-color" value="ADDI Entity Resources" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffd699;strokeColor=#cc8800;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="1220" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-storage" value="Storage / Assets" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="1260" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-config" value="Configuration Services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#cc7a00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="1220" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-extensible" value="Extensible / Management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="1260" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-grayscale" value="Grayscale = Existing TRE v0.28" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e0e0;strokeColor=#666666;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1840" y="1220" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-lines" value="Lines: —— Solid = Direct  |  - - - Dashed = Secure/Config" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="1840" y="1260" width="300" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="integration-note" value="Integration Points:&#xa;• KeyCloak validates SSO tokens for TRE API (grayscale arrow)&#xa;• Shell App gets entity configs from Config API&#xa;• CDN serves MFEs based on entity routing&#xa;• Application Gateway routes to both existing TRE API and new KeyCloak (grayscale arrow)" style="text;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=2;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1440" width="740" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="deployment-note" value="Deployment Notes:&#xa;• NEW components (color) deployed alongside existing TRE v0.28 (grayscale)&#xa;• Existing TRE API remains on App Service (no migration required)&#xa;• AKS subnet added to existing Hub VNet&#xa;• Application Gateway updated to route to both old and new backends&#xa;• Zero-downtime gradual migration path supported" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=2;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="900" y="1340" width="680" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="resource-groups-note" value="Resource Group Structure (Optional):&#xa;• Existing: rg-{TRE_ID}-mgmt, rg-{TRE_ID}&#xa;• NEW components can use same RG or split into:&#xa;  - tre-core-rg (AKS, KeyCloak)&#xa;  - tre-frontend-rg (Shell, MFEs)&#xa;  - tre-monitoring-rg (Sentinel, Cost Mgmt)&#xa;• Recommended: Keep in same RG for simplicity" style="text;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=2;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="1340" width="440" height="140" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

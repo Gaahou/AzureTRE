@@ -1,0 +1,350 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram name="GRIP Consolidation Timeline" id="grip-consolidation-timeline">
+    <mxGraphModel dx="2400" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2800" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="GRIP UI Consolidation - Revised Project Timeline (24-27 Weeks)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="2400" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subtitle" value="Based on Full Code Review: Catalog (Nx/MSAL) + Workspaces_UI (CRA/keycloak-js) • Timeline includes AI-assisted development estimates" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="200" y="60" width="2400" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Timeline Header -->
+        <mxCell id="timeline-header" value="Timeline (Weeks)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="160" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Week markers -->
+        <mxCell id="week-0" value="Week&#xa;1-2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="220" y="120" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="week-3" value="Week&#xa;3-8" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="320" y="120" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="week-7" value="Week&#xa;7-10" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="580" y="120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="week-9" value="Week&#xa;9-16" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="760" y="120" width="320" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="week-15" value="Week&#xa;15-17" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1100" y="120" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="week-17" value="Week&#xa;17-23" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1240" y="120" width="280" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="week-23" value="Week&#xa;23-27" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1540" y="120" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 0: Critical Decisions -->
+        <mxCell id="phase0-label" value="Phase 0: Critical Decisions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="180" width="160" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase0-bar" value="Auth client decision (MSAL vs keycloak-js)&#xa;State management boundary&#xa;Theme component strategy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="220" y="180" width="80" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase0-details" value="✓ Blocking decisions&#xa;✓ Token compatibility audit&#xa;✓ Architecture sign-off&#xa;&#xa;No code written yet" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#cc0000;" vertex="1" parent="1">
+          <mxGeometry x="310" y="180" width="150" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 1: CRA to Nx Migration -->
+        <mxCell id="phase1-label" value="Phase 1: Foundation &amp;&#xa;CRA-to-Nx Migration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="160" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase1-bar" value="Move Workspaces_UI → Catalog repo&#xa;Convert CRA to Nx&#xa;798 import rewrites&#xa;Unify dependencies&#xa;55+ Redux slices migration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="320" y="300" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase1-time" value="Original: 4 weeks&#xa;Revised: 6 weeks&#xa;With AI: 3 weeks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="470" y="320" width="80" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase1-ai-note" value="🤖 AI High Impact:&#xa;• 798 imports: 3 days (vs 3 weeks)&#xa;• Redux slices: 1 day (vs 2 weeks)&#xa;• Config files: 70% faster" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="320" y="385" width="150" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 2: Auth Unification -->
+        <mxCell id="phase2-label" value="Phase 2: Auth Unification&#xa;(NEW PHASE)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="160" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase2-bar" value="Token compatibility audit&#xa;Unified auth provider&#xa;Migrate from keycloak-js&#xa;Replace axios interceptors&#xa;Test all API calls" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="580" y="440" width="160" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase2-overlap" value="⚠ Overlaps&#xa;Phase 1 tail" style="text;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=3;" vertex="1" parent="1">
+          <mxGeometry x="520" y="440" width="50" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase2-critical" value="CRITICAL ERROR FIXED:&#xa;Original plan: '2-3 days'&#xa;Actual: 3 weeks&#xa;&#xa;Original assumed both use&#xa;Keycloak. Reality: Catalog&#xa;uses MSAL, Workspaces uses&#xa;keycloak-js. Fundamental&#xa;incompatibility." style="text;html=1;strokeColor=#cc0000;fillColor=#ffcccc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="505" width="160" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 3: Feature Integration -->
+        <mxCell id="phase3-label" value="Phase 3: Feature Integration&#xa;Workspaces into Unified App" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#38761d;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="580" width="160" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase3-bar" value="Unified Router (all routes)&#xa;Redux boundary implementation&#xa;VM iframe system migration&#xa;SignalR context provider&#xa;Catalog workflow actions verification&#xa;REACT_APP_Workflow_URL external link" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#38761d;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="760" y="580" width="320" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase3-overlap2" value="⚠ Overlaps&#xa;Phase 2 tail" style="text;html=1;strokeColor=#38761d;fillColor=#b6d7a8;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=3;" vertex="1" parent="1">
+          <mxGeometry x="700" y="580" width="50" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase3-workflows-error" value="CRITICAL ERROR FIXED:&#xa;Original Phase 2.1: 'Extract&#xa;Workflows from iframe' (3-4 wks)&#xa;&#xa;Reality: No Workflows feature exists.&#xa;Iframes are VM apps (JupyterHub,&#xa;RStudio). GRIP Workflows is external&#xa;URL integration only.&#xa;&#xa;Real work: Migrate VM iframe&#xa;system (55 Redux slices)." style="text;html=1;strokeColor=#cc0000;fillColor=#ffcccc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="760" y="640" width="160" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase3-ai-note" value="🤖 AI Moderate Impact:&#xa;Route wiring: 40% faster&#xa;Component migration: 35% faster&#xa;Redux boundary: human design,&#xa;AI implementation" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="930" y="640" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 4: Build System -->
+        <mxCell id="phase4-label" value="Phase 4: Build System&#xa;&amp; CI/CD Consolidation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c9daf8;strokeColor=#1155cc;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="740" width="160" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase4-bar" value="Remove Module Federation&#xa;Single Webpack build&#xa;Consolidate 14 BUILD_THEME jobs&#xa;Single CI/CD pipeline&#xa;CSP header audit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c9daf8;strokeColor=#1155cc;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="740" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase4-overlap3" value="⚠ Overlaps&#xa;Phase 3 tail" style="text;html=1;strokeColor=#1155cc;fillColor=#c9daf8;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=3;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="740" width="50" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase4-ai-note" value="🤖 AI High Impact:&#xa;Config changes: 70% faster&#xa;Pipeline YAML: 60% faster" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="805" width="120" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 5: Runtime Theming -->
+        <mxCell id="phase5-label" value="Phase 5: Runtime Theming&#xa;/ Branding" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="860" width="160" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase5-bar" value="Theme config schema design&#xa;Component slots (Footer, Privacy, Disclosure)&#xa;Theme Config API backend + Redis&#xa;Frontend Theme Engine (useTheme hook)&#xa;CSS variable injection&#xa;Migrate 14 orgs to JSON + CDN&#xa;Remove BUILD_THEME system" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="860" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase5-component-error" value="⚠ COMPLEXITY UNDERESTIMATE:&#xa;Original: 'themes = colors + logos'&#xa;Reality: Each theme has custom&#xa;React components (Footer.tsx,&#xa;PrivacyAgreement.tsx, Disclosure.tsx&#xa;with org-specific legal text).&#xa;&#xa;Needs component slot system,&#xa;not just JSON config." style="text;html=1;strokeColor=#ff9800;fillColor=#fff3e0;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="925" width="140" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase5-ai-note" value="🤖 AI High Impact:&#xa;Theme extraction: 4 days → 1 day&#xa;API scaffolding: 60% faster&#xa;useTheme hook: 50% faster" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="925" width="120" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 6: Testing & Deployment -->
+        <mxCell id="phase6-label" value="Phase 6: Testing,&#xa;Performance &amp; Deployment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#cc0000;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1020" width="160" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase6-bar" value="Unit tests (Workspaces CRA → Nx/Jest)&#xa;Integration tests (cross-feature nav)&#xa;Auth flow tests (all Keycloak realms)&#xa;Visual regression (14 org themes)&#xa;VM iframe sandbox testing&#xa;Performance baseline&#xa;Blue-green deployment&#xa;Vendor feature merge" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#cc0000;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="1020" width="200" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phase6-ai-note" value="🤖 AI Moderate Impact:&#xa;Test scaffolding: 60% faster&#xa;Integration debugging: 10% faster&#xa;(human-pace activity)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=2;fontColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="1110" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Parallel Development Stream -->
+        <mxCell id="parallel-stream" value="Parallel: Vendor Workspaces Feature Development (Ongoing)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cccccc;strokeColor=#666666;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1180" width="1700" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="parallel-details" value="Weekly sync meetings • Feature freeze last 4 weeks • Merge window in Phase 6" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1210" width="1660" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Team Allocation -->
+        <mxCell id="team-box" value="Team Allocation (4-5 FTE)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1280" width="800" height="280" as="geometry" />
+        </mxCell>
+
+        <mxCell id="team-role1" value="Lead Frontend / Nx Specialist (1.0 FTE)&#xa;Phases 1-4: CRA→Nx, webpack, Module Federation removal, CI/CD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1320" width="360" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="team-role2" value="Auth Specialist (0.75 FTE)&#xa;Phases 0, 2, 6: MSAL vs keycloak-js, unified auth provider, token audit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="440" y="1320" width="380" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="team-role3" value="Workspaces Feature Developer (1.0 FTE)&#xa;Phases 3, 6: Redux boundary, VM iframe migration, SignalR, routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#38761d;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1390" width="360" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="team-role4" value="Catalog Feature Developer (0.75 FTE)&#xa;Phases 3, 5, 6: Theme migration, route integration, Catalog features" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#38761d;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="440" y="1390" width="380" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="team-role5" value="Branding / Theme Engineer (0.75 FTE)&#xa;Phases 0, 5: Theme Config API, useTheme, component slots, CDN migration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1460" width="360" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="team-role6" value="QA / Integration Tester (0.5 FTE)&#xa;Phase 6: Cross-feature tests, org theme regression, auth flow coverage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#cc0000;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="440" y="1460" width="380" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="team-role7" value="Merge Manager (0.25 FTE, part-time)&#xa;Phases 1-4: Weekly sync between vendor team and consolidation branch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cccccc;strokeColor=#666666;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1530" width="760" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Timeline Comparison -->
+        <mxCell id="comparison-box" value="Timeline Comparison" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="900" y="1280" width="840" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comparison-original" value="Original Plan (INCORRECT):" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="920" y="1320" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comparison-original-val" value="20 weeks • 4-5 developers&#xa;❌ Misdiagnosed auth (assumed both Keycloak)&#xa;❌ Workflows phase doesn't exist&#xa;❌ Redux situation backwards" style="text;html=1;strokeColor=#cc0000;fillColor=#ffcccc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=10;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="920" y="1345" width="360" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comparison-revised" value="Revised Plan (CORRECTED):" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1300" y="1320" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comparison-revised-val" value="24-27 weeks • 4-5 developers&#xa;✓ 3-week auth phase (MSAL vs keycloak-js)&#xa;✓ VM iframe migration (55 Redux slices)&#xa;✓ Component-level theme slots" style="text;html=1;strokeColor=#38761d;fillColor=#d5e8d4;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=10;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="1345" width="360" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comparison-ai" value="With AI-Assisted Development:" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="920" y="1420" width="240" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comparison-ai-val" value="18-20 weeks • 4-5 developers&#xa;⚡ CRA→Nx: 3 weeks (vs 6) — 798 imports + 55 slices&#xa;⚡ Theme migration: 1 day (vs 4-5 days)&#xa;⚡ Overall: ~6-7 weeks saved vs revised plan" style="text;html=1;strokeColor=#0066cc;fillColor=#d9e9ff;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=10;spacingLeft=5;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="920" y="1445" width="740" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Risk Register -->
+        <mxCell id="risk-box" value="Top 5 Risks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#cc0000;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="900" y="1440" width="840" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="risk1" value="1. Token incompatibility (MSAL ≠ keycloak-js) • Likelihood: Medium • Impact: CRITICAL&#xa;   Mitigation: Audit in Phase 0 before any coding" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#cc0000;" vertex="1" parent="1">
+          <mxGeometry x="920" y="1480" width="800" height="15" as="geometry" />
+        </mxCell>
+
+        <mxCell id="risk2" value="2. Auth unification edge cases (token refresh, SSO silent flows) • Likelihood: High • Impact: High&#xa;   Mitigation: Timebox at 3 weeks, accept reduced SSO scope if needed" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#cc0000;" vertex="1" parent="1">
+          <mxGeometry x="920" y="1500" width="800" height="15" as="geometry" />
+        </mxCell>
+
+        <mxCell id="risk3" value="3. Redux/Context boundary bugs • Likelihood: Medium • Impact: High&#xa;   Mitigation: Define boundary in Phase 0, enforce with ESLint (no Redux in catalog libs)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#cc0000;" vertex="1" parent="1">
+          <mxGeometry x="920" y="1520" width="800" height="15" as="geometry" />
+        </mxCell>
+
+        <mxCell id="risk4" value="4. VM iframe sandbox breaks (CSP / origin restrictions) • Likelihood: Medium • Impact: High&#xa;   Mitigation: Test iframe rules early in Phase 3, not in Phase 6" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#cc0000;" vertex="1" parent="1">
+          <mxGeometry x="920" y="1540" width="800" height="15" as="geometry" />
+        </mxCell>
+
+        <mxCell id="risk5" value="5. Vendor feature merge conflicts • Likelihood: High • Impact: Medium&#xa;   Mitigation: Weekly sync meetings, consider feature freeze last 4 weeks" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#cc0000;" vertex="1" parent="1">
+          <mxGeometry x="920" y="1560" width="800" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- Critical Errors Box -->
+        <mxCell id="errors-box" value="3 Critical Errors Fixed in Revised Plan" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#cc0000;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1580" width="1700" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="error1-box" value="ERROR 1: Authentication Misdiagnosis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1620" width="540" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="error1-text" value="Original plan assumed: Both apps use Keycloak, unify bootstrap&#xa;&#xa;Reality from code:&#xa;• Catalog uses @azure/msal-browser (MSAL) with ProtocolMode.OIDC → Keycloak&#xa;• Workspaces_UI uses keycloak-js 26.0.6 directly&#xa;• catalogApiService.ts in Workspaces calls Catalog backend using keycloak-js token&#xa;• Token compatibility is unknown — may already be broken in production&#xa;&#xa;Impact: Plan's '2-3 day' auth estimate → actually 3 weeks&#xa;&#xa;Fix: Phase 0 decision + Phase 2 dedicated auth unification (3 weeks)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1655" width="520" height="95" as="geometry" />
+        </mxCell>
+
+        <mxCell id="error2-box" value="ERROR 2: 'Workflows' Feature Does Not Exist" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="620" y="1620" width="540" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="error2-text" value="Original plan: Phase 2.1 'Extract Workflows from iframe' (3-4 weeks)&#xa;&#xa;Reality from code:&#xa;• IFrame.tsx renders external VM apps: JupyterHub, RStudio, DBGate (third-party)&#xa;• 'GRIP Workflows' = single card loading REACT_APP_Workflow_URL in iframe (external link)&#xa;• No React feature module called 'Workflows' exists in either codebase&#xa;• 'Workflow' in Catalog = entity approval workflows (self-contained, no migration)&#xa;&#xa;Impact: Entire Phase 2.1 is phantom work&#xa;&#xa;Fix: Replace with VM iframe system migration (55 Redux slices) — 4 weeks" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="630" y="1655" width="520" height="95" as="geometry" />
+        </mxCell>
+
+        <mxCell id="error3-box" value="ERROR 3: Redux Situation Backwards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="1620" width="540" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="error3-text" value="Original plan: 'Consolidate Redux stores'&#xa;&#xa;Reality from code:&#xa;• Workspaces_UI: 55+ Redux slices (VMs, airlock, file explorer, signalR, audit, etc.)&#xa;• Catalog: ZERO Redux — uses Context API + React Router v6 loaders/actions&#xa;• Two fundamentally different state paradigms&#xa;&#xa;Impact: Plan assumes merging two Redux stores; reality = choosing one paradigm&#xa;&#xa;Fix: Phase 0 decision — Option A (Redux scoped to workspaces, Context for&#xa;shared state) recommended as lowest-risk path" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="1655" width="520" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Success Criteria -->
+        <mxCell id="success-box" value="Success Criteria (Post-Consolidation)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1800" width="1700" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="success-functional" value="Functional:&#xa;✓ All Catalog + Workspaces features work in unified app&#xa;✓ Single Keycloak bootstrap (MSAL or keycloak-js)&#xa;✓ VM iframes (JupyterHub, RStudio, DBGate) load correctly&#xa;✓ SignalR notifications work across all features" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#38761d;fontSize=9;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1840" width="400" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="success-performance" value="Performance:&#xa;✓ Bundle size &lt; 1MB (gzipped)&#xa;✓ Initial load &lt; 3s (3G network)&#xa;✓ Theme switch &lt; 500ms&#xa;✓ Build time 10-15 min (vs 2-3 hours)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="480" y="1840" width="380" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="success-operational" value="Operational:&#xa;✓ Single CI/CD pipeline (no BUILD_THEME jobs)&#xa;✓ Runtime theming for all 14 orgs&#xa;✓ New org onboarding &lt; 1 hour (add JSON + logo)&#xa;✓ Zero-downtime deployment via blue-green" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c9daf8;strokeColor=#1155cc;fontSize=9;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="880" y="1840" width="380" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="success-quality" value="Quality:&#xa;✓ 80%+ test coverage (unit + integration)&#xa;✓ E2E tests for all critical user flows&#xa;✓ Visual regression tests for 14 org themes&#xa;✓ Auth flow tests across all Keycloak realms" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#cc0000;fontSize=9;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="1840" width="440" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-box" value="Timeline Legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1860" y="120" width="880" height="380" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-phase0" value="Phase 0: Critical Decisions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="160" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-phase1" value="Phase 1: CRA to Nx Migration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="200" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-phase2" value="Phase 2: Auth Unification (NEW)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="240" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-phase3" value="Phase 3: Feature Integration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#38761d;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="280" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-phase4" value="Phase 4: Build System / CI/CD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c9daf8;strokeColor=#1155cc;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="320" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-phase5" value="Phase 5: Runtime Theming" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="360" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-phase6" value="Phase 6: Testing &amp; Deployment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#cc0000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="400" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-parallel" value="Parallel: Vendor Development" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cccccc;strokeColor=#666666;fontSize=10;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="440" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-notes" value="Key Indicators:&#xa;&#xa;🤖 = AI-assisted development impact&#xa;⚠ = Phase overlap / dependency&#xa;❌ = Critical error in original plan&#xa;✓ = Correct in original plan&#xa;&#xa;Timeline Format:&#xa;• Original: Based on incorrect assumptions&#xa;• Revised: After full code review&#xa;• With AI: Claude Code active development" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="2120" y="160" width="600" height="310" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
