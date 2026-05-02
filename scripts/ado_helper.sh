@@ -27,10 +27,29 @@ update_work_item_state() {
     local id="$1"
     local state="$2"
 
+    # Workflow Rule #1: Never move to Resolved/Closed without testing
+    if [[ "$state" == "Resolved" || "$state" == "Closed" ]]; then
+        echo "⚠️  WORKFLOW RULE #1: Never move tasks to Resolved/Closed if they are not tested"
+        echo ""
+        read -p "Have you completed all testing? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "❌ Aborted. Please test before moving to $state."
+            return 1
+        fi
+    fi
+
     echo "Updating work item $id to $state..."
     result=$(call_mcp_tool "update_work_item" "{\"id\": $id, \"state\": \"$state\"}" \
         | jq -r '.result.content[0].text | fromjson | "\(.id): \(.title) → \(.state)"')
     echo "  ✓ $result"
+
+    # Workflow Rule #2: Add comments after commits
+    if [[ "$state" == "Active" || "$state" == "Resolved" ]]; then
+        echo ""
+        echo "📝 WORKFLOW RULE #2: Remember to add a comment to this work item after committing!"
+        echo "   Example: ./scripts/ado_comment.sh $id \"\$(git log -1 --format='%H')\""
+    fi
 }
 
 # Get work item details
@@ -101,6 +120,13 @@ Examples:
   $0 query "SELECT [System.Id] FROM WorkItems WHERE [System.WorkItemType] = 'User Story'"
   $0 activate 106 107 108 109 110 111 112
   $0 test
+
+Workflow Rules:
+  📋 RULE #1: Never move to Resolved/Closed without testing
+  📝 RULE #2: Add comments after commits (use: scripts/ado_comment.sh)
+
+See also:
+  docs/team-workflow-rules.md - Complete workflow documentation
 
 Environment:
   MCP_URL: $MCP_URL
