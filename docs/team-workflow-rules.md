@@ -118,6 +118,49 @@ curl -s http://localhost:3000/mcp \
 
 ---
 
+## Rule 3: Feature Completion and Next Feature Activation
+
+### When the last story in a feature is Resolved, mark the feature as Resolved and prompt for moving to the next feature with all its stories to Active
+
+**Rationale:** Ensures systematic progression through features and maintains clear visibility of feature completion status. Prevents orphaned stories and ensures the team stays aligned on which feature is being worked on.
+
+**Workflow:**
+1. When moving the **last story** in a feature to **Resolved**, also move the parent **Feature** to **Resolved**
+2. Prompt the user to activate the next feature and all its stories
+3. Wait for user confirmation before activating the next feature
+4. When confirmed, move the next feature and all its stories to **Active**
+
+**Example:**
+```bash
+# Story 112 is the last story in Feature 1.0 (Phase 0: Provider Abstraction)
+./scripts/ado_helper.sh update 112 "Resolved"
+
+# Automatically move Feature 1.0 to Resolved
+./scripts/ado_helper.sh update <feature-id> "Resolved"
+
+# Prompt user:
+# "Feature 1.0 (Phase 0) is complete! Move to Feature 1.1 (Phase 1) with Stories 113-118? (y/n)"
+
+# If user confirms:
+./scripts/ado_helper.sh update <next-feature-id> "Active"
+./scripts/ado_helper.sh activate 113 114 115 116 117 118
+```
+
+**Feature Completion Checklist:**
+- [ ] All stories in the feature are Resolved
+- [ ] Feature integration testing complete
+- [ ] Feature documentation updated
+- [ ] Feature moved to Resolved
+- [ ] User prompted for next feature activation
+
+**Next Feature Activation Checklist:**
+- [ ] User confirms readiness to start next feature
+- [ ] Next feature moved to Active
+- [ ] All stories in next feature moved to Active
+- [ ] Team notified of feature transition
+
+---
+
 ## Workflow Checklist
 
 ### Starting a Story
@@ -141,6 +184,12 @@ curl -s http://localhost:3000/mcp \
 - [ ] Code review ready (if required)
 - [ ] Documentation updated
 - [ ] Then and only then, move to **Resolved**
+
+### After Last Story in Feature Resolved
+- [ ] ✅ **RULE 3:** Move parent Feature to Resolved
+- [ ] ✅ **RULE 3:** Prompt user for next feature activation
+- [ ] Wait for user confirmation
+- [ ] Activate next feature and all its stories when confirmed
 
 ### Code Review
 - [ ] Create Pull Request
@@ -262,4 +311,4 @@ For questions about these workflow rules, contact:
 This document should be reviewed and updated during sprint retrospectives or when workflow improvements are identified.
 
 **Last Updated:** 2026-05-02
-**Version:** 1.0
+**Version:** 1.1 - Added Rule #3 for feature completion workflow
