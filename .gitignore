@@ -214,3 +214,19 @@ validation.txt
 
 /index.html
 .DS_Store
+
+# MCP Configuration (contains API endpoints)
+.mcp.json
+
+# Personal architecture/planning documents
+architecture_review/concept-map-playground.html
+architecture_review/cost-optimization-plan.md
+architecture_review/cost-projection-playground.html
+architecture_review/epic-local-tre-deployment.md
+architecture_review/local-deployment.md
+
+# Personal access tokens, credentials
+*.pat
+*.token
+*credentials*.json
+*secrets*.yaml
