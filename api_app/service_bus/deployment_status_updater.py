@@ -15,7 +15,8 @@ from azure.servicebus import NEXT_AVAILABLE_SESSION
 from azure.servicebus.exceptions import OperationTimeoutError, ServiceBusConnectionError
 from azure.servicebus.aio import ServiceBusClient, AutoLockRenewer
 from db.repositories.operations import OperationRepository
-from core import config, credentials
+from core import config
+from providers.factory import get_credential_provider
 from db.errors import EntityDoesNotExist
 from db.repositories.resources import ResourceRepository
 from models.domain.operation import DeploymentStatusUpdateMessage, Operation, OperationStep, Status
@@ -51,7 +52,8 @@ class DeploymentStatusUpdater():
                         last_heartbeat_time = current_time
                         polling_count = 0
 
-                    async with credentials.get_credential_async_context() as credential:
+                    credential_provider = get_credential_provider()
+                    async with credential_provider.get_credential_async_context() as credential:
                         service_bus_client = ServiceBusClient(config.SERVICE_BUS_FULLY_QUALIFIED_NAMESPACE, credential)
 
                         logger.debug(f"Looking for new messages on {config.SERVICE_BUS_DEPLOYMENT_STATUS_UPDATE_QUEUE} queue...")

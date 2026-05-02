@@ -1,5 +1,3 @@
-from azure.servicebus import ServiceBusMessage
-from azure.servicebus.aio import ServiceBusClient
 from pydantic import parse_obj_as
 from resources import strings
 from db.repositories.resources_history import ResourceHistoryRepository
@@ -11,34 +9,29 @@ from db.repositories.resource_templates import ResourceTemplateRepository
 from models.domain.authentication import User
 from models.schemas.resource import ResourcePatch
 from db.repositories.resources import ResourceRepository
-from core import config, credentials
+from core import config
+from providers.factory import get_message_bus
 from services.logging import logger
 from azure.cosmos.exceptions import CosmosAccessConditionFailedError
 
 
-async def _send_message(message: ServiceBusMessage, queue: str):
-    """
-    Sends the given message to the given queue in the Service Bus.
-
-    :param message: The message to send.
-    :type message: ServiceBusMessage
-    :param queue: The Service Bus queue to send the message to.
-    :type queue: str
-    """
-    async with credentials.get_credential_async_context() as credential:
-        service_bus_client = ServiceBusClient(config.SERVICE_BUS_FULLY_QUALIFIED_NAMESPACE, credential)
-
-        async with service_bus_client:
-            sender = service_bus_client.get_queue_sender(queue_name=queue)
-
-            async with sender:
-                await sender.send_messages(message)
-
-
 async def send_deployment_message(content, correlation_id, session_id, action):
-    resource_request_message = ServiceBusMessage(body=content, correlation_id=correlation_id, session_id=session_id)
-    logger.info(f"Sending resource request message with correlation ID {resource_request_message.correlation_id}, action: {action}")
-    await _send_message(resource_request_message, config.SERVICE_BUS_RESOURCE_REQUEST_QUEUE)
+    """
+    Sends deployment message to the resource request queue.
+
+    :param content: Message body content
+    :param correlation_id: Correlation ID for tracking
+    :param session_id: Session ID for the queue
+    :param action: Action being performed
+    """
+    logger.info(f"Sending resource request message with correlation ID {correlation_id}, action: {action}")
+    message_bus = get_message_bus()
+    await message_bus.send_message(
+        queue_name=config.SERVICE_BUS_RESOURCE_REQUEST_QUEUE,
+        message_body=content,
+        correlation_id=correlation_id,
+        session_id=session_id
+    )
 
 
 async def update_resource_for_step(operation_step: OperationStep, resource_repo: ResourceRepository, resource_template_repo: ResourceTemplateRepository, resource_history_repo: ResourceHistoryRepository, root_resource: Resource, step_resource: Resource, resource_to_update_id: str, primary_action: str, user: User) -> Resource:

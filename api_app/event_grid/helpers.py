@@ -1,10 +1,19 @@
 from azure.eventgrid import EventGridEvent
-from azure.eventgrid.aio import EventGridPublisherClient
-from core import credentials
+from providers.factory import get_event_publisher
 
 
 async def publish_event(event: EventGridEvent, topic_endpoint: str):
-    async with credentials.get_credential_async_context() as credential:
-        client = EventGridPublisherClient(topic_endpoint, credential)
-        async with client:
-            await client.send([event])
+    """
+    Publish an event to Event Grid using the provider factory.
+
+    :param event: The Event Grid event to publish
+    :param topic_endpoint: The Event Grid topic endpoint URL
+    """
+    event_publisher = get_event_publisher()
+    await event_publisher.publish(
+        topic_endpoint=topic_endpoint,
+        event_type=event.event_type,
+        subject=event.subject,
+        data=event.data,
+        event_id=event.id
+    )

@@ -14,7 +14,8 @@ from db.repositories.workspaces import WorkspaceRepository
 from models.domain.airlock_request import AirlockRequestStatus
 from db.repositories.airlock_requests import AirlockRequestRepository
 from models.domain.airlock_operations import StepResultStatusUpdateMessage
-from core import config, credentials
+from core import config
+from providers.factory import get_credential_provider
 from resources import strings
 
 
@@ -42,7 +43,8 @@ class AirlockStatusUpdater():
                         last_heartbeat_time = current_time
                         polling_count = 0
 
-                    async with credentials.get_credential_async_context() as credential:
+                    credential_provider = get_credential_provider()
+                    async with credential_provider.get_credential_async_context() as credential:
                         service_bus_client = ServiceBusClient(config.SERVICE_BUS_FULLY_QUALIFIED_NAMESPACE, credential)
                         receiver = service_bus_client.get_queue_receiver(queue_name=config.SERVICE_BUS_STEP_RESULT_QUEUE)
                         logger.debug(f"Looking for new messages on {config.SERVICE_BUS_STEP_RESULT_QUEUE} queue...")
