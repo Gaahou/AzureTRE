@@ -28,14 +28,19 @@ async def lifespan(app: FastAPI):
         await asyncio.sleep(5)
         logger.warning("Database connection could not be established")
 
-    deploymentStatusUpdater = DeploymentStatusUpdater()
-    await deploymentStatusUpdater.init_repos()
+    # Skip Service Bus initialization in offline mode
+    if config.DEPLOYMENT_MODE == "offline":
+        logger.info("Service Bus disabled (offline mode)")
+    else:
+        deploymentStatusUpdater = DeploymentStatusUpdater()
+        await deploymentStatusUpdater.init_repos()
 
-    airlockStatusUpdater = AirlockStatusUpdater()
-    await airlockStatusUpdater.init_repos()
+        airlockStatusUpdater = AirlockStatusUpdater()
+        await airlockStatusUpdater.init_repos()
 
-    asyncio.create_task(deploymentStatusUpdater.receive_messages())
-    asyncio.create_task(airlockStatusUpdater.receive_messages())
+        asyncio.create_task(deploymentStatusUpdater.receive_messages())
+        asyncio.create_task(airlockStatusUpdater.receive_messages())
+
     yield
 
 
