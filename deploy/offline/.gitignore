@@ -1,0 +1,6 @@
+# Environment files with sensitive data
+.env
+
+# Docker volumes and data
+*.log
+data/
