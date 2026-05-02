@@ -474,6 +474,171 @@ If cherry-pick causes conflicts:
 
 ---
 
+## Rule 7: Docker-Based Testing for Features
+
+### All feature testing must be executed in Docker containers to ensure consistent, reproducible test environments with all dependencies
+
+**Rationale:** Local development environments vary widely (missing dependencies, version mismatches, OS differences). Docker containers provide a clean, reproducible environment that matches production, ensuring tests pass consistently across all machines and CI/CD pipelines.
+
+**Workflow:**
+
+1. **Create test script** that uses Docker to run tests
+2. **Build test image** from existing Dockerfile (use test stage)
+3. **Run tests in container** with mounted volumes for access to test results
+4. **Clean up container and image** after tests complete
+5. **Save test output** for documentation and troubleshooting
+
+**Docker Test Script Pattern:**
+
+```bash
+#!/bin/bash
+# Test Phase N in Docker
+
+set -e
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+echo "🐳 Phase N Testing in Docker"
+echo ""
+
+# 1. Build test image
+echo "📦 Building test image..."
+cd "$PROJECT_ROOT/api_app"
+docker build --target test -t azuretre-api-test:phaseN . --quiet
+
+# 2. Run tests in container
+echo "🧪 Running tests..."
+docker run --rm \
+    -v "$PROJECT_ROOT:/workspace" \
+    -w /api \
+    azuretre-api-test:phaseN \
+    bash -c "
+        # Phase-specific tests here
+        pytest tests_ma/ -v --tb=short
+    " 2>&1 | tee /tmp/phaseN_test_output.txt
+
+TEST_EXIT_CODE=${PIPESTATUS[0]}
+
+# 3. Cleanup
+echo "🧹 Cleaning up..."
+docker rmi azuretre-api-test:phaseN --force > /dev/null 2>&1
+
+# 4. Report results
+if [ $TEST_EXIT_CODE -eq 0 ]; then
+    echo "✅ Phase N tests PASSED"
+    exit 0
+else
+    echo "❌ Phase N tests FAILED"
+    exit 1
+fi
+```
+
+**Example (Phase 0):**
+
+```bash
+# Create Docker test script
+cat > scripts/test_phase0_docker.sh << 'EOF'
+#!/bin/bash
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Build test image
+cd "$PROJECT_ROOT/api_app"
+docker build --target test -t azuretre-api-test:phase0 .
+
+# Run Phase 0 specific tests
+docker run --rm azuretre-api-test:phase0 bash -c "
+    python -c 'from core.config import DEPLOYMENT_MODE; print(f\"✓ DEPLOYMENT_MODE={DEPLOYMENT_MODE}\")'
+    python -c 'from providers.factory import get_message_bus; print(\"✓ Factory working\")'
+    pytest tests_ma/ -v --tb=short
+"
+
+# Cleanup
+docker rmi azuretre-api-test:phase0 --force
+EOF
+
+chmod +x scripts/test_phase0_docker.sh
+
+# Execute tests
+./scripts/test_phase0_docker.sh
+```
+
+**Benefits:**
+- **Reproducibility**: Same test results on any machine
+- **Clean Environment**: No dependency conflicts with local setup
+- **CI/CD Ready**: Same Docker image used in automated pipelines
+- **Isolation**: Tests don't affect local environment
+- **Documentation**: Dockerfile documents exact dependencies needed
+- **Version Control**: Test environment versioned with code
+
+**Required Files:**
+- `api_app/Dockerfile` - Must have a `test` stage
+- `api_app/requirements.txt` - Production dependencies
+- `api_app/requirements-dev.txt` - Test dependencies (pytest, etc.)
+- `scripts/test_phase{N}_docker.sh` - Docker test runner script
+
+**Dockerfile Test Stage Pattern:**
+
+```dockerfile
+FROM python:3.12-slim-bookworm AS base
+COPY requirements.txt /.
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+FROM base AS test
+COPY requirements-dev.txt /.
+RUN pip3 install --no-cache-dir -r requirements-dev.txt
+COPY . /api
+WORKDIR /api
+# Test stage ready - tests run via docker run command
+```
+
+**Testing Checklist (Following Rule #5 + Rule #7):**
+- [ ] Create Docker test script: `scripts/test_phase{N}_docker.sh`
+- [ ] Make script executable: `chmod +x scripts/test_phase{N}_docker.sh`
+- [ ] Build Docker test image from Dockerfile test stage
+- [ ] Run phase-specific validation tests in container
+- [ ] Run full unit test suite: `pytest tests_ma/`
+- [ ] Verify all acceptance criteria met
+- [ ] Save test output to file for documentation
+- [ ] Clean up Docker images after testing
+- [ ] Commit test scripts with test results
+- [ ] Document test results in Testing User Story
+
+**When NOT to Use Docker:**
+- Quick syntax checks (use `python -m py_compile`)
+- Simple file structure validation (use bash `test -f`)
+- Configuration file checks (use `yq`, `jq`)
+- Git operations
+
+Use Docker only for **runtime testing** that requires dependencies, not for static validation.
+
+**Troubleshooting:**
+
+```bash
+# If Docker build fails
+docker build --target test -t azuretre-api-test:debug . --progress=plain
+
+# If tests fail in container but pass locally
+docker run -it --rm azuretre-api-test:phase0 bash
+# Then debug interactively inside container
+
+# Check container logs
+docker logs <container-id>
+
+# Clean up all test images
+docker images | grep azuretre-api-test | awk '{print $3}' | xargs docker rmi -f
+```
+
+**CI/CD Integration:**
+The same Docker test approach should be used in CI/CD pipelines (GitHub Actions, Azure DevOps Pipelines) to ensure test consistency:
+
+```yaml
+# Example GitHub Actions
+- name: Run Phase 0 Tests
+  run: ./scripts/test_phase0_docker.sh
+```
+
+---
+
 ## Workflow Checklist
 
 ### Starting a Feature
@@ -507,7 +672,7 @@ If cherry-pick causes conflicts:
 - [ ] ✅ **RULE 3:** Move parent Feature to Resolved
 - [ ] ✅ **RULE 5:** Create Testing User Story for the feature
 - [ ] ✅ **RULE 5:** Link Testing Story to Feature
-- [ ] ✅ **RULE 5:** Execute tests against last commit
+- [ ] ✅ **RULE 7:** Execute tests in Docker container
 - [ ] ✅ **RULE 5:** If tests pass: commit results, comment all work items
 - [ ] ✅ **RULE 5:** Close all Stories (Resolved → Closed)
 - [ ] ✅ **RULE 5:** Close Feature (Resolved → Closed)
@@ -636,4 +801,4 @@ For questions about these workflow rules, contact:
 This document should be reviewed and updated during sprint retrospectives or when workflow improvements are identified.
 
 **Last Updated:** 2026-05-02
-**Version:** 1.4 - Added Rule #6 for rules management and cross-branch synchronization
+**Version:** 1.5 - Added Rule #7 for Docker-based testing to ensure reproducible test environments
