@@ -49,11 +49,18 @@ STATE_STORE_AIRLOCK_REQUESTS_CONTAINER = "Requests"
 SUBSCRIPTION_ID: str = config("SUBSCRIPTION_ID", default="")
 RESOURCE_GROUP_NAME: str = config("RESOURCE_GROUP_NAME", default="")
 
-# Service bus configuration
+# Service bus configuration (online mode - Azure Service Bus)
 SERVICE_BUS_FULLY_QUALIFIED_NAMESPACE: str = config("SERVICE_BUS_FULLY_QUALIFIED_NAMESPACE", default="")
 SERVICE_BUS_RESOURCE_REQUEST_QUEUE: str = config("SERVICE_BUS_RESOURCE_REQUEST_QUEUE", default="")
 SERVICE_BUS_DEPLOYMENT_STATUS_UPDATE_QUEUE: str = config("SERVICE_BUS_DEPLOYMENT_STATUS_UPDATE_QUEUE", default="")
 SERVICE_BUS_STEP_RESULT_QUEUE: str = config("SERVICE_BUS_STEP_RESULT_QUEUE", default="")
+
+# RabbitMQ configuration (offline mode)
+RABBITMQ_HOST: str = config("RABBITMQ_HOST", default="localhost")
+RABBITMQ_PORT: int = config("RABBITMQ_PORT", cast=int, default=5672)
+RABBITMQ_USER: str = config("RABBITMQ_USER", default="guest")
+RABBITMQ_PASSWORD: str = config("RABBITMQ_PASSWORD", default="guest")
+RABBITMQ_VHOST: str = config("RABBITMQ_VHOST", default="/")
 
 # Event grid configuration
 EVENT_GRID_STATUS_CHANGED_TOPIC_ENDPOINT: str = config("EVENT_GRID_STATUS_CHANGED_TOPIC_ENDPOINT", default="")
