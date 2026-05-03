@@ -1,4 +1,5 @@
 {
+    "deploymentMode": "online",
     "rootClientId": "",
     "rootTenantId": "",
     "treApplicationId": "api://",
@@ -8,6 +9,9 @@
     "debug": false,
     "version": "0.0.0",
     "activeDirectoryUri": "",
+    "keycloakUrl": "http://localhost:8080",
+    "keycloakRealm": "AzureTRE",
+    "keycloakClientId": "tre-ui-client",
     "userManagementEnabled": false,
     "uiSiteName": "Azure TRE",
     "uiFooterText": "Azure Trusted Research Environment"
