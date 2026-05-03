@@ -83,12 +83,6 @@ services:
     volumes:
       - keycloak-data:/opt/keycloak/data
       - ./seed/AzureTRE-realm.json:/opt/keycloak/data/import/AzureTRE-realm.json:ro
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
-      interval: 10s
-      timeout: 5s
-      retries: 20
-      start_period: 60s
     networks:
       - tre-local
 
@@ -129,6 +123,12 @@ services:
       - RABBITMQ_PASSWORD=tre_password
       - RABBITMQ_VHOST=/
 
+      # Keycloak connection (replaces Azure AD in offline mode)
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=AzureTRE
+      - KEYCLOAK_CLIENT_ID=tre-api-client
+      - KEYCLOAK_CLIENT_SECRET=tre-api-client-secret
+
       # Disable Azure-specific features for local mode
       - ENABLE_AIRLOCK=false
       - ENABLE_SWAGGER=true
@@ -140,6 +140,8 @@ services:
         condition: service_started
       rabbitmq:
         condition: service_healthy
+      keycloak:
+        condition: service_started
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 10s

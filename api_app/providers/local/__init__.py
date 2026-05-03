@@ -8,5 +8,10 @@ for local/offline mode using open-source alternatives:
 """
 
 from providers.local.rabbitmq import RabbitMQMessageBus, RabbitMQEventPublisher
+from providers.local.credentials import LocalCredentialProvider
 
-__all__ = ["RabbitMQMessageBus", "RabbitMQEventPublisher"]
+__all__ = [
+    "RabbitMQMessageBus",
+    "RabbitMQEventPublisher",
+    "LocalCredentialProvider",
+]

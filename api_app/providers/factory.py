@@ -69,20 +69,15 @@ def get_credential_provider() -> CredentialProvider:
 
     Returns:
         CredentialProvider: Azure AD/Managed Identity (online) or Keycloak (offline)
-
-    Raises:
-        NotImplementedError: If offline mode is selected (Phase 3+)
     """
     if DEPLOYMENT_MODE == "online":
         logger.debug("Using Azure AD/Managed Identity for credentials")
         from providers.azure.credentials import AzureCredentialProvider
         return AzureCredentialProvider()
     elif DEPLOYMENT_MODE == "offline":
-        logger.error("Offline mode not yet implemented for CredentialProvider")
-        raise NotImplementedError(
-            "Offline mode CredentialProvider (Keycloak) will be implemented in Phase 3. "
-            "For now, please use deployment_mode: online in config.yaml"
-        )
+        logger.debug("Using Keycloak OIDC for credentials")
+        from providers.local.credentials import LocalCredentialProvider
+        return LocalCredentialProvider()
     else:
         raise ValueError(f"Invalid DEPLOYMENT_MODE: {DEPLOYMENT_MODE}. Must be 'online' or 'offline'")
 

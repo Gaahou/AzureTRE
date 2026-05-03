@@ -1,6 +1,8 @@
 aio-pika==9.4.3
 aiohttp==3.13.3
 azure-core==1.38.0
+cryptography==44.0.0
+httpx==0.28.1
 azure-cosmos==4.14.3
 azure-eventgrid==4.22.0
 azure-identity==1.25.1
@@ -16,6 +18,7 @@ fastapi==0.125.0
 gunicorn==23.0.0
 jsonschema[format_nongpl]==4.25.1
 msal==1.31.1
+nest-asyncio==1.6.0
 opentelemetry-instrumentation-logging==0.49b2
 pandas==2.3.3
 PyJWT==2.10.1
