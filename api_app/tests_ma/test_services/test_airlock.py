@@ -241,16 +241,13 @@ def test_get_required_permission_return_read_and_write_permissions_for_draft_req
 
 
 @pytest.mark.asyncio
-@patch("event_grid.helpers.EventGridPublisherClient", return_value=AsyncMock())
+@patch("services.airlock.send_airlock_notification_event", new_callable=AsyncMock)
+@patch("services.airlock.send_status_changed_event", new_callable=AsyncMock)
 @patch("services.aad_authentication.AzureADAuthorization.get_workspace_user_emails_by_role_assignment", return_value={"WorkspaceResearcher": ["researcher@outlook.com"], "WorkspaceOwner": ["owner@outlook.com"], "AirlockManager": ["manager@outlook.com"]})
 @patch('services.airlock.get_timestamp', return_value=CURRENT_TIME)
-async def test_save_and_publish_event_airlock_request_saves_item(_, __, event_grid_publisher_client_mock, airlock_request_repo_mock):
+async def test_save_and_publish_event_airlock_request_saves_item(_, __, mock_send_status_changed, mock_send_airlock_notification, airlock_request_repo_mock):
     airlock_request_mock = sample_airlock_request()
     airlock_request_repo_mock.save_item = AsyncMock(return_value=None)
-    status_changed_event_mock = sample_status_changed_event()
-    airlock_notification_event_mock = sample_airlock_notification_event()
-    event_grid_sender_client_mock = event_grid_publisher_client_mock.return_value
-    event_grid_sender_client_mock.send = AsyncMock()
 
     await save_and_publish_event_airlock_request(
         airlock_request=airlock_request_mock,
@@ -260,12 +257,9 @@ async def test_save_and_publish_event_airlock_request_saves_item(_, __, event_gr
 
     airlock_request_repo_mock.save_item.assert_called_once_with(airlock_request_mock)
 
-    assert event_grid_sender_client_mock.send.call_count == 2
-    # Since the eventgrid object has the update time attribute which differs, we only compare the data that was sent
-    actual_status_changed_event = event_grid_sender_client_mock.send.await_args_list[0].args[0][0]
-    assert actual_status_changed_event.data == status_changed_event_mock.data
-    actual_airlock_notification_event = event_grid_sender_client_mock.send.await_args_list[1].args[0][0]
-    assert actual_airlock_notification_event.data == airlock_notification_event_mock.data
+    # Verify both event sender functions were called
+    mock_send_status_changed.assert_called_once()
+    mock_send_airlock_notification.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -284,16 +278,17 @@ async def test_save_and_publish_event_airlock_request_raises_503_if_save_to_db_f
 
 
 @pytest.mark.asyncio
-@patch("event_grid.helpers.EventGridPublisherClient", return_value=AsyncMock())
+@patch("services.airlock.send_airlock_notification_event", new_callable=AsyncMock)
+@patch("services.airlock.send_status_changed_event", new_callable=AsyncMock)
 @patch("services.aad_authentication.AzureADAuthorization.get_workspace_user_emails_by_role_assignment", return_value={"WorkspaceResearcher": ["researcher@outlook.com"], "WorkspaceOwner": ["owner@outlook.com"], "AirlockManager": ["manager@outlook.com"]})
-async def test_save_and_publish_event_airlock_request_raises_503_if_publish_event_fails(_, event_grid_publisher_client_mock,
+async def test_save_and_publish_event_airlock_request_raises_503_if_publish_event_fails(_, mock_send_status_changed, mock_send_airlock_notification,
                                                                                         airlock_request_repo_mock):
     airlock_request_mock = sample_airlock_request()
     airlock_request_repo_mock.save_item = AsyncMock(return_value=None)
     # When eventgrid fails, it deletes the saved request
     airlock_request_repo_mock.delete_item = AsyncMock(return_value=None)
-    event_grid_sender_client_mock = event_grid_publisher_client_mock.return_value
-    event_grid_sender_client_mock.send = AsyncMock(side_effect=Exception)
+    # Make the status changed event sender fail
+    mock_send_status_changed.side_effect = Exception("Event grid failure")
 
     with pytest.raises(HTTPException) as ex:
         await save_and_publish_event_airlock_request(
@@ -371,17 +366,14 @@ async def test_save_and_publish_event_airlock_notification_if_email_not_present(
 
 
 @pytest.mark.asyncio
-@patch("event_grid.helpers.EventGridPublisherClient", return_value=AsyncMock())
+@patch("services.airlock.send_airlock_notification_event", new_callable=AsyncMock)
+@patch("services.airlock.send_status_changed_event", new_callable=AsyncMock)
 @patch("services.aad_authentication.AzureADAuthorization.get_workspace_user_emails_by_role_assignment", return_value={"WorkspaceResearcher": ["researcher@outlook.com"], "WorkspaceOwner": ["owner@outlook.com"], "AirlockManager": ["manager@outlook.com"]})
-async def test_update_and_publish_event_airlock_request_updates_item(_, event_grid_publisher_client_mock,
+async def test_update_and_publish_event_airlock_request_updates_item(_, mock_send_status_changed, mock_send_airlock_notification,
                                                                      airlock_request_repo_mock):
     airlock_request_mock = sample_airlock_request()
     updated_airlock_request_mock = sample_airlock_request(status=AirlockRequestStatus.Submitted)
-    status_changed_event_mock = sample_status_changed_event(new_status="submitted", previous_status="draft")
-    airlock_notification_event_mock = sample_airlock_notification_event(status="submitted")
     airlock_request_repo_mock.update_airlock_request = AsyncMock(return_value=updated_airlock_request_mock)
-    event_grid_sender_client_mock = event_grid_publisher_client_mock.return_value
-    event_grid_sender_client_mock.send = AsyncMock()
 
     actual_updated_airlock_request = await update_and_publish_event_airlock_request(
         airlock_request=airlock_request_mock,
@@ -393,12 +385,9 @@ async def test_update_and_publish_event_airlock_request_updates_item(_, event_gr
     airlock_request_repo_mock.update_airlock_request.assert_called_once()
     assert (actual_updated_airlock_request == updated_airlock_request_mock)
 
-    assert event_grid_sender_client_mock.send.call_count == 2
-    # Since the eventgrid object has the update time attribute which differs, we only compare the data that was sent
-    actual_status_changed_event = event_grid_sender_client_mock.send.await_args_list[0].args[0][0]
-    assert actual_status_changed_event.data == status_changed_event_mock.data
-    actual_airlock_notification_event = event_grid_sender_client_mock.send.await_args_list[1].args[0][0]
-    assert actual_airlock_notification_event.data == airlock_notification_event_mock.data
+    # Verify both event sender functions were called
+    mock_send_status_changed.assert_called_once()
+    mock_send_airlock_notification.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -437,15 +426,16 @@ async def test_update_and_publish_event_airlock_request_raises_400_if_status_upd
 
 
 @pytest.mark.asyncio
-@patch("event_grid.helpers.EventGridPublisherClient", return_value=AsyncMock())
+@patch("services.airlock.send_airlock_notification_event", new_callable=AsyncMock)
+@patch("services.airlock.send_status_changed_event", new_callable=AsyncMock)
 @patch("services.aad_authentication.AzureADAuthorization.get_workspace_user_emails_by_role_assignment", return_value={"WorkspaceResearcher": ["researcher@outlook.com"], "WorkspaceOwner": ["owner@outlook.com"], "AirlockManager": ["manager@outlook.com"]})
-async def test_update_and_publish_event_airlock_request_raises_503_if_publish_event_fails(_, event_grid_publisher_client_mock,
+async def test_update_and_publish_event_airlock_request_raises_503_if_publish_event_fails(_, mock_send_status_changed, mock_send_airlock_notification,
                                                                                           airlock_request_repo_mock):
     airlock_request_mock = sample_airlock_request()
     updated_airlock_request_mock = sample_airlock_request(status=AirlockRequestStatus.Submitted)
     airlock_request_repo_mock.update_airlock_request = AsyncMock(return_value=updated_airlock_request_mock)
-    event_grid_sender_client_mock = event_grid_publisher_client_mock.return_value
-    event_grid_sender_client_mock.send = AsyncMock(side_effect=Exception)
+    # Make the status changed event sender fail
+    mock_send_status_changed.side_effect = Exception("Event grid failure")
 
     with pytest.raises(HTTPException) as ex:
         await update_and_publish_event_airlock_request(

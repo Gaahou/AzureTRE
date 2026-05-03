@@ -43,19 +43,22 @@ def create_test_resource():
 )
 @patch("service_bus.resource_request_sender.ResourceHistoryRepository.create")
 @patch("service_bus.resource_request_sender.OperationRepository.create")
-@patch("service_bus.helpers.ServiceBusClient")
+@patch("service_bus.helpers.get_message_bus")
 @patch("service_bus.resource_request_sender.ResourceRepository.create")
 @patch("service_bus.resource_request_sender.ResourceTemplateRepository.create")
 async def test_resource_request_message_generated_correctly(
     resource_template_repo,
     resource_repo,
-    service_bus_client_mock,
+    mock_get_message_bus,
     operations_repo_mock,
     resource_history_repo_mock,
     request_action,
     multi_step_resource_template
 ):
-    service_bus_client_mock().get_queue_sender().send_messages = AsyncMock()
+    # Mock the message bus
+    mock_message_bus = AsyncMock()
+    mock_message_bus.send_message = AsyncMock()
+    mock_get_message_bus.return_value = mock_message_bus
     resource = create_test_resource()
     operation = create_sample_operation(resource.id, request_action)
     operations_repo_mock.create_operation_item.return_value = operation
@@ -74,15 +77,23 @@ async def test_resource_request_message_generated_correctly(
         action=request_action
     )
 
-    args = service_bus_client_mock().get_queue_sender().send_messages.call_args.args
-    assert len(args) == 1
-    assert isinstance(args[0], ServiceBusMessage)
+    # Verify send_message was called
+    mock_message_bus.send_message.assert_called_once()
 
-    sent_message = args[0]
-    assert sent_message.correlation_id == operation.id
-    sent_message_as_json = json.loads(str(sent_message))
+    # Get the arguments passed to send_message
+    call_args = mock_message_bus.send_message.call_args
+    assert call_args is not None
+
+    # Check the message body content (should be in kwargs)
+    message_body = call_args.kwargs['message_body']
+    assert message_body is not None
+    sent_message_as_json = json.loads(message_body)
     assert sent_message_as_json["id"] == resource.id
     assert sent_message_as_json["action"] == request_action
+
+    # Check correlation_id
+    correlation_id = call_args.kwargs['correlation_id']
+    assert correlation_id == operation.id
 
 
 @patch("service_bus.resource_request_sender.ResourceHistoryRepository.create")

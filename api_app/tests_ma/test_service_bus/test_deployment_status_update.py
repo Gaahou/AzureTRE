@@ -293,12 +293,16 @@ async def test_properties_dont_change_with_no_outputs(resource_repo, operations_
 @patch('service_bus.deployment_status_updater.update_resource_for_step')
 @patch('service_bus.deployment_status_updater.OperationRepository.create')
 @patch('service_bus.deployment_status_updater.ResourceRepository.create')
-@patch('service_bus.helpers.ServiceBusClient')
-async def test_multi_step_operation_sends_next_step(sb_sender_client, resource_repo, operations_repo, update_resource_for_step, _, __, multi_step_operation, user_resource_multi, basic_shared_service):
+@patch('service_bus.helpers.get_message_bus')
+async def test_multi_step_operation_sends_next_step(mock_get_message_bus, resource_repo, operations_repo, update_resource_for_step, _, __, multi_step_operation, user_resource_multi, basic_shared_service):
     received_message = test_sb_message_multi_step_1_complete
     received_message["status"] = Status.Updated
     service_bus_received_message_mock = ServiceBusReceivedMessageMock(received_message)
-    sb_sender_client().get_queue_sender().send_messages = AsyncMock()
+
+    # Mock the message bus
+    mock_message_bus = AsyncMock()
+    mock_message_bus.send_message = AsyncMock()
+    mock_get_message_bus.return_value = mock_message_bus
 
     # step 1 resource
     resource_repo.return_value.get_resource_dict_by_id.return_value = basic_shared_service.dict()
@@ -340,19 +344,23 @@ async def test_multi_step_operation_sends_next_step(sb_sender_client, resource_r
     operations_repo.return_value.update_item.assert_called_once_with(expected_operation)
 
     # check it sent a message on for the next step
-    sb_sender_client().get_queue_sender().send_messages.assert_called_once()
+    mock_message_bus.send_message.assert_called_once()
 
 
 @patch('service_bus.deployment_status_updater.ResourceHistoryRepository.create')
 @patch('service_bus.deployment_status_updater.ResourceTemplateRepository.create')
 @patch('service_bus.deployment_status_updater.OperationRepository.create')
 @patch('service_bus.deployment_status_updater.ResourceRepository.create')
-@patch('service_bus.helpers.ServiceBusClient')
-async def test_multi_step_operation_ends_at_last_step(sb_sender_client, resource_repo, operations_repo, _, __, multi_step_operation, user_resource_multi, basic_shared_service):
+@patch('service_bus.helpers.get_message_bus')
+async def test_multi_step_operation_ends_at_last_step(mock_get_message_bus, resource_repo, operations_repo, _, __, multi_step_operation, user_resource_multi, basic_shared_service):
     received_message = test_sb_message_multi_step_3_complete
     received_message["status"] = Status.Updated
     service_bus_received_message_mock = ServiceBusReceivedMessageMock(received_message)
-    sb_sender_client().get_queue_sender().send_messages = AsyncMock()
+
+    # Mock the message bus
+    mock_message_bus = AsyncMock()
+    mock_message_bus.send_message = AsyncMock()
+    mock_get_message_bus.return_value = mock_message_bus
 
     # step 2 resource
     resource_repo.return_value.get_resource_dict_by_id.return_value = user_resource_multi.dict()
@@ -389,7 +397,7 @@ async def test_multi_step_operation_ends_at_last_step(sb_sender_client, resource
     operations_repo.return_value.update_item.assert_called_once_with(expected_operation)
 
     # check it did _not_ enqueue another message
-    sb_sender_client().get_queue_sender().send_messages.assert_not_called()
+    mock_message_bus.send_message.assert_not_called()
 
 
 async def test_convert_outputs_to_dict():

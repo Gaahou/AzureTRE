@@ -104,14 +104,15 @@ class ServiceBusReceivedMessageMock:
         return self.message
 
 
-@patch("event_grid.helpers.EventGridPublisherClient")
+@patch("services.airlock.send_airlock_notification_event", new_callable=AsyncMock)
+@patch("services.airlock.send_status_changed_event", new_callable=AsyncMock)
 @patch('service_bus.airlock_request_status_update.AirlockRequestRepository.create')
 @patch('service_bus.airlock_request_status_update.WorkspaceRepository.create')
 @patch('logging.exception')
 @patch("services.aad_authentication.AzureADAuthorization.get_workspace_user_emails_by_role_assignment", return_value={"researcher_emails": ["researcher@outlook.com"], "owner_emails": ["owner@outlook.com"]})
-async def test_receiving_good_message(_, logging_mock, workspace_repo, airlock_request_repo, eg_client):
+async def test_receiving_good_message(_, logging_mock, workspace_repo, airlock_request_repo, mock_send_status_changed, mock_send_airlock_notification):
 
-    eg_client().send = AsyncMock()
+    # Mocks are already AsyncMock via new_callable parameter
     expected_airlock_request = sample_airlock_request()
     airlock_request_repo.return_value.get_airlock_request_by_id.return_value = expected_airlock_request
     airlock_request_repo.return_value.update_airlock_request.return_value = sample_airlock_request(status=AirlockRequestStatus.InReview)
@@ -131,7 +132,8 @@ async def test_receiving_good_message(_, logging_mock, workspace_repo, airlock_r
         status_message=None,
         airlock_review=None,
         review_user_resource=None)
-    assert eg_client().send.call_count == 2
+    assert mock_send_status_changed.called
+    assert mock_send_airlock_notification.called
     logging_mock.assert_not_called()
 
 
