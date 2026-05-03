@@ -176,6 +176,28 @@ services:
       - ../../api_app:/app
       - /var/run/docker.sock:/var/run/docker.sock  # For future resource processor integration
 
+  # Docker Registry (Container Registry for Porter bundles)
+  registry:
+    image: registry:2
+    container_name: tre-registry
+    hostname: registry
+    ports:
+      - "5000:5000"   # Registry API
+    environment:
+      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry
+      - REGISTRY_HTTP_ADDR=0.0.0.0:5000
+    volumes:
+      - registry-data:/var/lib/registry
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5000/v2/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - tre-local
+    restart: unless-stopped
+
   # TRE Resource Processor (Local)
   tre-resource-processor:
     build:
@@ -189,8 +211,11 @@ services:
       - RABBITMQ_USER=tre_user
       - RABBITMQ_PASSWORD=tre_password
       - RABBITMQ_VHOST=/
+      - REGISTRY_URL=http://registry:5000
     depends_on:
       rabbitmq:
+        condition: service_healthy
+      registry:
         condition: service_healthy
     networks:
       - tre-local
@@ -212,3 +237,5 @@ volumes:
     name: tre-rabbitmq-data
   keycloak-data:
     name: tre-keycloak-data
+  registry-data:
+    name: tre-registry-data

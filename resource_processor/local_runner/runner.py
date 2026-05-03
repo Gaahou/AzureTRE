@@ -41,6 +41,9 @@ RABBITMQ_USER = os.getenv("RABBITMQ_USER", "tre_user")
 RABBITMQ_PASSWORD = os.getenv("RABBITMQ_PASSWORD", "tre_password")
 RABBITMQ_VHOST = os.getenv("RABBITMQ_VHOST", "/")
 
+# Container Registry Configuration
+REGISTRY_URL = os.getenv("REGISTRY_URL", "http://registry:5000")
+
 # Queue names
 RESOURCE_REQUEST_QUEUE = "workspacequeue"
 DEPLOYMENT_STATUS_QUEUE = "deploymentstatus"
@@ -198,11 +201,15 @@ class PorterRunner:
         logger.info(f"Executing Porter {action} for bundle '{bundle_name}' (resource: {resource_id})")
 
         # Build Porter command
+        # Use local registry for bundle reference
+        registry_host = REGISTRY_URL.replace("http://", "").replace("https://", "")
+        bundle_reference = f"{registry_host}/{bundle_name}"
+
         cmd = [
             "porter", action,
             bundle_name,
             "--installation", resource_id,
-            "--reference", bundle_name,  # Assumes bundle is in registry
+            "--reference", bundle_reference,
         ]
 
         # Add parameters if provided
@@ -436,6 +443,7 @@ async def main():
     logger.info("Azure TRE Local Resource Processor")
     logger.info("=" * 60)
     logger.info(f"RabbitMQ Host: {RABBITMQ_HOST}:{RABBITMQ_PORT}")
+    logger.info(f"Container Registry: {REGISTRY_URL}")
     logger.info(f"Request Queue: {RESOURCE_REQUEST_QUEUE}")
     logger.info(f"Status Queue: {DEPLOYMENT_STATUS_QUEUE}")
     logger.info("=" * 60)
