@@ -59,7 +59,8 @@ async def verify_containers_exist_offline() -> bool:
 
     try:
         # Use data plane SDK to verify containers exist
-        async with CosmosClient(STATE_STORE_ENDPOINT, STATE_STORE_KEY) as client:
+        # Disable SSL verification for emulator (uses self-signed cert)
+        async with CosmosClient(STATE_STORE_ENDPOINT, STATE_STORE_KEY, connection_verify=False) as client:
             database = client.get_database_client(STATE_STORE_DATABASE)
 
             # Check if database exists
