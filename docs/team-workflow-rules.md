@@ -691,6 +691,218 @@ The same Docker test approach should be used in CI/CD pipelines (GitHub Actions,
 
 ---
 
+## Rule 8: Dependency Management and Cleanup Scripts
+
+### When adding new dependencies to requirements.txt, always provide a corresponding uninstall/cleanup script for safe removal
+
+**Rationale:** Dependencies added during feature development may need to be removed during rollback, testing, or when features are deprecated. Providing cleanup scripts ensures dependencies can be safely uninstalled without breaking other components or leaving orphaned packages. This is especially important for production environments and when testing different deployment modes.
+
+**Workflow:**
+
+1. **Add dependencies** to the appropriate `requirements.txt` file
+2. **Document the change** in commit message (which story/feature added it)
+3. **Create cleanup script** in the same directory or central cleanup location
+4. **Test cleanup script** to ensure it doesn't break existing functionality
+5. **Commit both** requirements.txt changes and cleanup script together
+
+**Requirements.txt Locations:**
+
+- `api_app/requirements.txt` - API/main application dependencies
+- `resource_processor/local_runner/requirements.txt` - Resource processor dependencies
+- `api_app/requirements-dev.txt` - Development/testing dependencies
+- Component-specific requirements files
+
+**Cleanup Script Locations:**
+
+- `api_app/cleanup_dependencies.sh` - For API dependencies
+- `resource_processor/local_runner/cleanup.sh` - For resource processor (removes entire container)
+- `scripts/cleanup_phase{N}.sh` - For phase-specific cleanup (comprehensive)
+
+**Example:**
+
+```bash
+# Story 120: Adding RabbitMQ support
+# 1. Add dependency to requirements.txt
+echo "aio-pika==9.4.3" >> api_app/requirements.txt
+
+# 2. Create cleanup script
+cat > api_app/cleanup_dependencies.sh << 'EOF'
+#!/bin/bash
+# Cleanup script for API dependencies
+set -e
+
+echo "🧹 Cleaning up Phase 2 API dependencies..."
+
+# Uninstall aio-pika (added in Story 120)
+pip uninstall -y aio-pika || echo "  aio-pika not installed"
+
+# Uninstall aio-pika dependencies (if orphaned)
+pip uninstall -y aiormq || echo "  aiormq not installed"
+pip uninstall -y pamqp || echo "  pamqp not installed"
+
+echo "✅ Phase 2 dependencies removed"
+EOF
+
+chmod +x api_app/cleanup_dependencies.sh
+
+# 3. Test cleanup script
+./api_app/cleanup_dependencies.sh
+
+# 4. Commit both together
+git add api_app/requirements.txt api_app/cleanup_dependencies.sh
+git commit -m "Story 120: Add aio-pika dependency and cleanup script
+
+- Added aio-pika==9.4.3 to requirements.txt for RabbitMQ support
+- Created cleanup_dependencies.sh for safe removal
+- Script uninstalls aio-pika and orphaned dependencies
+
+Related Work Item: #120"
+```
+
+**Cleanup Script Pattern:**
+
+```bash
+#!/bin/bash
+# Cleanup script for [Component] dependencies
+# Removes dependencies added in [Phase/Story]
+
+set -e
+
+echo "🧹 Cleaning up [Phase N] dependencies..."
+
+# Check for virtual environment (optional but recommended)
+if [[ -z "${VIRTUAL_ENV}" ]]; then
+    echo "⚠️  WARNING: No virtual environment detected!"
+    read -p "Continue anyway? (y/N): " -n 1 -r
+    echo
+    [[ ! $REPLY =~ ^[Yy]$ ]] && exit 1
+fi
+
+# Uninstall specific packages
+echo "📦 Uninstalling [package-name]..."
+pip uninstall -y [package-name] || echo "  [package-name] not installed"
+
+# Check for orphaned dependencies
+echo "Checking for orphaned dependencies..."
+pip uninstall -y [dependency] || echo "  [dependency] used by other packages"
+
+echo ""
+echo "✅ Cleanup complete"
+echo ""
+echo "To reinstall:"
+echo "  pip install -r requirements.txt"
+```
+
+**Comprehensive Phase Cleanup Script Pattern:**
+
+```bash
+#!/bin/bash
+# Phase N Cleanup Script
+# Removes all Phase N components
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+echo "╔════════════════════════════════════════════════════╗"
+echo "║         Phase N Cleanup: [Feature Name]           ║"
+echo "╚════════════════════════════════════════════════════╝"
+
+# 1. Stop Docker services
+cd "$PROJECT_ROOT/deploy/offline"
+docker-compose down
+
+# 2. Remove volumes
+docker volume rm [volume-name] || true
+
+# 3. Run component-specific cleanup
+bash "$PROJECT_ROOT/[component]/cleanup.sh"
+
+# 4. Remove Docker images
+docker rmi [image-name] || true
+
+# 5. Optional: Python dependencies
+if confirm "Remove Python dependencies?"; then
+    bash "$PROJECT_ROOT/api_app/cleanup_dependencies.sh"
+fi
+
+echo "✅ Phase N cleanup complete"
+```
+
+**Dependency Addition Checklist:**
+- [ ] New dependency added to appropriate requirements.txt
+- [ ] Dependency version pinned (e.g., `package==1.2.3`)
+- [ ] Cleanup script created for removing the dependency
+- [ ] Cleanup script tested (uninstall + reinstall cycle)
+- [ ] Both requirements.txt and cleanup script committed together
+- [ ] Commit message documents which story/feature added the dependency
+- [ ] README or docs updated if dependency affects setup process
+
+**Container-Based Dependencies:**
+For dependencies installed in Docker containers (e.g., resource processor):
+- **No separate uninstall script needed** - removing the container removes all dependencies
+- Ensure the component's cleanup script removes the container and image
+- Document in container's README that dependencies are managed via Docker
+
+**Example (Resource Processor):**
+```bash
+# Story 122: Resource processor uses Docker
+# Dependencies installed in container, so cleanup.sh just removes container:
+
+#!/bin/bash
+# Cleanup script for local resource processor
+
+docker stop tre-resource-processor || true
+docker rm tre-resource-processor || true
+docker rmi tre-resource-processor:local || true
+
+# Dependencies (aio-pika) are automatically removed with container
+echo "✅ Container and all dependencies removed"
+```
+
+**Testing Cleanup Scripts:**
+
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Verify installation
+pip list | grep [package-name]
+
+# 3. Run cleanup script
+./cleanup_dependencies.sh
+
+# 4. Verify removal
+pip list | grep [package-name]  # Should return nothing
+
+# 5. Reinstall to ensure no breakage
+pip install -r requirements.txt
+
+# 6. Test application still works
+pytest tests/
+```
+
+**Benefits:**
+- **Safe Rollback**: Easy to remove features and their dependencies
+- **Clean Environments**: No orphaned packages cluttering the system
+- **Documentation**: Cleanup scripts document what was added and when
+- **Testing**: Can test with/without dependencies easily
+- **Production Safety**: Reduces risk when removing deprecated features
+- **CI/CD**: Cleanup scripts can be used in automated pipelines
+
+**When to Create Cleanup Scripts:**
+- ✅ Adding new Python packages to requirements.txt
+- ✅ Adding new system dependencies (via Dockerfile)
+- ✅ Creating new Docker services in docker-compose
+- ✅ Adding new volumes or networks
+- ❌ Modifying existing package versions (document in commit message only)
+- ❌ Adding dev dependencies that don't affect production
+
+**Naming Conventions:**
+- `cleanup_dependencies.sh` - For Python package cleanup
+- `cleanup_phase{N}.sh` - For comprehensive phase cleanup
+- `cleanup.sh` - For component-specific cleanup (in component directory)
+
+---
+
 ## Workflow Checklist
 
 ### Starting a Feature
@@ -852,5 +1064,5 @@ For questions about these workflow rules, contact:
 
 This document should be reviewed and updated during sprint retrospectives or when workflow improvements are identified.
 
-**Last Updated:** 2026-05-02
-**Version:** 1.5 - Added Rule #7 for Docker-based testing to ensure reproducible test environments
+**Last Updated:** 2026-05-03
+**Version:** 1.6 - Added Rule #8 for dependency management with cleanup scripts
