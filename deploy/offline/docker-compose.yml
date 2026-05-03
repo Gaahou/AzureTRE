@@ -127,6 +127,28 @@ services:
       - ../../api_app:/app
       - /var/run/docker.sock:/var/run/docker.sock  # For future resource processor integration
 
+  # TRE Resource Processor (Local)
+  tre-resource-processor:
+    build:
+      context: ../../resource_processor/local_runner
+      dockerfile: Dockerfile
+    container_name: tre-resource-processor
+    hostname: tre-resource-processor
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=tre_user
+      - RABBITMQ_PASSWORD=tre_password
+      - RABBITMQ_VHOST=/
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - tre-local
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Docker-in-Docker for Porter
+    restart: unless-stopped
+
 networks:
   tre-local:
     name: tre-local
