@@ -37,12 +37,6 @@ services:
     command: "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --loose --skipApiVersionCheck"
     volumes:
       - azurite-data:/data
-    healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "10000"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-      start_period: 10s
     networks:
       - tre-local
 
@@ -80,7 +74,7 @@ services:
       cosmosdb:
         condition: service_healthy
       azurite:
-        condition: service_healthy
+        condition: service_started
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 10s

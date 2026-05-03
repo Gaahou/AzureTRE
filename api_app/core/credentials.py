@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from core.config import MANAGED_IDENTITY_CLIENT_ID, AAD_AUTHORITY_URL
+from core.config import MANAGED_IDENTITY_CLIENT_ID, AAD_AUTHORITY_URL, DEPLOYMENT_MODE
 from azure.core.credentials import TokenCredential
 from urllib.parse import urlparse
 
@@ -15,7 +15,17 @@ from azure.identity.aio import (
 )
 
 
+class OfflineModeCredential:
+    """Mock credential for offline mode - no Azure authentication"""
+    def get_token(self, *scopes, **kwargs):
+        return type('obj', (object,), {'token': 'offline-mode-token', 'expires_on': 9999999999})()
+
+
 def get_credential() -> TokenCredential:
+    # Skip Azure authentication in offline mode
+    if DEPLOYMENT_MODE == "offline":
+        return OfflineModeCredential()
+
     if MANAGED_IDENTITY_CLIENT_ID:
         return ChainedTokenCredential(
             ManagedIdentityCredential(client_id=MANAGED_IDENTITY_CLIENT_ID)
@@ -31,6 +41,10 @@ def get_credential() -> TokenCredential:
 
 
 async def get_credential_async():
+    # Skip Azure authentication in offline mode
+    if DEPLOYMENT_MODE == "offline":
+        return OfflineModeCredential()
+
     return (
         ChainedTokenCredentialASync(
             ManagedIdentityCredentialASync(client_id=MANAGED_IDENTITY_CLIENT_ID)
