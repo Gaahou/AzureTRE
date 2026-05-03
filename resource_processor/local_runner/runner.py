@@ -52,6 +52,127 @@ CONNECTION_URL = (
 )
 
 
+class DockerDeploymentRunner:
+    """Executes Docker Compose deployments for workspace resources."""
+
+    @staticmethod
+    async def execute_docker_action(
+        action: str,
+        template_path: str,
+        resource_id: str,
+        workspace_id: str,
+        parameters: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Execute a Docker Compose action (up/down).
+
+        Args:
+            action: Docker action (install, upgrade, uninstall)
+            template_path: Path to docker-compose.yml
+            resource_id: Resource ID
+            workspace_id: Workspace ID
+            parameters: Optional parameters for deployment
+
+        Returns:
+            Dict containing execution result
+        """
+        logger.info(f"Executing Docker {action} for resource '{resource_id}' in workspace '{workspace_id}'")
+
+        project_name = f"{workspace_id}-{resource_id}"
+
+        try:
+            if action in ["install", "upgrade"]:
+                # Docker Compose up
+                cmd = [
+                    "docker", "compose",
+                    "-f", template_path,
+                    "-p", project_name,
+                    "up", "-d"
+                ]
+
+                # Set environment variables from parameters
+                env = os.environ.copy()
+                env["WORKSPACE_ID"] = workspace_id
+                env["RESOURCE_ID"] = resource_id
+                if parameters:
+                    for key, value in parameters.items():
+                        env[key.upper()] = str(value)
+
+                logger.info(f"Running command: {' '.join(cmd)}")
+                process = await asyncio.create_subprocess_exec(
+                    *cmd,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE,
+                    env=env
+                )
+
+                stdout, stderr = await process.communicate()
+
+                if process.returncode == 0:
+                    logger.info(f"Docker {action} succeeded for {resource_id}")
+                    return {
+                        "success": True,
+                        "outputs": {"project_name": project_name},
+                        "message": f"Successfully deployed Docker resource"
+                    }
+                else:
+                    error_msg = stderr.decode() if stderr else "Unknown error"
+                    logger.error(f"Docker {action} failed for {resource_id}: {error_msg}")
+                    return {
+                        "success": False,
+                        "error": error_msg,
+                        "message": f"Failed to deploy Docker resource"
+                    }
+
+            elif action == "uninstall":
+                # Docker Compose down
+                cmd = [
+                    "docker", "compose",
+                    "-f", template_path,
+                    "-p", project_name,
+                    "down", "-v"  # Remove volumes
+                ]
+
+                logger.info(f"Running command: {' '.join(cmd)}")
+                process = await asyncio.create_subprocess_exec(
+                    *cmd,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE
+                )
+
+                stdout, stderr = await process.communicate()
+
+                if process.returncode == 0:
+                    logger.info(f"Docker uninstall succeeded for {resource_id}")
+                    return {
+                        "success": True,
+                        "outputs": {},
+                        "message": f"Successfully removed Docker resource"
+                    }
+                else:
+                    error_msg = stderr.decode() if stderr else "Unknown error"
+                    logger.error(f"Docker uninstall failed for {resource_id}: {error_msg}")
+                    return {
+                        "success": False,
+                        "error": error_msg,
+                        "message": f"Failed to remove Docker resource"
+                    }
+            else:
+                return {
+                    "success": False,
+                    "error": f"Unknown action: {action}",
+                    "message": f"Invalid Docker action"
+                }
+
+        except Exception as e:
+            logger.error(f"Exception executing Docker {action} for {resource_id}: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "message": f"Exception during Docker deployment"
+            }
+
+
 class PorterRunner:
     """Executes Porter commands for resource deployment."""
 
@@ -132,12 +253,15 @@ class PorterRunner:
 
 
 class ResourceProcessor:
-    """Main resource processor that consumes messages and executes Porter actions."""
+    """Main resource processor that consumes messages and executes Porter or Docker actions."""
 
     def __init__(self):
         self.connection = None
         self.channel = None
         self.porter_runner = PorterRunner()
+        self.docker_runner = DockerDeploymentRunner()
+        # Template path base for Docker deployments
+        self.template_base = os.getenv("TEMPLATE_PATH", "/templates")
 
     async def connect(self):
         """Establish connection to RabbitMQ."""
@@ -194,6 +318,8 @@ class ResourceProcessor:
                 resource_id = body.get("id") or body.get("resourceId")
                 action = body.get("action", "install")
                 template_name = body.get("templateName", "unknown")
+                template_type = body.get("templateType", "porter")  # "porter" or "docker"
+                workspace_id = body.get("workspaceId", "")
                 parameters = body.get("parameters", {})
 
                 if not resource_id:
@@ -203,13 +329,35 @@ class ResourceProcessor:
                 # Publish initial status
                 await self.publish_status(resource_id, "deploying", f"Starting {action}")
 
-                # Execute Porter action
-                result = await self.porter_runner.execute_porter_action(
-                    action=action,
-                    bundle_name=template_name,
-                    resource_id=resource_id,
-                    parameters=parameters
-                )
+                # Detect template type and execute appropriate action
+                if template_type == "docker" or self._is_docker_template(template_name):
+                    # Docker-based deployment
+                    docker_compose_path = self._get_docker_template_path(template_name)
+
+                    if not os.path.exists(docker_compose_path):
+                        logger.error(f"Docker template not found: {docker_compose_path}")
+                        await self.publish_status(
+                            resource_id,
+                            "failed",
+                            f"Template not found: {template_name}"
+                        )
+                        return
+
+                    result = await self.docker_runner.execute_docker_action(
+                        action=action,
+                        template_path=docker_compose_path,
+                        resource_id=resource_id,
+                        workspace_id=workspace_id,
+                        parameters=parameters
+                    )
+                else:
+                    # Porter-based deployment (existing behavior)
+                    result = await self.porter_runner.execute_porter_action(
+                        action=action,
+                        bundle_name=template_name,
+                        resource_id=resource_id,
+                        parameters=parameters
+                    )
 
                 # Publish final status
                 if result["success"]:
@@ -242,6 +390,38 @@ class ResourceProcessor:
         # Start consuming
         await queue.consume(self.process_message)
         logger.info("Resource processor started successfully")
+
+    def _is_docker_template(self, template_name: str) -> bool:
+        """
+        Check if template is Docker-based.
+
+        Args:
+            template_name: Template name
+
+        Returns:
+            True if Docker template exists, False otherwise
+        """
+        docker_path = self._get_docker_template_path(template_name)
+        return os.path.exists(docker_path)
+
+    def _get_docker_template_path(self, template_name: str) -> str:
+        """
+        Get path to Docker template.
+
+        Args:
+            template_name: Template name (e.g., "base-workspace", "linuxvm")
+
+        Returns:
+            Path to docker-compose.yml
+        """
+        # Map template names to Docker template paths
+        template_map = {
+            "base-workspace": f"{self.template_base}/workspaces/base/docker/docker-compose.yml",
+            "linuxvm": f"{self.template_base}/workspace_services/guacamole/user_resources/guacamole-azure-linuxvm/docker/docker-compose.yml",
+            "windowsvm": f"{self.template_base}/workspace_services/guacamole/user_resources/guacamole-azure-windowsvm/docker/docker-compose.yml",
+        }
+
+        return template_map.get(template_name, f"{self.template_base}/{template_name}/docker/docker-compose.yml")
 
     async def close(self):
         """Close RabbitMQ connection."""
