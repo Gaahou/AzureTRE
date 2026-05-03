@@ -7,6 +7,157 @@
 
 ## Work Items to Update
 
+### Story #114: Create offline docker-compose with emulators
+
+**Status:** Move to **CLOSED**
+
+**Comment to Add:**
+```
+✅ Story #114 Complete - Created offline docker-compose configuration
+
+Implementation:
+- Created deploy/offline/docker-compose.yml with services:
+  - tre-api: TRE API service with offline mode configuration
+  - azurite: Azure Storage emulator (blob, queue, table)
+  - cosmosdb: Cosmos DB Linux Emulator (later replaced by Azure Free Tier)
+- Configured tre-local Docker network for service communication
+- Set up environment variable injection from .env file
+- Added health checks and service dependencies
+
+Files Created:
+- deploy/offline/docker-compose.yml
+
+Testing:
+- ✅ Successfully starts all configured services
+- ✅ Network connectivity between containers verified
+- ✅ Configuration later adapted for Azure Free Tier in Story #348
+
+Commit:
+- d3babb9b: Story 114: Create offline docker-compose with emulators (May 2, 16:54)
+
+Branch: feature/phase1-local-api
+
+Status: Infrastructure prerequisite complete, ready for closure
+```
+
+---
+
+### Story #115: Create offline .env.sample
+
+**Status:** Move to **CLOSED**
+
+**Comment to Add:**
+```
+✅ Story #115 Complete - Created offline mode environment template
+
+Implementation:
+- Created deploy/offline/.env.sample as configuration template
+- Documented required environment variables:
+  - DEPLOYMENT_MODE=offline
+  - STATE_STORE_ENDPOINT (Cosmos DB endpoint)
+  - STATE_STORE_KEY (Cosmos DB primary key)
+  - Storage account settings
+- Provided inline documentation for each variable
+- Template used to generate actual .env file during setup
+
+Files Created:
+- deploy/offline/.env.sample
+
+Usage:
+- ✅ Template successfully used by scripts/setup_azure_simple.py
+- ✅ Provides clear guidance for manual configuration
+- ✅ Supports both emulator and Azure Free Tier endpoints
+
+Commit:
+- a8160705: Story 115: Create offline .env.sample (May 2, 16:59)
+
+Branch: feature/phase1-local-api
+
+Status: Configuration template complete, ready for closure
+```
+
+---
+
+### Story #116: Create Cosmos DB seed script
+
+**Status:** Move to **CLOSED**
+
+**Comment to Add:**
+```
+✅ Story #116 Complete - Created Cosmos DB seed script
+
+Implementation:
+- Created scripts/seed_cosmosdb.py for database initialization
+- Supports both local emulator and Azure Cosmos DB
+- Seeds all containers with test data:
+  - Resources: Sample workspace resources
+  - ResourceTemplates: Workspace and service templates
+  - ResourceHistory: Historical state records
+  - Operations: Operation tracking records
+  - Requests: Sample API requests
+  - Migrations: Schema migration tracking
+- Includes error handling and connection verification
+
+Files Created:
+- scripts/seed_cosmosdb.py
+
+Features:
+- ✅ Reads connection details from .env file
+- ✅ Creates containers if they don't exist
+- ✅ Populates with realistic test data
+- ✅ Idempotent (safe to run multiple times)
+
+Commit:
+- 96f73dfa: Story 116: Create Cosmos DB seed script (May 2, 17:37)
+
+Branch: feature/phase1-local-api
+
+Status: Seed script complete, ready for closure
+```
+
+---
+
+### Story #117: Create template seed data
+
+**Status:** Move to **CLOSED**
+
+**Comment to Add:**
+```
+✅ Story #117 Complete - Created template seed data
+
+Implementation:
+- Created data/seed/templates/ directory structure
+- Added sample workspace templates:
+  - Base workspace template with networking
+  - Azure ML workspace template
+  - Guacamole remote desktop template
+- Added sample service templates:
+  - Azure ML compute instance
+  - Azure Databricks workspace
+  - Virtual machine templates
+- All templates follow TRE resource template schema
+- JSON format with proper structure and validation
+
+Files Created:
+- data/seed/templates/workspaces/*.json
+- data/seed/templates/workspace-services/*.json
+- data/seed/templates/shared-services/*.json
+
+Usage:
+- ✅ Used by scripts/seed_cosmosdb.py for database initialization
+- ✅ Provides realistic test data for Phase 1 validation
+- ✅ Enables manual testing of resource deployment workflows
+
+Commit:
+- 9bdbbe82: Story 117: Create template seed data (May 2, 17:40)
+
+Branch: feature/phase1-local-api
+
+Status: Seed data complete, ready for closure
+```
+
+---
+
 ### Story #357: Refactor bootstrap_database for offline mode
 
 **Status:** Move to **CLOSED**
@@ -220,10 +371,14 @@ For each work item above:
 
 1. **Open the work item** in Azure DevOps
 2. **Add the comment** from above to the Discussion/Comments section
-3. **Update the State**:
-   - Story #357: Resolved → **Closed**
-   - Story #348: In Progress → **Closed**
-   - Feature #113: In Progress → **Closed**
+3. **Update the State** to **Closed**:
+   - Story #114: Create offline docker-compose with emulators → **Closed**
+   - Story #115: Create offline .env.sample → **Closed**
+   - Story #116: Create Cosmos DB seed script → **Closed**
+   - Story #117: Create template seed data → **Closed**
+   - Story #357: Refactor bootstrap_database for offline mode → **Closed**
+   - Story #348: Test Phase 1: Local API with Emulators → **Closed**
+   - Feature #113: Phase 1: Local API with Emulators → **Closed**
 4. **Save** the work item
 
 ---
@@ -269,9 +424,21 @@ tre-azurite   azurite:latest    Up
 
 ---
 
-**Summary:** Phase 1 is functionally complete with all acceptance criteria met. Azure Free Tier provides superior reliability compared to Linux emulator. All code committed and pushed. Ready to close Feature #113 and proceed to Phase 2.
+**Summary:** Phase 1 is functionally complete with all acceptance criteria met. All 7 work items (4 infrastructure stories + 2 implementation stories + 1 feature) are ready for closure. Azure Free Tier provides superior reliability compared to Linux emulator. All code committed and pushed to feature/phase1-local-api branch.
+
+**Work Items to Close:**
+- Story #114: Create offline docker-compose with emulators ✅
+- Story #115: Create offline .env.sample ✅
+- Story #116: Create Cosmos DB seed script ✅
+- Story #117: Create template seed data ✅
+- Story #357: Refactor bootstrap_database for offline mode ✅
+- Story #348: Test Phase 1: Local API with Emulators ✅
+- Feature #113: Phase 1: Local API with Emulators ✅
+
+Ready to close Feature #113 and proceed to Phase 2.
 
 ---
 
 **Created:** 2026-05-03  
+**Updated:** 2026-05-03 (Added Stories #114-117)  
 **Author:** Claude Sonnet 4.5
