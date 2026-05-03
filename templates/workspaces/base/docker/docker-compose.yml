@@ -1,0 +1,68 @@
+version: '3.8'
+
+# Docker-based workspace template for offline TRE deployment
+# Creates an isolated workspace with its own storage and vault management
+
+services:
+  # Workspace-specific storage (Azurite instance)
+  workspace-storage:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: ${WORKSPACE_ID}-storage
+    environment:
+      - AZURITE_ACCOUNTS=${WORKSPACE_STORAGE_ACCOUNT}:${WORKSPACE_STORAGE_KEY}
+    volumes:
+      - workspace-storage-data:/data
+    networks:
+      - workspace-network
+    ports:
+      - "${WORKSPACE_STORAGE_PORT_BLOB}:10000"
+      - "${WORKSPACE_STORAGE_PORT_QUEUE}:10001"
+      - "${WORKSPACE_STORAGE_PORT_TABLE}:10002"
+    command: azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --loose --skipApiVersionCheck
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "10000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Workspace-specific Key Vault (HashiCorp Vault namespace)
+  workspace-vault:
+    image: hashicorp/vault:latest
+    container_name: ${WORKSPACE_ID}-vault
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=${WORKSPACE_VAULT_TOKEN}
+      - VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200
+      - VAULT_ADDR=http://0.0.0.0:8200
+    volumes:
+      - workspace-vault-data:/vault/file
+      - workspace-vault-logs:/vault/logs
+    networks:
+      - workspace-network
+    ports:
+      - "${WORKSPACE_VAULT_PORT}:8200"
+    cap_add:
+      - IPC_LOCK
+    command: server -dev -dev-root-token-id=${WORKSPACE_VAULT_TOKEN}
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+networks:
+  workspace-network:
+    name: ${WORKSPACE_ID}-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${WORKSPACE_SUBNET}
+
+volumes:
+  workspace-storage-data:
+    name: ${WORKSPACE_ID}-storage-data
+  workspace-vault-data:
+    name: ${WORKSPACE_ID}-vault-data
+  workspace-vault-logs:
+    name: ${WORKSPACE_ID}-vault-logs
