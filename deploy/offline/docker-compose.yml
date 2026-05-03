@@ -45,6 +45,28 @@ services:
     networks:
       - tre-local
 
+  # RabbitMQ (Message Queue & Event Bus)
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: tre-rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP protocol
+      - "15672:15672" # Management UI
+    environment:
+      - RABBITMQ_DEFAULT_USER=tre_user
+      - RABBITMQ_DEFAULT_PASS=tre_password
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - tre-local
+
   # TRE API Application
   tre-api:
     build:
@@ -75,8 +97,12 @@ services:
       - AZURE_STORAGE_ACCOUNT_NAME=devstoreaccount1
       - AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
 
-      # Service Bus - will be RabbitMQ in Phase 2
-      - SERVICE_BUS_FULLY_QUALIFIED_NAMESPACE=localhost
+      # RabbitMQ connection (replaces Azure Service Bus in offline mode)
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=tre_user
+      - RABBITMQ_PASSWORD=tre_password
+      - RABBITMQ_VHOST=/
 
       # Disable Azure-specific features for local mode
       - ENABLE_AIRLOCK=false
@@ -87,6 +113,8 @@ services:
       #   condition: service_started  # Uncomment if using local emulator
       azurite:
         condition: service_started
+      rabbitmq:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 10s
@@ -109,3 +137,5 @@ volumes:
   #   name: tre-cosmosdb-data  # Uncomment if using local emulator
   azurite-data:
     name: tre-azurite-data
+  rabbitmq-data:
+    name: tre-rabbitmq-data
