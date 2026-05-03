@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local TRE Setup - Interactive Map</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #242836;
+    --border: #2e3348;
+    --text: #e2e4ed;
+    --text-dim: #8b8fa3;
+    --accent: #6c8cff;
+    --accent-dim: #3a4d8c;
+    --green: #4ade80;
+    --orange: #fb923c;
+    --red: #f87171;
+    --purple: #a78bfa;
+    --cyan: #22d3ee;
+    --pink: #f472b6;
+    --yellow: #facc15;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  #toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    z-index: 100;
+    gap: 12px;
+  }
+
+  #toolbar h1 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-right: 20px;
+    white-space: nowrap;
+  }
+
+  .toolbar-group {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .toolbar-group::before {
+    content: '';
+    width: 1px;
+    height: 24px;
+    background: var(--border);
+    margin-right: 8px;
+  }
+
+  .tb-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-dim);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .tb-btn:hover { background: var(--surface2); color: var(--text); }
+  .tb-btn.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    margin-left: auto;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  #canvas-container {
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  canvas { display: block; }
+
+  /* Detail Panel */
+  #detail-panel {
+    position: fixed;
+    top: 48px;
+    right: 0;
+    width: 400px;
+    bottom: 0;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 90;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+    padding: 24px;
+  }
+
+  #detail-panel.open { transform: translateX(0); }
+
+  #detail-panel h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  #detail-panel .subtitle {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  #detail-panel .section {
+    margin-bottom: 16px;
+  }
+
+  #detail-panel .section h3 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  #detail-panel .section p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  #detail-panel .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin: 2px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+  }
+
+  #detail-panel .port-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 2px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-family: 'Monaco', 'Menlo', monospace;
+  }
+
+  #detail-panel .relation-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  #detail-panel .relation-item:hover { background: var(--surface2); }
+
+  .relation-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+
+  .close-btn:hover { background: var(--surface2); color: var(--text); }
+
+  /* Legend */
+  #legend {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    z-index: 80;
+    font-size: 11px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    max-width: 700px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-dim);
+  }
+
+  .legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+
+  /* Tooltip */
+  #tooltip {
+    position: fixed;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.15s;
+    max-width: 250px;
+  }
+
+  #tooltip.visible { opacity: 1; }
+  #tooltip .tt-title { font-weight: 600; margin-bottom: 2px; }
+  #tooltip .tt-desc { color: var(--text-dim); font-size: 11px; }
+  #tooltip .tt-port { color: var(--accent); font-family: 'Monaco', 'Menlo', monospace; }
+
+  /* Search */
+  #search-box {
+    display: flex;
+    align-items: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0 10px;
+    height: 32px;
+    margin-left: auto;
+  }
+
+  #search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-size: 12px;
+    width: 180px;
+  }
+
+  #search-box input::placeholder { color: var(--text-dim); }
+
+  /* Flow panel */
+  #flow-panel {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    z-index: 80;
+    width: 360px;
+    display: none;
+  }
+
+  #flow-panel h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--accent);
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .flow-num {
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .flow-num.active {
+    background: var(--accent);
+    color: var(--bg);
+  }
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <h1>Local TRE Setup (Offline Mode)</h1>
+  <div class="toolbar-group">
+    <button class="tb-btn active" data-view="all" onclick="setView('all')">All Services</button>
+    <button class="tb-btn" data-view="phase1" onclick="setView('phase1')">Phase 1</button>
+    <button class="tb-btn" data-view="phase2" onclick="setView('phase2')">Phase 2</button>
+    <button class="tb-btn" data-view="phase3" onclick="setView('phase3')">Phase 3</button>
+    <button class="tb-btn" data-view="phase4" onclick="setView('phase4')">Phase 4</button>
+  </div>
+  <div class="toolbar-group">
+    <button class="tb-btn" id="btn-api-flow" onclick="toggleFlow('api')">API Request Flow</button>
+    <button class="tb-btn" id="btn-deploy-flow" onclick="toggleFlow('deploy')">Workspace Deploy Flow</button>
+  </div>
+  <div id="search-box">
+    <input type="text" placeholder="Search services..." id="search-input" oninput="onSearch(this.value)" />
+  </div>
+  <div class="status-badge">
+    <div class="status-dot"></div>
+    <span>11 Services Running</span>
+  </div>
+</div>
+
+<div id="canvas-container">
+  <canvas id="main-canvas"></canvas>
+</div>
+
+<div id="detail-panel">
+  <button class="close-btn" onclick="closePanel()">&times;</button>
+  <div id="detail-content"></div>
+</div>
+
+<div id="legend"></div>
+<div id="tooltip"><div class="tt-title"></div><div class="tt-desc"></div><div class="tt-port"></div></div>
+
+<div id="flow-panel">
+  <h3 id="flow-title"></h3>
+  <div id="flow-steps"></div>
+</div>
+
+<script>
+// ─── DATA MODEL ──────────────────────────────────────────────────────────────
+
+const CATEGORIES = {
+  api:        { label: 'API & UI',              color: '#6c8cff' },
+  storage:    { label: 'Data Storage',          color: '#fb923c' },
+  messaging:  { label: 'Message Queue',         color: '#22d3ee' },
+  auth:       { label: 'Authentication',        color: '#a78bfa' },
+  secrets:    { label: 'Secrets Management',    color: '#f472b6' },
+  compute:    { label: 'Processing',            color: '#4ade80' },
+  registry:   { label: 'Container Registry',    color: '#facc15' },
+  routing:    { label: 'Reverse Proxy',         color: '#f87171' },
+  observability: { label: 'Observability',      color: '#94a3b8' },
+};
+
+const nodes = [
+  // Phase 1: Core API & Storage
+  { id: 'api', label: 'TRE API', cat: 'api', phase: 1, views: ['all','phase1'],
+    x: 0, y: 0, status: 'healthy', ports: ['8000'],
+    desc: 'Central FastAPI REST service running in Docker. Handles all workspace, service, and airlock operations in offline mode. Connects to Cosmos DB for state and RabbitMQ for async operations.',
+    tech: ['FastAPI', 'Python', 'Docker', 'Gunicorn'],
+    url: 'http://localhost:8000/api/docs' },
+
+  { id: 'cosmosdb', label: 'Cosmos DB', cat: 'storage', phase: 1, views: ['all','phase1'],
+    x: -220, y: 180, status: 'healthy', ports: ['443'],
+    desc: 'Azure Cosmos DB Free Tier (cloud service). Stores all TRE state: Resources, ResourceTemplates, ResourceHistory, Operations, Requests, Migrations. 6 containers with 400 RU/s each.',
+    tech: ['Cosmos DB SQL API', 'Azure Free Tier'],
+    url: 'https://tre-poc-cosmos.documents.azure.com' },
+
+  { id: 'azurite', label: 'Azurite', cat: 'storage', phase: 1, views: ['all','phase1'],
+    x: 220, y: 180, status: 'healthy', ports: ['10000', '10001', '10002'],
+    desc: 'Azure Storage Emulator providing Blob, Queue, and Table services locally. Replaces Azure Storage for development. Data persisted in Docker volume.',
+    tech: ['Azurite', 'Blob Storage', 'Queue Storage', 'Table Storage'],
+    url: 'http://localhost:10000' },
+
+  // Phase 2: Message Queue & Resource Processor
+  { id: 'rabbitmq', label: 'RabbitMQ', cat: 'messaging', phase: 2, views: ['all','phase2'],
+    x: 220, y: -180, status: 'healthy', ports: ['5672', '15672'],
+    desc: 'Message broker replacing Azure Service Bus. Handles async workspace deployment requests and status updates. Management UI available for monitoring queues.',
+    tech: ['RabbitMQ', 'AMQP', 'Management UI'],
+    url: 'http://localhost:15672' },
+
+  { id: 'resource-processor', label: 'Resource Processor', cat: 'compute', phase: 2, views: ['all','phase2'],
+    x: 450, y: 0, status: 'running', ports: [],
+    desc: 'Local Docker-based resource processor. Listens to RabbitMQ for deployment messages, executes Porter bundles, and deploys workspace containers. Replaces Azure VMSS.',
+    tech: ['Python', 'Docker SDK', 'Porter'],
+    url: null },
+
+  // Phase 3: Authentication & Secrets
+  { id: 'keycloak', label: 'Keycloak', cat: 'auth', phase: 3, views: ['all','phase3'],
+    x: -220, y: -180, status: 'running', ports: ['8080'],
+    desc: 'Open-source identity and access management replacing Azure AD. Provides OAuth2/OIDC authentication for API access. Pre-configured with AzureTRE realm.',
+    tech: ['Keycloak', 'OAuth2', 'OIDC'],
+    url: 'http://localhost:8080/admin' },
+
+  { id: 'vault', label: 'Vault', cat: 'secrets', phase: 3, views: ['all','phase3'],
+    x: -450, y: 0, status: 'running', ports: ['8200'],
+    desc: 'HashiCorp Vault for secrets management replacing Azure Key Vault. Stores API keys, certificates, and workspace secrets. Development mode with root token.',
+    tech: ['HashiCorp Vault', 'KV Secrets Engine'],
+    url: 'http://localhost:8200' },
+
+  // Phase 4: Container Registry, Routing & Observability
+  { id: 'registry', label: 'Container Registry', cat: 'registry', phase: 4, views: ['all','phase4'],
+    x: 450, y: 180, status: 'healthy', ports: ['5001'],
+    desc: 'Private Docker registry for workspace images and Porter bundles. Port changed from 5000 to 5001 to avoid macOS AirPlay conflict.',
+    tech: ['Docker Registry v2'],
+    url: 'http://localhost:5001/v2/_catalog' },
+
+  { id: 'traefik', label: 'Traefik', cat: 'routing', phase: 4, views: ['all','phase4'],
+    x: -100, y: -320, status: 'starting', ports: ['80', '443', '8090'],
+    desc: 'Reverse proxy and load balancer for workspace routing. Dynamic service discovery via Docker labels. Dashboard available for monitoring routes.',
+    tech: ['Traefik v2.10', 'Docker Provider'],
+    url: 'http://localhost:8090/dashboard' },
+
+  { id: 'jaeger', label: 'Jaeger', cat: 'observability', phase: 4, views: ['all','phase4'],
+    x: 100, y: 320, status: 'running', ports: ['16686', '14268', '6831'],
+    desc: 'Distributed tracing system for monitoring request flows across services. All-in-one deployment with UI for trace visualization.',
+    tech: ['Jaeger', 'OpenTelemetry', 'Zipkin'],
+    url: 'http://localhost:16686' },
+
+  { id: 'loki', label: 'Loki', cat: 'observability', phase: 4, views: ['all','phase4'],
+    x: -100, y: 320, status: 'ready', ports: ['3100'],
+    desc: 'Log aggregation system from Grafana Labs. Collects logs from all services for centralized querying. Lightweight and efficient.',
+    tech: ['Grafana Loki', 'LogQL'],
+    url: 'http://localhost:3100/ready' },
+
+  { id: 'grafana', label: 'Grafana', cat: 'observability', phase: 4, views: ['all','phase4'],
+    x: 0, y: 420, status: 'running', ports: ['3001'],
+    desc: 'Monitoring and visualization platform. Pre-configured with Loki and Jaeger data sources. Default credentials: admin/admin.',
+    tech: ['Grafana', 'Dashboards'],
+    url: 'http://localhost:3001' },
+];
+
+const edges = [
+  // Phase 1: API → Storage
+  { from: 'api', to: 'cosmosdb', label: 'read/write state', views: ['all','phase1'], phase: 1 },
+  { from: 'api', to: 'azurite', label: 'blob/queue storage', views: ['all','phase1'], phase: 1, dashed: true },
+
+  // Phase 2: Message Queue
+  { from: 'api', to: 'rabbitmq', label: 'publish deploy messages', views: ['all','phase2'], phase: 2 },
+  { from: 'rabbitmq', to: 'resource-processor', label: 'consume messages', views: ['all','phase2'], phase: 2 },
+  { from: 'resource-processor', to: 'rabbitmq', label: 'publish status', views: ['all','phase2'], phase: 2, dashed: true },
+  { from: 'resource-processor', to: 'cosmosdb', label: 'update state', views: ['all','phase2'], phase: 2, dashed: true },
+
+  // Phase 3: Authentication & Secrets
+  { from: 'keycloak', to: 'api', label: 'OAuth2 tokens', views: ['all','phase3'], phase: 3 },
+  { from: 'vault', to: 'api', label: 'read secrets', views: ['all','phase3'], phase: 3 },
+  { from: 'resource-processor', to: 'vault', label: 'fetch credentials', views: ['all','phase3'], phase: 3, dashed: true },
+
+  // Phase 4: Registry, Routing & Observability
+  { from: 'resource-processor', to: 'registry', label: 'pull/push images', views: ['all','phase4'], phase: 4 },
+  { from: 'traefik', to: 'api', label: 'reverse proxy', views: ['all','phase4'], phase: 4 },
+  { from: 'api', to: 'jaeger', label: 'send traces', views: ['all','phase4'], phase: 4, dashed: true },
+  { from: 'api', to: 'loki', label: 'send logs', views: ['all','phase4'], phase: 4, dashed: true },
+  { from: 'loki', to: 'grafana', label: 'data source', views: ['all','phase4'], phase: 4, dashed: true },
+  { from: 'jaeger', to: 'grafana', label: 'data source', views: ['all','phase4'], phase: 4, dashed: true },
+
+  // Cross-phase connections
+  { from: 'resource-processor', to: 'azurite', label: 'workspace storage', views: ['all'], phase: 2, dashed: true },
+];
+
+// Flow animations
+const FLOWS = {
+  api: {
+    title: 'API Health Check Flow',
+    steps: [
+      'User sends GET /api/health',
+      'API checks Cosmos DB connection',
+      'API checks offline mode (skips Azure Service Bus)',
+      'API checks Resource Processor (local container)',
+      'API returns 200 OK with service status',
+    ],
+    path: ['api','cosmosdb','api'],
+  },
+  deploy: {
+    title: 'Workspace Deployment Flow',
+    steps: [
+      'User authenticates via Keycloak OAuth2',
+      'User sends POST /api/workspaces with auth token',
+      'API validates token and writes to Cosmos DB',
+      'API publishes deploy message to RabbitMQ',
+      'Resource Processor consumes message from queue',
+      'Processor pulls workspace image from Registry',
+      'Processor deploys Docker container',
+      'Processor updates Cosmos DB with status',
+      'Processor publishes completion to RabbitMQ',
+      'API reads status and returns to user',
+      'Traefik dynamically routes to workspace',
+      'Jaeger captures distributed trace',
+      'Loki aggregates deployment logs',
+      'Grafana displays metrics and traces',
+    ],
+    path: ['keycloak','api','cosmosdb','rabbitmq','resource-processor','registry','resource-processor','cosmosdb','rabbitmq','api','traefik','jaeger','loki','grafana'],
+  }
+};
+
+// ─── CANVAS RENDERING ────────────────────────────────────────────────────────
+
+const canvas = document.getElementById('main-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+let camX = 0, camY = 0, zoom = 1.0;
+let currentView = 'all';
+let searchTerm = '';
+let hoveredNode = null;
+let selectedNode = null;
+let dragging = null;
+let dragStart = null;
+let panStart = null;
+let activeFlow = null;
+let flowStep = 0;
+let flowTimer = null;
+const NODE_W = 160, NODE_H = 60, NODE_R = 12;
+
+function resize() {
+  W = canvas.width = canvas.parentElement.clientWidth;
+  H = canvas.height = canvas.parentElement.clientHeight;
+}
+
+window.addEventListener('resize', () => { resize(); draw(); });
+resize();
+
+// Center camera
+camX = W / 2;
+camY = H / 2;
+
+function worldToScreen(x, y) {
+  return [ (x * zoom) + camX, (y * zoom) + camY ];
+}
+
+function screenToWorld(sx, sy) {
+  return [ (sx - camX) / zoom, (sy - camY) / zoom ];
+}
+
+function isVisible(node) {
+  if (currentView !== 'all' && !node.views.includes(currentView)) return false;
+  if (searchTerm) {
+    const s = searchTerm.toLowerCase();
+    return node.label.toLowerCase().includes(s) ||
+           node.id.toLowerCase().includes(s) ||
+           node.desc.toLowerCase().includes(s) ||
+           (node.tech && node.tech.some(t => t.toLowerCase().includes(s)));
+  }
+  return true;
+}
+
+function isEdgeVisible(edge) {
+  if (currentView !== 'all' && !edge.views.includes(currentView)) return false;
+  const fromNode = nodes.find(n => n.id === edge.from);
+  const toNode = nodes.find(n => n.id === edge.to);
+  return isVisible(fromNode) && isVisible(toNode);
+}
+
+function getNodeColor(node) {
+  return CATEGORIES[node.cat]?.color || '#888';
+}
+
+function getStatusColor(status) {
+  switch(status) {
+    case 'healthy': return '#4ade80';
+    case 'running': return '#6c8cff';
+    case 'ready': return '#22d3ee';
+    case 'starting': return '#fb923c';
+    default: return '#888';
+  }
+}
+
+function drawRoundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function hexToRgba(hex, a) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+function drawArrow(x1, y1, x2, y2, color, dashed, highlight) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const len = Math.sqrt(dx*dx + dy*dy);
+  if (len < 1) return;
+  const ux = dx/len, uy = dy/len;
+
+  // Shorten to stop at node border
+  const margin = 10;
+  const sx = x1 + ux * margin, sy = y1 + uy * margin;
+  const ex = x2 - ux * margin, ey = y2 - uy * margin;
+
+  ctx.save();
+  ctx.beginPath();
+  if (dashed) ctx.setLineDash([6, 4]);
+  ctx.strokeStyle = highlight ? color : hexToRgba(color, 0.4);
+  ctx.lineWidth = highlight ? 3 : 1.5;
+  ctx.moveTo(sx, sy);
+  ctx.lineTo(ex, ey);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Arrowhead
+  const aSize = highlight ? 10 : 7;
+  const ax = ex - ux * aSize, ay = ey - uy * aSize;
+  ctx.fillStyle = highlight ? color : hexToRgba(color, 0.5);
+  ctx.beginPath();
+  ctx.moveTo(ex, ey);
+  ctx.lineTo(ax - uy * aSize * 0.4, ay + ux * aSize * 0.4);
+  ctx.lineTo(ax + uy * aSize * 0.4, ay - ux * aSize * 0.4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function getNodeCenter(node) {
+  return worldToScreen(node.x, node.y);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Draw grid
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+  ctx.lineWidth = 1;
+  const gridSize = 50 * zoom;
+  const ox = camX % gridSize, oy = camY % gridSize;
+  for (let x = ox; x < W; x += gridSize) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = oy; y < H; y += gridSize) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  ctx.restore();
+
+  // Determine highlighted edges/nodes
+  const highlightedEdges = new Set();
+  const highlightedNodes = new Set();
+
+  if (activeFlow) {
+    const path = FLOWS[activeFlow].path;
+    for (let i = 0; i <= Math.min(flowStep, path.length - 2); i++) {
+      highlightedNodes.add(path[i]);
+      highlightedNodes.add(path[i+1]);
+      const key = path[i] + '->' + path[i+1];
+      highlightedEdges.add(key);
+      const rkey = path[i+1] + '->' + path[i];
+      highlightedEdges.add(rkey);
+    }
+  }
+
+  if (selectedNode || hoveredNode) {
+    const focusId = selectedNode || hoveredNode;
+    highlightedNodes.add(focusId);
+    edges.forEach(e => {
+      if ((e.from === focusId || e.to === focusId) && isEdgeVisible(e)) {
+        highlightedNodes.add(e.from);
+        highlightedNodes.add(e.to);
+        highlightedEdges.add(e.from + '->' + e.to);
+      }
+    });
+  }
+
+  // Draw edges
+  edges.forEach(edge => {
+    if (!isEdgeVisible(edge)) return;
+    const fromNode = nodes.find(n => n.id === edge.from);
+    const toNode = nodes.find(n => n.id === edge.to);
+    const [x1, y1] = getNodeCenter(fromNode);
+    const [x2, y2] = getNodeCenter(toNode);
+    const key = edge.from + '->' + edge.to;
+    const hl = highlightedEdges.has(key);
+    const color = getNodeColor(fromNode);
+    drawArrow(x1, y1, x2, y2, color, edge.dashed, hl);
+
+    // Edge label
+    if (hl && zoom > 0.6) {
+      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      ctx.save();
+      ctx.font = `${10 * Math.min(zoom, 1.2)}px Inter, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const tw = ctx.measureText(edge.label).width + 10;
+      ctx.fillStyle = 'rgba(15,17,23,0.9)';
+      ctx.fillRect(mx - tw/2, my - 9, tw, 18);
+      ctx.fillStyle = hexToRgba(color, 0.95);
+      ctx.fillText(edge.label, mx, my);
+      ctx.restore();
+    }
+  });
+
+  // Draw nodes
+  nodes.forEach(node => {
+    if (!isVisible(node)) return;
+    const [sx, sy] = worldToScreen(node.x, node.y);
+    const w = NODE_W * zoom, h = NODE_H * zoom, r = NODE_R * zoom;
+    const color = getNodeColor(node);
+    const statusColor = getStatusColor(node.status);
+    const isHl = highlightedNodes.size === 0 || highlightedNodes.has(node.id);
+    const isHovered = hoveredNode === node.id;
+    const isSelected = selectedNode === node.id;
+    const alpha = isHl ? 1.0 : 0.25;
+
+    ctx.save();
+
+    // Glow for highlighted
+    if (isHovered || isSelected) {
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 22;
+    }
+
+    // Background
+    drawRoundRect(sx - w/2, sy - h/2, w, h, r);
+    ctx.fillStyle = hexToRgba('#1a1d27', alpha);
+    ctx.fill();
+    ctx.strokeStyle = hexToRgba(color, isSelected ? 1.0 : isHovered ? 0.85 : alpha * 0.6);
+    ctx.lineWidth = isSelected ? 3 : isHovered ? 2.5 : 1.5;
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+    // Category indicator bar (left)
+    drawRoundRect(sx - w/2, sy - h/2, 5 * zoom, h, r);
+    ctx.fillStyle = hexToRgba(color, alpha * 0.85);
+    ctx.fill();
+
+    // Status indicator (top right)
+    const statusSize = 8 * zoom;
+    ctx.beginPath();
+    ctx.arc(sx + w/2 - 12 * zoom, sy - h/2 + 12 * zoom, statusSize, 0, Math.PI * 2);
+    ctx.fillStyle = hexToRgba(statusColor, alpha);
+    ctx.fill();
+    ctx.strokeStyle = hexToRgba(statusColor, alpha * 0.4);
+    ctx.lineWidth = 2 * zoom;
+    ctx.stroke();
+
+    // Label
+    ctx.font = `600 ${13 * Math.min(zoom, 1.3)}px Inter, sans-serif`;
+    ctx.fillStyle = hexToRgba('#e2e4ed', alpha);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(node.label, sx, sy - 6 * zoom);
+
+    // Ports (if any)
+    if (node.ports && node.ports.length > 0 && zoom > 0.7) {
+      const portsText = node.ports.slice(0, 2).join(', ') + (node.ports.length > 2 ? '...' : '');
+      ctx.font = `${9 * Math.min(zoom, 1.2)}px Monaco, monospace`;
+      ctx.fillStyle = hexToRgba(color, alpha * 0.75);
+      ctx.fillText(`:${portsText}`, sx, sy + 14 * zoom);
+    } else {
+      // Category label
+      ctx.font = `${9 * Math.min(zoom, 1.2)}px Inter, sans-serif`;
+      ctx.fillStyle = hexToRgba(color, alpha * 0.7);
+      ctx.fillText(`Phase ${node.phase}`, sx, sy + 14 * zoom);
+    }
+
+    ctx.restore();
+  });
+
+  // Flow step indicator on nodes
+  if (activeFlow) {
+    const path = FLOWS[activeFlow].path;
+    const stepIdx = Math.min(flowStep, path.length - 1);
+    const node = nodes.find(n => n.id === path[stepIdx]);
+    if (node && isVisible(node)) {
+      const [sx, sy] = worldToScreen(node.x, node.y);
+      const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 200);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(sx, sy, (NODE_W * zoom / 2) + 10 + pulse * 8, 0, Math.PI * 2);
+      ctx.strokeStyle = hexToRgba(getNodeColor(node), 0.5 + pulse * 0.3);
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+}
+
+// ─── INTERACTION ─────────────────────────────────────────────────────────────
+
+function hitTest(sx, sy) {
+  for (let i = nodes.length - 1; i >= 0; i--) {
+    const node = nodes[i];
+    if (!isVisible(node)) continue;
+    const [nx, ny] = worldToScreen(node.x, node.y);
+    const w = NODE_W * zoom / 2, h = NODE_H * zoom / 2;
+    if (sx >= nx - w && sx <= nx + w && sy >= ny - h && sy <= ny + h) {
+      return node;
+    }
+  }
+  return null;
+}
+
+canvas.addEventListener('mousedown', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const hit = hitTest(mx, my);
+  if (hit) {
+    dragging = hit;
+    dragStart = { mx, my, nx: hit.x, ny: hit.y };
+  } else {
+    panStart = { mx, my, cx: camX, cy: camY };
+  }
+});
+
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+
+  if (dragging && dragStart) {
+    dragging.x = dragStart.nx + (mx - dragStart.mx) / zoom;
+    dragging.y = dragStart.ny + (my - dragStart.my) / zoom;
+    draw();
+    return;
+  }
+
+  if (panStart) {
+    camX = panStart.cx + (mx - panStart.mx);
+    camY = panStart.cy + (my - panStart.my);
+    draw();
+    return;
+  }
+
+  const hit = hitTest(mx, my);
+  const tooltip = document.getElementById('tooltip');
+  if (hit) {
+    canvas.style.cursor = 'pointer';
+    hoveredNode = hit.id;
+    tooltip.querySelector('.tt-title').textContent = hit.label;
+    tooltip.querySelector('.tt-desc').textContent = CATEGORIES[hit.cat].label + ' | Phase ' + hit.phase;
+    tooltip.querySelector('.tt-port').textContent = hit.ports.length > 0 ? 'Ports: ' + hit.ports.join(', ') : '';
+    tooltip.style.left = (e.clientX + 16) + 'px';
+    tooltip.style.top = (e.clientY + 16) + 'px';
+    tooltip.classList.add('visible');
+  } else {
+    canvas.style.cursor = panStart ? 'grabbing' : 'default';
+    hoveredNode = null;
+    tooltip.classList.remove('visible');
+  }
+  draw();
+});
+
+canvas.addEventListener('mouseup', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+
+  if (dragging && dragStart) {
+    const dist = Math.abs(mx - dragStart.mx) + Math.abs(my - dragStart.my);
+    if (dist < 5) {
+      selectNode(dragging.id);
+    }
+  }
+  dragging = null;
+  dragStart = null;
+  panStart = null;
+});
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+
+  const [wx, wy] = screenToWorld(mx, my);
+  const factor = e.deltaY > 0 ? 0.9 : 1.1;
+  zoom = Math.max(0.3, Math.min(3.0, zoom * factor));
+  camX = mx - wx * zoom;
+  camY = my - wy * zoom;
+  draw();
+}, { passive: false });
+
+canvas.addEventListener('dblclick', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const hit = hitTest(mx, my);
+  if (hit) selectNode(hit.id);
+});
+
+// ─── UI CONTROLS ─────────────────────────────────────────────────────────────
+
+function setView(view) {
+  currentView = view;
+  document.querySelectorAll('[data-view]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === view);
+  });
+  draw();
+}
+
+function onSearch(val) {
+  searchTerm = val;
+  draw();
+}
+
+function selectNode(id) {
+  selectedNode = id;
+  const node = nodes.find(n => n.id === id);
+  if (!node) return;
+
+  const panel = document.getElementById('detail-panel');
+  const content = document.getElementById('detail-content');
+
+  const related = edges.filter(e => e.from === id || e.to === id).map(e => {
+    const otherId = e.from === id ? e.to : e.from;
+    const other = nodes.find(n => n.id === otherId);
+    const direction = e.from === id ? 'outgoing' : 'incoming';
+    return { node: other, label: e.label, direction };
+  });
+
+  content.innerHTML = `
+    <h2>${node.label}</h2>
+    <div class="subtitle">${CATEGORIES[node.cat].label} &mdash; Phase ${node.phase}</div>
+    <div class="section">
+      <h3>Description</h3>
+      <p>${node.desc}</p>
+    </div>
+    ${node.ports.length > 0 ? `<div class="section">
+      <h3>Ports</h3>
+      <div>${node.ports.map(p => `<span class="port-badge">${p}</span>`).join('')}</div>
+    </div>` : ''}
+    ${node.tech ? `<div class="section">
+      <h3>Technologies</h3>
+      <div>${node.tech.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    </div>` : ''}
+    <div class="section">
+      <h3>Status</h3>
+      <p style="text-transform:capitalize;color:${getStatusColor(node.status)}">● ${node.status}</p>
+    </div>
+    ${node.url ? `<div class="section">
+      <h3>Access</h3>
+      <p><a href="${node.url}" target="_blank" style="color:var(--accent)">${node.url}</a></p>
+    </div>` : ''}
+    <div class="section">
+      <h3>Connections (${related.length})</h3>
+      ${related.map(r => `
+        <div class="relation-item" onclick="selectNode('${r.node.id}')">
+          <div class="relation-dot" style="background:${getNodeColor(r.node)}"></div>
+          <span>${r.direction === 'outgoing' ? '&rarr;' : '&larr;'} <strong>${r.node.label}</strong></span>
+          <span style="color:var(--text-dim);font-size:11px;margin-left:auto">${r.label}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  panel.classList.add('open');
+  draw();
+}
+
+function closePanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+  selectedNode = null;
+  draw();
+}
+
+function toggleFlow(name) {
+  const btn = document.getElementById('btn-' + name + '-flow');
+  if (activeFlow === name) {
+    activeFlow = null;
+    flowStep = 0;
+    clearInterval(flowTimer);
+    flowTimer = null;
+    btn.classList.remove('active');
+    document.getElementById('flow-panel').style.display = 'none';
+    draw();
+    return;
+  }
+
+  // Deactivate others
+  document.querySelectorAll('#btn-api-flow, #btn-deploy-flow').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  activeFlow = name;
+  flowStep = 0;
+  const flow = FLOWS[name];
+
+  document.getElementById('flow-title').textContent = flow.title;
+  renderFlowSteps();
+  document.getElementById('flow-panel').style.display = 'block';
+
+  clearInterval(flowTimer);
+  flowTimer = setInterval(() => {
+    flowStep++;
+    if (flowStep >= flow.steps.length) {
+      flowStep = 0;
+    }
+    renderFlowSteps();
+    draw();
+  }, 2200);
+
+  draw();
+}
+
+function renderFlowSteps() {
+  const flow = FLOWS[activeFlow];
+  document.getElementById('flow-steps').innerHTML = flow.steps.map((step, i) => `
+    <div class="flow-step" style="opacity:${i <= flowStep ? 1 : 0.3}">
+      <div class="flow-num ${i === flowStep ? 'active' : ''}">${i + 1}</div>
+      <div>${step}</div>
+    </div>
+  `).join('');
+}
+
+// ─── LEGEND ──────────────────────────────────────────────────────────────────
+
+function buildLegend() {
+  const legend = document.getElementById('legend');
+  legend.innerHTML = Object.entries(CATEGORIES).map(([key, val]) => `
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:${val.color}"></div>
+      ${val.label}
+    </div>
+  `).join('');
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+buildLegend();
+
+// Animation loop
+function animate() {
+  if (activeFlow) draw();
+  requestAnimationFrame(animate);
+}
+animate();
+
+draw();
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closePanel();
+    if (activeFlow) toggleFlow(activeFlow);
+    searchTerm = '';
+    document.getElementById('search-input').value = '';
+    draw();
+  }
+  if (e.key === '0') { zoom = 1; camX = W/2; camY = H/2; draw(); }
+});
+</script>
+</body>
+</html>

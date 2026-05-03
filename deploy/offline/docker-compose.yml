@@ -187,7 +187,7 @@ services:
     container_name: tre-registry
     hostname: registry
     ports:
-      - "5000:5000"   # Registry API
+      - "5001:5000"   # Registry API (5001 on host to avoid macOS AirPlay conflict)
     environment:
       - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry
       - REGISTRY_HTTP_ADDR=0.0.0.0:5000

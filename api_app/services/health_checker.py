@@ -34,6 +34,10 @@ async def create_state_store_status() -> Tuple[StatusEnum, str]:
 
 
 async def create_service_bus_status(credential) -> Tuple[StatusEnum, str]:
+    # In offline mode, skip Service Bus health check (using RabbitMQ instead)
+    if config._DEPLOYMENT_MODE == "offline":
+        return StatusEnum.ok, "Offline mode (RabbitMQ)"
+
     status = StatusEnum.ok
     message = ""
     try:
@@ -56,6 +60,10 @@ async def create_service_bus_status(credential) -> Tuple[StatusEnum, str]:
 
 
 async def create_resource_processor_status(credential) -> Tuple[StatusEnum, str]:
+    # In offline mode, skip Azure VMSS health check (using local Docker container)
+    if config._DEPLOYMENT_MODE == "offline":
+        return StatusEnum.ok, "Offline mode (local container)"
+
     status = StatusEnum.ok
     message = ""
     try:
