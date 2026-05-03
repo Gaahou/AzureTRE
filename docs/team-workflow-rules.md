@@ -1032,10 +1032,216 @@ See Testing User Story #362 (Phase 3) or #363 (Phase 4) for complete examples.
 
 ---
 
+## Rule 10: Azure DevOps Default Board Selection
+
+### Always use "TRE playground" as the default board/project for Azure TRE work items. Never use "PoC playground" for TRE-related work.
+
+**Rationale:** Previous work items were accidentally created in the wrong project (PoC playground instead of TRE playground), causing them not to appear on the correct board. This wasted time deleting and recreating work items. Using the correct project ensures work items appear on the right team board and are properly organized.
+
+**Workflow:**
+
+1. When creating work items related to Azure TRE, **always specify** `project: "TRE playground"`
+2. When querying for TRE work items, filter by the TRE playground project
+3. If unsure which project to use, check existing TRE work items first
+4. The correct project ID is: `7f9f3941-9dea-4b04-983c-83fb41835e8d`
+
+**Example:**
+
+```bash
+# ✅ CORRECT - Using TRE playground
+curl -s http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "create_user_story",
+      "arguments": {
+        "project": "TRE playground",
+        "title": "Fix local TRE deployment issues",
+        "description": "..."
+      }
+    }
+  }'
+
+# ❌ WRONG - Using PoC playground for TRE work
+curl -s http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "create_user_story",
+      "arguments": {
+        "project": "PoC playground",  # Wrong project!
+        "title": "Fix local TRE deployment issues",
+        "description": "..."
+      }
+    }
+  }'
+```
+
+**Benefits:**
+- **Correct Board Visibility**: Work items appear on the right team board
+- **No Rework**: Avoids deleting and recreating work items
+- **Team Organization**: All TRE work stays together in one project
+- **Clear History**: Proper project association for reporting and tracking
+
+**Quick Check:**
+Before creating a work item, ask:
+- [ ] Is this Azure TRE related? → Use "TRE playground"
+- [ ] Is this general PoC work? → Use "PoC playground"
+
+---
+
+## Rule 11: Azure DevOps HTML Formatting Standard
+
+### Always use HTML formatting for all Azure DevOps work item descriptions, comments, and text fields for ease of readability.
+
+**Rationale:** ADO renders HTML beautifully with proper formatting, making work items much easier to read and more professional. Markdown is not consistently supported across all ADO fields. Using HTML ensures consistent rendering across descriptions, comments, and all text areas.
+
+**Workflow:**
+
+1. **Always use HTML tags** (not Markdown) for work item descriptions
+2. **Always use HTML tags** (not Markdown) for comments
+3. Follow the standard tag patterns below for consistency
+4. Reference examples: Work items #363, #366
+
+**Standard HTML Tags:**
+
+**Structure:**
+- `<h2>Heading</h2>` for main sections
+- `<h3>Subheading</h3>` for subsections
+- `<br>` for line breaks (use `<br><br>` for paragraph spacing)
+- `<strong>Text</strong>` for bold/emphasis
+- `<code>text</code>` for inline code (commit hashes, file names, commands)
+
+**Lists:**
+- `<ul><li>Item 1</li><li>Item 2</li></ul>` for bullet lists
+- `<ol><li>Step 1</li><li>Step 2</li></ol>` for numbered lists
+
+**Code Blocks:**
+- `<pre>code here</pre>` for multi-line code/JSON
+
+**Links:**
+- `<a href="url">Link text</a>` for clickable links
+
+**Common Patterns:**
+
+**Work Item Description:**
+```html
+<h2>Objective</h2>
+<p>Description of what this work item accomplishes.</p>
+
+<h2>Scope</h2>
+<ul>
+  <li>Task 1</li>
+  <li>Task 2</li>
+</ul>
+
+<h2>Acceptance Criteria</h2>
+<ul>
+  <li>[ ] Criterion 1</li>
+  <li>[ ] Criterion 2</li>
+</ul>
+```
+
+**Comment Format (Simple - Rule #2 Format 1):**
+```html
+<strong>Implementation Complete</strong> ✅<br><br>
+<strong>Commit:</strong> <code>hash</code>: Description<br>
+<strong>Branch:</strong> branch-name<br>
+<strong>GitHub:</strong> <a href="url">url</a><br><br>
+<strong>Status:</strong> Complete ✅<br><br>
+<strong>Files Modified:</strong>
+<ul>
+  <li>file1.py</li>
+  <li>file2.yaml</li>
+</ul>
+```
+
+**Comment Format (Comprehensive - Rule #2 Format 2):**
+```html
+<strong>Story #123 Complete</strong> ✅<br><br>
+
+<strong>Commit:</strong> <code>abc123</code>: Story 123: Description<br>
+<strong>Branch:</strong> feature/branch-name<br>
+<strong>GitHub:</strong> <a href="url">url</a><br><br>
+
+<strong>Status:</strong> Complete ✅<br><br>
+
+<strong>Files Created:</strong>
+<ul>
+<li>path/to/file.py</li>
+</ul>
+
+<strong>Implementation:</strong><br>
+- Created X functionality<br>
+- Added Y feature<br><br>
+
+<strong>Testing:</strong><br>
+✅ All tests passed<br><br>
+```
+
+**Example:**
+
+```bash
+# ✅ CORRECT - Using HTML
+curl -s http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "add_work_item_comment",
+      "arguments": {
+        "id": 366,
+        "text": "<strong>Implementation Complete</strong> ✅<br><br><strong>Commit:</strong> <code>ec1adfb5</code><br><strong>Files Modified:</strong><ul><li>docker-compose.yml</li><li>health_checker.py</li></ul>"
+      }
+    }
+  }'
+
+# ❌ WRONG - Using Markdown
+curl -s http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "add_work_item_comment",
+      "arguments": {
+        "id": 366,
+        "text": "## Implementation Complete ✅\n\n**Commit:** `ec1adfb5`\n\n**Files Modified:**\n- docker-compose.yml\n- health_checker.py"
+      }
+    }
+  }'
+```
+
+**Benefits:**
+- **Better Rendering**: HTML renders consistently across all ADO fields
+- **Professional Appearance**: Clean, formatted work items
+- **Easier Reading**: Proper structure and emphasis
+- **Clickable Links**: URLs become clickable automatically
+- **Code Clarity**: Code blocks and inline code are clearly distinguished
+
+**Validation Checklist:**
+- [ ] No Markdown syntax (##, **, -, etc.)
+- [ ] HTML tags used for all formatting
+- [ ] Links use `<a href>` tags
+- [ ] Code uses `<code>` or `<pre>` tags
+- [ ] Lists use `<ul><li>` or `<ol><li>` tags
+- [ ] Line breaks use `<br>` tags
+
+**Reference:**
+See work items #363 and #366 for examples of proper HTML formatting.
+
+---
+
 ## Workflow Checklist
 
 ### Starting a Feature
 - [ ] ✅ **RULE 4:** Create new feature branch from previous feature branch
+- [ ] ✅ **RULE 10:** Use "TRE playground" project for TRE work items
 - [ ] Move feature to **Active** in Azure DevOps
 - [ ] Move all stories in feature to **Active**
 
@@ -1052,6 +1258,7 @@ See Testing User Story #362 (Phase 3) or #363 (Phase 4) for complete examples.
 ### After Each Commit
 - [ ] Push commit to GitHub
 - [ ] ✅ **RULE 2:** Add comment to work item with commit details
+- [ ] ✅ **RULE 11:** Use HTML formatting for comments
 - [ ] Keep work item in **Active** state
 
 ### Before Moving to Resolved
@@ -1195,4 +1402,4 @@ For questions about these workflow rules, contact:
 This document should be reviewed and updated during sprint retrospectives or when workflow improvements are identified.
 
 **Last Updated:** 2026-05-03
-**Version:** 1.7 - Added Rule #9 for testing user story description format standardization
+**Version:** 1.9 - Added Rule #10 (TRE playground default) and Rule #11 (HTML formatting standard)
