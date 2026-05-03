@@ -1,0 +1,144 @@
+{
+  "realm": "AzureTRE",
+  "enabled": true,
+  "displayName": "Azure TRE - Local Development",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 3600,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "roles": {
+    "realm": [
+      {
+        "name": "WorkspaceOwner",
+        "description": "Owner of a workspace with full control"
+      },
+      {
+        "name": "WorkspaceResearcher",
+        "description": "Researcher with access to workspace resources"
+      },
+      {
+        "name": "AirlockManager",
+        "description": "Manager of airlock requests and data transfers"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "tre-api-client",
+      "name": "TRE API Client",
+      "description": "Backend API service client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "fullScopeAllowed": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "tre-api-client-secret",
+      "redirectUris": [
+        "http://localhost:8000/*",
+        "http://tre-api:8000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8000",
+        "http://tre-api:8000"
+      ]
+    },
+    {
+      "clientId": "swagger-ui",
+      "name": "Swagger UI Client",
+      "description": "Public client for Swagger UI interactive testing",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "serviceAccountsEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "http://localhost:8000/api/docs/oauth2-redirect",
+        "http://localhost:8000/docs/oauth2-redirect",
+        "http://tre-api:8000/api/docs/oauth2-redirect"
+      ],
+      "webOrigins": [
+        "http://localhost:8000",
+        "http://tre-api:8000"
+      ]
+    },
+    {
+      "clientId": "tre-ui-client",
+      "name": "TRE UI Client",
+      "description": "Frontend UI application client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "serviceAccountsEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://localhost:3000/oauth2/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@azuretre.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin_password",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "WorkspaceOwner",
+        "WorkspaceResearcher",
+        "AirlockManager"
+      ]
+    },
+    {
+      "username": "researcher",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Research",
+      "lastName": "User",
+      "email": "researcher@azuretre.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "researcher_password",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "WorkspaceResearcher"
+      ]
+    }
+  ]
+}

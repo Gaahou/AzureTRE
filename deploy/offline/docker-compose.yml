@@ -82,6 +82,7 @@ services:
     command: start-dev
     volumes:
       - keycloak-data:/opt/keycloak/data
+      - ./seed/AzureTRE-realm.json:/opt/keycloak/data/import/AzureTRE-realm.json:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
       interval: 10s
