@@ -20,6 +20,10 @@ class OfflineModeCredential:
     def get_token(self, *scopes, **kwargs):
         return type('obj', (object,), {'token': 'offline-mode-token', 'expires_on': 9999999999})()
 
+    async def close(self):
+        """No-op close method for compatibility with credential context managers"""
+        pass
+
 
 def get_credential() -> TokenCredential:
     # Skip Azure authentication in offline mode

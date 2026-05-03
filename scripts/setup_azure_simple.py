@@ -4,28 +4,41 @@ Simple Azure Cosmos DB Free Tier Setup
 Run on your host machine with: python3 scripts/setup_azure_simple.py
 
 Install dependencies first:
-  pip3 install azure-mgmt-cosmosdb azure-identity azure-mgmt-resource
+  pip3 install -r scripts/requirements.txt
 """
 
 import sys
+import os
 
 # Check dependencies
 print("Checking dependencies...")
 try:
     from azure.identity import InteractiveBrowserCredential
     from azure.mgmt.cosmosdb import CosmosDBManagementClient
-    from azure.mgmt.resource import ResourceManagementClient, SubscriptionClient
+    from azure.mgmt.resource import ResourceManagementClient
+    from azure.mgmt.subscription import SubscriptionClient
     from azure.mgmt.cosmosdb.models import *
     print("✅ All packages installed\n")
 except ImportError as e:
-    print(f"\n❌ Missing packages. Install with:")
-    print("pip3 install azure-mgmt-cosmosdb azure-identity azure-mgmt-resource")
+    print(f"\n❌ Missing package: {e}")
+    print("\nInstall with:")
+    print("pip3 install -r scripts/requirements.txt")
     sys.exit(1)
 
-# Configuration
-ACCOUNT_NAME = input("Cosmos DB account name [tre-poc-cosmos]: ").strip() or "tre-poc-cosmos"
-RG_NAME = input("Resource group name [tre-poc-rg]: ").strip() or "tre-poc-rg"
-LOCATION = input("Location [eastus]: ").strip() or "eastus"
+# Configuration - accept from environment or use defaults
+ACCOUNT_NAME = os.getenv("COSMOS_ACCOUNT_NAME", "tre-poc-cosmos")
+RG_NAME = os.getenv("RESOURCE_GROUP_NAME", "tre-poc-rg")
+LOCATION = os.getenv("AZURE_LOCATION", "eastus")
+
+# Try interactive input if terminal is available
+if sys.stdin.isatty():
+    account_input = input(f"Cosmos DB account name [{ACCOUNT_NAME}]: ").strip()
+    rg_input = input(f"Resource group name [{RG_NAME}]: ").strip()
+    location_input = input(f"Location [{LOCATION}]: ").strip()
+
+    ACCOUNT_NAME = account_input or ACCOUNT_NAME
+    RG_NAME = rg_input or RG_NAME
+    LOCATION = location_input or LOCATION
 
 print(f"\n📋 Configuration:")
 print(f"   Account: {ACCOUNT_NAME}")

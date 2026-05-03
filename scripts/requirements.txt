@@ -1,0 +1,20 @@
+# Requirements for Azure setup scripts
+# Used by: scripts/setup_azure_simple.py
+#
+# Install with:
+#   pip install -r scripts/requirements.txt
+#
+# Or install globally:
+#   pip3 install -r scripts/requirements.txt
+
+# Azure Management SDK for Cosmos DB
+azure-mgmt-cosmosdb>=9.0.0
+
+# Azure Identity for authentication
+azure-identity>=1.12.0
+
+# Azure Resource Management SDK
+azure-mgmt-resource>=23.0.0
+
+# Azure Subscription Management SDK
+azure-mgmt-subscription>=3.1.1
