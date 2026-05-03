@@ -161,3 +161,69 @@ class CredentialProvider(ABC):
             Exception: If token acquisition fails
         """
         pass
+
+
+class SecretProvider(ABC):
+    """
+    Abstract interface for secrets management operations.
+
+    Implementations:
+    - Azure Key Vault (online mode)
+    - HashiCorp Vault (offline mode)
+    """
+
+    @abstractmethod
+    async def get_secret(self, secret_name: str) -> str:
+        """
+        Get a secret value by name.
+
+        Args:
+            secret_name: Name of the secret to retrieve
+
+        Returns:
+            str: Secret value
+
+        Raises:
+            Exception: If secret retrieval fails or secret not found
+        """
+        pass
+
+    @abstractmethod
+    async def set_secret(self, secret_name: str, secret_value: str) -> None:
+        """
+        Set a secret value.
+
+        Args:
+            secret_name: Name of the secret
+            secret_value: Value to store
+
+        Raises:
+            Exception: If secret storage fails
+        """
+        pass
+
+    @abstractmethod
+    async def delete_secret(self, secret_name: str) -> None:
+        """
+        Delete a secret.
+
+        Args:
+            secret_name: Name of the secret to delete
+
+        Raises:
+            Exception: If secret deletion fails
+        """
+        pass
+
+    @abstractmethod
+    async def list_secrets(self) -> list[str]:
+        """
+        List all secret names.
+
+        Returns:
+            list[str]: List of secret names
+
+        Raises:
+            Exception: If listing fails
+        """
+        pass

@@ -21,7 +21,7 @@ Usage:
 """
 
 from core.config import DEPLOYMENT_MODE
-from providers.interfaces import MessageBus, EventPublisher, CredentialProvider
+from providers.interfaces import MessageBus, EventPublisher, CredentialProvider, SecretProvider
 from services.logging import logger
 
 
@@ -82,9 +82,32 @@ def get_credential_provider() -> CredentialProvider:
         raise ValueError(f"Invalid DEPLOYMENT_MODE: {DEPLOYMENT_MODE}. Must be 'online' or 'offline'")
 
 
+def get_secret_provider() -> SecretProvider:
+    """
+    Get a SecretProvider instance based on deployment mode.
+
+    Returns:
+        SecretProvider: Azure Key Vault (online) or HashiCorp Vault (offline)
+    """
+    if DEPLOYMENT_MODE == "online":
+        logger.debug("Using Azure Key Vault for secrets")
+        # TODO: Implement AzureKeyVaultSecretProvider when needed
+        raise NotImplementedError(
+            "Azure Key Vault provider not yet implemented. "
+            "For now, secrets are managed via Azure SDK directly."
+        )
+    elif DEPLOYMENT_MODE == "offline":
+        logger.debug("Using HashiCorp Vault for secrets")
+        from providers.local.secrets import LocalSecretProvider
+        return LocalSecretProvider()
+    else:
+        raise ValueError(f"Invalid DEPLOYMENT_MODE: {DEPLOYMENT_MODE}. Must be 'online' or 'offline'")
+
+
 # Convenience exports
 __all__ = [
     "get_message_bus",
     "get_event_publisher",
     "get_credential_provider",
+    "get_secret_provider",
 ]
