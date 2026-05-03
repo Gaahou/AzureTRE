@@ -1,0 +1,54 @@
+# Traefik Static Configuration for TRE Workspace Routing
+# Replaces Azure Application Gateway in offline mode
+
+# API and Dashboard
+api:
+  dashboard: true
+  insecure: true  # Enable dashboard on port 8080 (dev mode)
+
+# Entry Points
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+  traefik:
+    address: ":8080"  # Dashboard
+
+# Providers
+providers:
+  # Docker provider for dynamic service discovery
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false  # Only expose containers with traefik.enable=true
+    network: tre-local
+    watch: true
+
+  # File provider for static routes
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+# Logging
+log:
+  level: INFO
+  format: json
+
+# Access Logs
+accessLog:
+  format: json
+  fields:
+    defaultMode: keep
+    headers:
+      defaultMode: keep
+
+# Metrics
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addServicesLabels: true
+
+# Global HTTP Configuration
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false

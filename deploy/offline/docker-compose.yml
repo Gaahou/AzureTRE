@@ -198,6 +198,37 @@ services:
       - tre-local
     restart: unless-stopped
 
+  # Traefik (Reverse Proxy & Load Balancer for workspace routing)
+  traefik:
+    image: traefik:v2.10
+    container_name: tre-traefik
+    hostname: traefik
+    ports:
+      - "80:80"       # HTTP
+      - "443:443"     # HTTPS
+      - "8090:8080"   # Dashboard
+    environment:
+      - TZ=UTC
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker socket for service discovery
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro     # Static configuration
+      - traefik-certificates:/etc/traefik/certificates
+    command:
+      - --configFile=/etc/traefik/traefik.yml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.tre.local`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - tre-local
+    restart: unless-stopped
+
   # TRE Resource Processor (Local)
   tre-resource-processor:
     build:
@@ -239,3 +270,5 @@ volumes:
     name: tre-keycloak-data
   registry-data:
     name: tre-registry-data
+  traefik-certificates:
+    name: tre-traefik-certificates
