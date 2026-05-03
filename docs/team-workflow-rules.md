@@ -903,6 +903,135 @@ pytest tests/
 
 ---
 
+## Rule 9: Testing User Story Description Format
+
+### All testing user stories must follow a standardized HTML description format for consistency and clarity
+
+**Rationale:** Testing user stories serve as formal documentation of feature validation. A consistent format ensures all testing stories are easy to read, contain all necessary information, and can be quickly reviewed by team members. This prevents confusion and ensures critical testing information isn't missed.
+
+**Workflow:**
+
+When creating a Testing User Story (per Rule #5), use the standardized HTML format below:
+
+**Required Sections (in order):**
+1. **Objective** - What is being tested and why
+2. **Scope** - Bullet list of all test areas
+3. **Test Plan** - Reference to test plan document and script
+4. **Test Results** - Current status and test outcomes
+5. **Stories Under Test** - List of all stories being validated
+6. **Acceptance Criteria** - Checklist of what must pass
+7. **Dependencies** - Prerequisites for running tests
+8. **Effort** - Estimated time to complete testing
+
+**Template:**
+
+```html
+<h2>Objective</h2>
+<p>Perform comprehensive testing of Phase {N} {feature name} functionality to verify {key capabilities} work correctly in offline mode.</p>
+
+<h2>Scope</h2>
+<ul>
+<li>Verify {component 1} starts and {key function}</li>
+<li>Verify {component 2} {key function}</li>
+<li>Test {functionality 1}</li>
+<li>Test {functionality 2}</li>
+<li>Verify Phase {N-1} features not broken (regression)</li>
+<li>Run full pytest test suite</li>
+</ul>
+
+<h2>Test Plan</h2>
+<p>See: <code>docs/phase{N}-test-plan.md</code></p>
+<p>Test script: <code>scripts/test_phase{N}_docker.sh</code></p>
+<p>Branch: <code>feature/phase{N}-{name}</code></p>
+<p>Commit Tested: <code>{commit-hash}</code></p>
+
+<h2>Test Results</h2>
+<p><strong>⏳ TESTING IN PROGRESS</strong></p>
+<ul>
+<li>⏳ Infrastructure tests: TBD</li>
+<li>⏳ Component tests: TBD</li>
+<li>⏳ Integration tests: TBD</li>
+<li>⏳ Regression tests: TBD</li>
+<li>⏳ Unit tests: TBD</li>
+</ul>
+
+<h2>Stories Under Test</h2>
+<ul>
+<li>Story {ID}: {Title}</li>
+<li>Story {ID}: {Title}</li>
+</ul>
+
+<h2>Acceptance Criteria</h2>
+<ul>
+<li>[ ] All infrastructure tests pass</li>
+<li>[ ] All component tests pass</li>
+<li>[ ] All integration tests pass</li>
+<li>[ ] All regression tests pass (Phase {N-1} features intact)</li>
+<li>[ ] All unit tests pass</li>
+<li>[ ] Test results documented</li>
+<li>[ ] All Phase {N} stories commented with results</li>
+<li>[ ] All Phase {N} stories closed (Resolved → Closed)</li>
+</ul>
+
+<h2>Dependencies</h2>
+<ul>
+<li>Feature Phase {N} must be complete</li>
+<li>Docker and docker-compose installed</li>
+<li>All Phase {N-1} services running</li>
+<li>Ports {list} available</li>
+</ul>
+
+<h2>Effort</h2>
+<p>{X-Y} hours</p>
+```
+
+**After Testing Completes:**
+
+Update the **Test Results** section with actual results:
+
+```html
+<h2>Test Results</h2>
+<p><strong>✅ ALL TESTS PASSED</strong></p>
+<ul>
+<li>✅ Infrastructure tests: X/X passed</li>
+<li>✅ Component tests: X/X passed</li>
+<li>✅ Integration tests: X/X passed</li>
+<li>✅ Regression tests: X/X passed</li>
+<li>✅ Unit tests: X/X passed</li>
+</ul>
+<p><strong>Total: X tests passed, 0 failed</strong></p>
+```
+
+**Example:**
+
+See Testing User Story #362 (Phase 3) or #363 (Phase 4) for complete examples.
+
+**Why:**
+- **Consistency**: All testing stories look the same, easy to find information
+- **Completeness**: Format ensures no critical sections are forgotten
+- **Traceability**: Clear links to test plans, scripts, and stories
+- **Status Tracking**: Easy to see testing progress at a glance
+- **Historical Record**: Future reference for what was tested and how
+
+**How to apply:**
+- When creating Testing User Story (Rule #5), copy the template above
+- Fill in all sections with phase-specific information
+- Link to actual test plan document in docs/
+- Update Test Results section as testing progresses
+- Mark acceptance criteria checkboxes as completed
+
+**Validation Checklist:**
+- [ ] All 8 required sections present
+- [ ] Sections in correct order
+- [ ] HTML tags properly formatted
+- [ ] Test plan document referenced
+- [ ] Test script referenced
+- [ ] Commit hash specified
+- [ ] All stories listed
+- [ ] Acceptance criteria complete
+
+---
+
 ## Workflow Checklist
 
 ### Starting a Feature
@@ -935,6 +1064,7 @@ pytest tests/
 ### After Last Story in Feature Resolved
 - [ ] ✅ **RULE 3:** Move parent Feature to Resolved
 - [ ] ✅ **RULE 5:** Create Testing User Story for the feature
+- [ ] ✅ **RULE 9:** Use standardized HTML description format for Testing Story
 - [ ] ✅ **RULE 5:** Link Testing Story to Feature
 - [ ] ✅ **RULE 7:** Execute tests in Docker container
 - [ ] ✅ **RULE 5:** If tests pass: commit results, comment all work items
@@ -1065,4 +1195,4 @@ For questions about these workflow rules, contact:
 This document should be reviewed and updated during sprint retrospectives or when workflow improvements are identified.
 
 **Last Updated:** 2026-05-03
-**Version:** 1.6 - Added Rule #8 for dependency management with cleanup scripts
+**Version:** 1.7 - Added Rule #9 for testing user story description format standardization
