@@ -1,0 +1,56 @@
+version: '3.8'
+
+# Docker-based Linux VM resource for TRE workspace
+# Attaches to workspace network for isolation
+
+services:
+  linuxvm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${WORKSPACE_ID}-${VM_ID}
+    hostname: ${VM_HOSTNAME}
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TIMEZONE}
+      - TITLE=${VM_TITLE}
+      - CUSTOM_USER=${VM_USERNAME}
+      - CUSTOM_PASS=${VM_USER_CREDENTIAL}
+    volumes:
+      - vm-config:/config
+      - vm-workspace:/workspace
+      - ${WORKSPACE_STORAGE_PATH}:/workspace/shared:ro
+    networks:
+      - workspace-network
+    ports:
+      - "${VM_PORT_HTTP}:3000"
+      - "${VM_PORT_HTTPS}:3001"
+    shm_size: "2gb"
+    security_opt:
+      - seccomp:unconfined
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    labels:
+      - "tre.workspace.id=${WORKSPACE_ID}"
+      - "tre.resource.type=linuxvm"
+      - "tre.resource.id=${VM_ID}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.${VM_ID}.rule=Host(`${VM_HOSTNAME}.${WORKSPACE_ID}.tre.local`)"
+      - "traefik.http.services.${VM_ID}.loadbalancer.server.port=3000"
+
+networks:
+  workspace-network:
+    external: true
+    name: ${WORKSPACE_ID}-network
+
+volumes:
+  vm-config:
+    name: ${WORKSPACE_ID}-${VM_ID}-config
+  vm-workspace:
+    name: ${WORKSPACE_ID}-${VM_ID}-workspace
