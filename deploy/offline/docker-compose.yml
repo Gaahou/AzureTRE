@@ -67,6 +67,30 @@ services:
     networks:
       - tre-local
 
+  # Keycloak (Authentication & Identity Management)
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: tre-keycloak
+    hostname: keycloak
+    ports:
+      - "8080:8080"   # Keycloak UI & API
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin_password
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME_STRICT=false
+    command: start-dev
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+    networks:
+      - tre-local
+
   # TRE API Application
   tre-api:
     build:
@@ -161,3 +185,5 @@ volumes:
     name: tre-azurite-data
   rabbitmq-data:
     name: tre-rabbitmq-data
+  keycloak-data:
+    name: tre-keycloak-data
