@@ -9,6 +9,7 @@ from fastapi import Request, HTTPException, status
 from msal import ConfidentialClientApplication
 
 from services.access_service import AccessService, AuthConfigValidationError, UserRoleAssignmentError
+from providers.factory import get_credential_provider
 from core import config
 from db.errors import EntityDoesNotExist
 from models.domain.authentication import User, RoleAssignment
@@ -55,15 +56,9 @@ class AzureADAuthorization(AccessService):
         self.require_one_of_roles = require_one_of_roles
 
     async def __call__(self, request: Request) -> User:
-        # Bypass authentication in offline mode
+        # Use credential provider for authentication in offline mode
         if config.DEPLOYMENT_MODE == "offline":
-            logger.debug("Authentication bypassed (offline mode)")
-            return User(
-                id="offline-user",
-                name="Offline User",
-                email="offline@localhost",
-                roles=["TREAdmin", "TREUser", "WorkspaceOwner", "WorkspaceResearcher", "AirlockManager"]
-            )
+            return await self._authenticate_with_provider(request)
 
         token: str = await super(AzureADAuthorization, self).__call__(request)
 
@@ -123,6 +118,107 @@ class AzureADAuthorization(AccessService):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'{strings.ACCESS_USER_DOES_NOT_HAVE_REQUIRED_ROLE}: {self.require_one_of_roles}', headers={"WWW-Authenticate": "Bearer"})
 
         return user
+
+    async def _authenticate_with_provider(self, request: Request) -> User:
+        """
+        Authenticate using credential provider (Keycloak in offline mode).
+
+        Args:
+            request: FastAPI request object
+
+        Returns:
+            User: Authenticated user with roles
+
+        Raises:
+            HTTPException: If authentication fails
+        """
+        try:
+            # Get token from Authorization header
+            token: str = await super(AzureADAuthorization, self).__call__(request)
+
+            # Get credential provider (LocalCredentialProvider in offline mode)
+            provider = get_credential_provider()
+
+            # Validate token and get claims
+            logger.debug("Validating token with credential provider")
+            token_claims = provider.validate_token(token, require_audience=False)
+
+            # Extract user information from token
+            user = self._get_user_from_provider_token(token_claims, provider)
+
+            # Check if user has required roles
+            if self.require_one_of_roles and not any(role in self.require_one_of_roles for role in user.roles):
+                logger.warning(f"User {user.id} does not have required roles: {self.require_one_of_roles}")
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail=f'{strings.ACCESS_USER_DOES_NOT_HAVE_REQUIRED_ROLE}: {self.require_one_of_roles}',
+                    headers={"WWW-Authenticate": "Bearer"}
+                )
+
+            logger.info(f"User authenticated via provider: {user.email} with roles: {user.roles}")
+            return user
+
+        except HTTPException:
+            # Re-raise HTTP exceptions (already formatted)
+            raise
+        except jwt.ExpiredSignatureError:
+            logger.error("Token has expired")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=strings.EXPIRED_SIGNATURE,
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+        except jwt.InvalidTokenError as e:
+            logger.error(f"Invalid token: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=strings.INVALID_TOKEN,
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+        except Exception as e:
+            logger.exception(f"Authentication failed: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=strings.AUTH_UNABLE_TO_VALIDATE_TOKEN,
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+
+    @staticmethod
+    def _get_user_from_provider_token(token_claims: dict, provider) -> User:
+        """
+        Extract user information from provider token claims.
+
+        Handles both Azure AD and Keycloak token formats:
+        - Azure AD: oid, name, email, roles
+        - Keycloak: sub, preferred_username, email, realm_access.roles
+
+        Args:
+            token_claims: Decoded JWT token claims
+            provider: Credential provider instance
+
+        Returns:
+            User: User object with extracted information
+        """
+        # Extract user ID (oid for Azure AD, sub for Keycloak)
+        user_id = token_claims.get('oid') or token_claims.get('sub', 'unknown')
+
+        # Extract name (name for Azure AD, preferred_username or name for Keycloak)
+        name = token_claims.get('name') or token_claims.get('preferred_username', '')
+
+        # Extract email
+        email = token_claims.get('email', '')
+
+        # Extract roles using provider's role extraction logic
+        roles = provider.extract_roles(token_claims)
+
+        logger.debug(f"Extracted user from token: id={user_id}, name={name}, email={email}, roles={roles}")
+
+        return User(
+            id=user_id,
+            name=name,
+            email=email,
+            roles=roles
+        )
 
     @staticmethod
     async def _fetch_ws_app_reg_id_from_ws_id(request: Request) -> str:
