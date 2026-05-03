@@ -7,6 +7,6 @@ for local/offline mode using open-source alternatives:
 - Keycloak for authentication (Phase 3)
 """
 
-from providers.local.rabbitmq import RabbitMQMessageBus
+from providers.local.rabbitmq import RabbitMQMessageBus, RabbitMQEventPublisher
 
-__all__ = ["RabbitMQMessageBus"]
+__all__ = ["RabbitMQMessageBus", "RabbitMQEventPublisher"]

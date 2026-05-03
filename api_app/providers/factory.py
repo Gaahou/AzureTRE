@@ -50,20 +50,15 @@ def get_event_publisher() -> EventPublisher:
 
     Returns:
         EventPublisher: Azure Event Grid (online) or RabbitMQ Topics (offline)
-
-    Raises:
-        NotImplementedError: If offline mode is selected (Phase 2+)
     """
     if DEPLOYMENT_MODE == "online":
         logger.debug("Using Azure Event Grid for event publishing")
         from providers.azure.eventgrid import AzureEventGridPublisher
         return AzureEventGridPublisher()
     elif DEPLOYMENT_MODE == "offline":
-        logger.error("Offline mode not yet implemented for EventPublisher")
-        raise NotImplementedError(
-            "Offline mode EventPublisher (RabbitMQ Topics) will be implemented in Phase 2. "
-            "For now, please use deployment_mode: online in config.yaml"
-        )
+        logger.debug("Using RabbitMQ topic exchanges for event publishing")
+        from providers.local.rabbitmq import RabbitMQEventPublisher
+        return RabbitMQEventPublisher()
     else:
         raise ValueError(f"Invalid DEPLOYMENT_MODE: {DEPLOYMENT_MODE}. Must be 'online' or 'offline'")
 

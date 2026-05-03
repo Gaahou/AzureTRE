@@ -1,12 +1,14 @@
 """
-RabbitMQ implementation of MessageBus.
+RabbitMQ implementation of MessageBus and EventPublisher.
 
 This module provides RabbitMQ messaging for resource deployment
-requests and status updates in offline mode.
+requests, status updates, and event publishing in offline mode.
 """
 
 import json
 from typing import Any, Callable, Optional
+from uuid import uuid4
+from datetime import datetime, timezone
 from aio_pika import connect_robust, Message, ExchangeType
 from aio_pika.abc import AbstractRobustConnection, AbstractChannel
 from core.config import (
@@ -16,7 +18,7 @@ from core.config import (
     RABBITMQ_PASSWORD,
     RABBITMQ_VHOST,
 )
-from providers.interfaces import MessageBus
+from providers.interfaces import MessageBus, EventPublisher
 from services.logging import logger
 
 
@@ -170,6 +172,155 @@ class RabbitMQMessageBus(MessageBus):
                         )
                         # Message will be rejected (nacked) and requeued
                         raise
+
+    async def close(self) -> None:
+        """Close RabbitMQ connection gracefully."""
+        if self.channel and not self.channel.is_closed:
+            await self.channel.close()
+            logger.info("RabbitMQ channel closed")
+
+        if self.connection and not self.connection.is_closed:
+            await self.connection.close()
+            logger.info("RabbitMQ connection closed")
+
+
+class RabbitMQEventPublisher(EventPublisher):
+    """
+    RabbitMQ event publisher implementation.
+
+    Publishes CloudEvents-formatted events to RabbitMQ topic exchanges,
+    replicating Azure Event Grid functionality in offline mode.
+
+    Topic endpoint mapping (Azure Event Grid → RabbitMQ):
+    - statusChanged topic → tre.events.status exchange
+    - airlockNotification topic → tre.events.airlock exchange
+    """
+
+    def __init__(self):
+        """Initialize the RabbitMQ event publisher."""
+        self.connection: Optional[AbstractRobustConnection] = None
+        self.channel: Optional[AbstractChannel] = None
+        self.connection_url = (
+            f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@"
+            f"{RABBITMQ_HOST}:{RABBITMQ_PORT}{RABBITMQ_VHOST}"
+        )
+
+    async def _ensure_connection(self) -> AbstractChannel:
+        """
+        Ensure RabbitMQ connection and channel are established.
+
+        Returns:
+            AbstractChannel: Active RabbitMQ channel
+
+        Raises:
+            Exception: If connection fails
+        """
+        if self.connection is None or self.connection.is_closed:
+            logger.info(f"Connecting to RabbitMQ at {RABBITMQ_HOST}:{RABBITMQ_PORT}")
+            self.connection = await connect_robust(self.connection_url)
+            logger.info("RabbitMQ connection established")
+
+        if self.channel is None or self.channel.is_closed:
+            self.channel = await self.connection.channel()
+            logger.info("RabbitMQ channel opened")
+
+        return self.channel
+
+    def _extract_exchange_name(self, topic_endpoint: str) -> str:
+        """
+        Extract exchange name from topic endpoint URL.
+
+        Maps Azure Event Grid topic endpoints to RabbitMQ exchange names.
+
+        Args:
+            topic_endpoint: Azure Event Grid topic endpoint URL
+
+        Returns:
+            str: RabbitMQ exchange name
+        """
+        # Extract topic type from URL
+        # Example: https://.../topics/statusChanged → tre.events.status
+        if "statusChanged" in topic_endpoint or "status" in topic_endpoint.lower():
+            return "tre.events.status"
+        elif "airlock" in topic_endpoint.lower():
+            return "tre.events.airlock"
+        else:
+            # Default exchange for other event types
+            return "tre.events.general"
+
+    async def publish(
+        self,
+        topic_endpoint: str,
+        event_type: str,
+        subject: str,
+        data: dict,
+        event_id: Optional[str] = None,
+    ) -> None:
+        """
+        Publish an event to RabbitMQ topic exchange.
+
+        Args:
+            topic_endpoint: Topic endpoint URL (used to determine exchange)
+            event_type: Type of event (e.g., "statusChanged", "airlockNotification")
+            subject: Event subject (e.g., resource ID)
+            data: Event payload data
+            event_id: Optional unique event identifier
+
+        Raises:
+            Exception: If event publishing fails
+        """
+        channel = await self._ensure_connection()
+
+        # Generate event ID if not provided
+        if event_id is None:
+            event_id = str(uuid4())
+
+        # Extract exchange name from topic endpoint
+        exchange_name = self._extract_exchange_name(topic_endpoint)
+
+        # Declare topic exchange (idempotent)
+        exchange = await channel.declare_exchange(
+            exchange_name,
+            ExchangeType.TOPIC,
+            durable=True
+        )
+
+        # Create CloudEvents-formatted event
+        cloud_event = {
+            "specversion": "1.0",
+            "id": event_id,
+            "type": event_type,
+            "source": "azure-tre-api",
+            "subject": subject,
+            "time": datetime.now(timezone.utc).isoformat(),
+            "datacontenttype": "application/json",
+            "data": data,
+            "dataversion": "1.0"
+        }
+
+        # Create RabbitMQ message
+        message = Message(
+            body=json.dumps(cloud_event).encode(),
+            content_type="application/cloudevents+json",
+            message_id=event_id,
+            delivery_mode=2,  # Persistent message
+        )
+
+        # Use event_type as routing key for topic exchange
+        routing_key = event_type
+
+        logger.info(
+            f"Publishing event to exchange '{exchange_name}' "
+            f"(type: {event_type}, subject: {subject}, id: {event_id})"
+        )
+
+        # Publish to topic exchange
+        await exchange.publish(message, routing_key=routing_key)
+
+        logger.info(
+            f"Event published successfully to exchange '{exchange_name}' "
+            f"with routing key '{routing_key}'"
+        )
 
     async def close(self) -> None:
         """Close RabbitMQ connection gracefully."""
