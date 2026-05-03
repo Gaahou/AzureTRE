@@ -116,6 +116,58 @@ curl -s http://localhost:3000/mcp \
 ./scripts/ado_comment.sh 106 "$(git log -1 --format='%H')" "feature/phase0-provider-abstraction"
 ```
 
+### Format 2: Comprehensive Comment for Closing Work Items (Resolved → Closed)
+
+**When:** Use this comprehensive format when closing work items after testing is complete.
+
+**Structure Order (MANDATORY):**
+1. **Title** with ✅: `<strong>Story/Feature #XXX Complete</strong> ✅<br><br>`
+2. **Commit(s):** `<strong>Commit:</strong> <code>hash</code>: message<br>` (use "Commits:" if multiple)
+3. **Branch:** `<strong>Branch:</strong> branch-name<br>`
+4. **GitHub:** `<strong>GitHub:</strong> <a href="url">url</a><br><br>`
+5. **Status:** `<strong>Status:</strong> Complete ✅<br><br>`
+6. **Files Created/Modified:** `<strong>Files Created:</strong><ul><li>file</li></ul>`
+7. **Implementation:** `<strong>Implementation:</strong><br>- full details<br><br>`
+8. **Testing/Features:** `<strong>Testing:</strong><br>✅ test results<br>`
+9. **Documentation:** `<strong>Documentation:</strong><ul><li>docs</li></ul>` (if applicable)
+
+**Template:**
+```html
+<strong>Story #123 Complete</strong> ✅<br><br>
+
+<strong>Commit:</strong> <code>abc123</code>: Story 123: Description<br>
+<strong>Branch:</strong> feature/branch-name<br>
+<strong>GitHub:</strong> <a href="https://github.com/org/repo/commit/abc123">https://github.com/org/repo/commit/abc123</a><br><br>
+
+<strong>Status:</strong> Complete ✅<br><br>
+
+<strong>Files Created:</strong>
+<ul>
+<li>path/to/file.py</li>
+<li>path/to/another.js</li>
+</ul>
+
+<strong>Implementation:</strong><br>
+- Created X functionality<br>
+- Added Y feature<br>
+- Configured Z settings<br><br>
+
+<strong>Testing:</strong><br>
+✅ Unit tests pass (22/22)<br>
+✅ Integration tests pass<br>
+✅ Manual testing complete<br><br>
+
+<strong>Documentation:</strong>
+<ul>
+<li>docs/feature-guide.md</li>
+<li>scripts/README.md</li>
+</ul>
+```
+
+**Usage:**
+- **Format 1 (above)**: Use after commits during implementation (Active → Resolved)
+- **Format 2 (this section)**: Use when closing work items after testing (Resolved → Closed)
+
 ---
 
 ## Rule 3: Feature Completion and Next Feature Activation
