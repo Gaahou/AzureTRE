@@ -80,6 +80,35 @@ python3 scripts/setup_azure_simple.py
 
 ## Cleanup
 
+### cleanup_phase1.sh
+
+**Purpose:** Clean up Phase 1 Azure resources and/or local Docker environment
+
+**Usage:**
+```bash
+# Clean up both Azure and local (default)
+./scripts/cleanup_phase1.sh
+
+# Only delete Azure resources
+./scripts/cleanup_phase1.sh --azure-only
+
+# Only clean up Docker containers
+./scripts/cleanup_phase1.sh --local-only
+```
+
+**What it cleans:**
+- Azure resource group (tre-poc-rg)
+- Cosmos DB account and containers
+- Docker containers (tre-api, tre-azurite)
+- Docker volumes and networks
+
+**Safety:**
+- Prompts for confirmation before deletion
+- Shows what will be deleted
+- Cannot be undone (destructive operation)
+
+**Note:** Preserves .env file and all documentation for reference.
+
 ### Uninstall Dependencies
 
 After testing is complete, you can uninstall the Azure SDK packages:
@@ -90,19 +119,19 @@ After testing is complete, you can uninstall the Azure SDK packages:
 
 This removes all packages from `requirements.txt` and their dependencies.
 
-### Delete Azure Resources
+### Manual Cleanup
 
-To delete all Azure resources created by the setup script:
+Alternatively, delete Azure resources manually:
 
 ```bash
-# Delete entire resource group (includes Cosmos DB)
+# Using Azure CLI
 az group delete --name tre-poc-rg --yes
 
 # Or via Azure Portal
 # Navigate to resource group → Delete resource group
 ```
 
-**Cost Impact:** Deleting resources immediately stops any charges.
+**Cost Impact:** Deleting resources immediately stops any charges (~$0.05/day saved).
 
 ---
 
