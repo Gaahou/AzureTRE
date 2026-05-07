@@ -65,19 +65,37 @@ def get_event_publisher() -> EventPublisher:
 
 def get_credential_provider() -> CredentialProvider:
     """
-    Get a CredentialProvider instance based on deployment mode.
+    Get a CredentialProvider instance based on deployment mode and auth type.
 
     Returns:
-        CredentialProvider: Azure AD/Managed Identity (online) or Keycloak (offline)
+        CredentialProvider:
+            - Azure AD/Managed Identity (online + auth_type=aad)
+            - Azure AD B2C (online + auth_type=b2c)
+            - Keycloak (offline OR auth_type=keycloak)
     """
     if DEPLOYMENT_MODE == "online":
-        logger.debug("Using Azure AD/Managed Identity for credentials")
-        from providers.azure.credentials import AzureCredentialProvider
-        return AzureCredentialProvider()
+        from core.config import AUTH_TYPE
+
+        if AUTH_TYPE == "b2c":
+            logger.debug("Using Azure AD B2C for credentials")
+            from providers.azure.b2c_credentials import AzureADB2CCredentialProvider
+            return AzureADB2CCredentialProvider()
+        elif AUTH_TYPE == "aad":
+            logger.debug("Using Azure AD/Managed Identity for credentials")
+            from providers.azure.credentials import AzureCredentialProvider
+            return AzureCredentialProvider()
+        elif AUTH_TYPE == "keycloak":
+            logger.debug("Using Keycloak OIDC for credentials (online mode)")
+            from providers.local.credentials import LocalCredentialProvider
+            return LocalCredentialProvider()
+        else:
+            raise ValueError(f"Invalid AUTH_TYPE: {AUTH_TYPE}")
+
     elif DEPLOYMENT_MODE == "offline":
         logger.debug("Using Keycloak OIDC for credentials")
         from providers.local.credentials import LocalCredentialProvider
         return LocalCredentialProvider()
+
     else:
         raise ValueError(f"Invalid DEPLOYMENT_MODE: {DEPLOYMENT_MODE}. Must be 'online' or 'offline'")
 

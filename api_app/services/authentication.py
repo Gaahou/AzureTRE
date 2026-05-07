@@ -18,6 +18,10 @@ def extract_auth_information(workspace_creation_properties: dict) -> dict:
 def get_access_service(provider: str = AuthProvider.AAD) -> AccessService:
     if provider == AuthProvider.AAD:
         return AzureADAuthorization()
+    elif provider == AuthProvider.B2C:
+        # B2C reuses AAD authorization logic for MVP
+        # Token validation handled by B2C credential provider
+        return AzureADAuthorization()
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=strings.INVALID_AUTH_PROVIDER)
 
 

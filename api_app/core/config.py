@@ -87,6 +87,26 @@ AAD_TENANT_ID: str = config("AAD_TENANT_ID", default="")
 
 API_AUDIENCE: str = config("API_AUDIENCE", default=API_CLIENT_ID)
 
+# Authentication Type (for online mode - which Azure AD to use)
+_AUTH_TYPE: str = config("AUTH_TYPE", default="aad")
+VALID_AUTH_TYPES = ["aad", "b2c", "keycloak"]
+
+# Validate auth type
+if _AUTH_TYPE not in VALID_AUTH_TYPES:
+    raise ValueError(
+        f"Invalid AUTH_TYPE '{_AUTH_TYPE}'. "
+        f"Must be one of: {', '.join(VALID_AUTH_TYPES)}"
+    )
+
+AUTH_TYPE: str = _AUTH_TYPE
+
+# Azure AD B2C Configuration (when AUTH_TYPE=b2c)
+B2C_TENANT_NAME: str = config("B2C_TENANT_NAME", default="")
+B2C_POLICY_SUSI: str = config("B2C_POLICY_SUSI", default="B2C_1_susi")
+B2C_CLIENT_ID: str = config("B2C_CLIENT_ID", default="")
+B2C_CLIENT_SECRET: str = config("B2C_CLIENT_SECRET", default="")
+B2C_ROLE_CLAIM_NAME: str = config("B2C_ROLE_CLAIM_NAME", default="extension_WorkspaceRole")
+
 AIRLOCK_SAS_TOKEN_EXPIRY_PERIOD_IN_HOURS: int = config("AIRLOCK_SAS_TOKEN_EXPIRY_PERIOD_IN_HOURS", default=1)
 ENABLE_AIRLOCK_EMAIL_CHECK: bool = config("ENABLE_AIRLOCK_EMAIL_CHECK", cast=bool, default=False)
 

@@ -28,6 +28,7 @@ class AuthProvider(StrEnum):
     Auth Provider
     """
     AAD = "AAD"
+    B2C = "B2C"
 
 
 class AuthenticationConfiguration(BaseModel):

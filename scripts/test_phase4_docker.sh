@@ -346,7 +346,43 @@ run_test "Regression: Message bus factory works" \
 
 echo ""
 echo "════════════════════════════════════════════════════"
-echo "13. PYTEST TEST SUITE"
+echo "13. B2C CREDENTIAL PROVIDER TEST (if configured)"
+echo "════════════════════════════════════════════════════"
+echo ""
+
+# Test B2C credential provider (if configured)
+if [ -n "$B2C_TENANT_NAME" ]; then
+    echo "🧪 Testing B2C Credential Provider..."
+    echo "   B2C Tenant: $B2C_TENANT_NAME"
+
+    docker run --rm \
+        -e AUTH_TYPE=b2c \
+        -e B2C_TENANT_NAME="$B2C_TENANT_NAME" \
+        -e B2C_POLICY_SUSI="${B2C_POLICY_SUSI:-B2C_1_susi}" \
+        -e B2C_CLIENT_ID="$B2C_CLIENT_ID" \
+        -e B2C_TEST_TOKEN="${B2C_TEST_TOKEN:-}" \
+        azuretre-api-test:phase4 \
+        python -m test_b2c_credentials | tee -a "$TEST_OUTPUT"
+
+    B2C_EXIT_CODE=${PIPESTATUS[0]}
+
+    if [ $B2C_EXIT_CODE -eq 0 ]; then
+        echo "✅ B2C credential provider tests PASSED"
+        ((TESTS_PASSED++))
+        log_test "B2C Credential Provider Tests" "PASSED"
+    else
+        echo "❌ B2C credential provider tests FAILED"
+        ((TESTS_FAILED++))
+        log_test "B2C Credential Provider Tests" "FAILED"
+    fi
+else
+    echo "⏭️  Skipping B2C tests (B2C_TENANT_NAME not configured)"
+    echo "   To test B2C, set: B2C_TENANT_NAME, B2C_CLIENT_ID, AUTH_TYPE=b2c"
+fi
+
+echo ""
+echo "════════════════════════════════════════════════════"
+echo "14. PYTEST TEST SUITE"
 echo "════════════════════════════════════════════════════"
 echo ""
 
@@ -371,7 +407,7 @@ fi
 
 echo ""
 echo "════════════════════════════════════════════════════"
-echo "14. CLEANUP"
+echo "15. CLEANUP"
 echo "════════════════════════════════════════════════════"
 echo ""
 
